@@ -1,0 +1,151 @@
+\relax 
+\providecommand \babel@aux [2]{\global \let \babel@toc \@gobbletwo }
+\@nameuse{bbl@beforestart}
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\def\@LN@column{1}
+\babel@aux{english}{}
+\def\@LN@column{1}
+\citation{Higgins2019}
+\citation{Higgins2011}
+\citation{Konsgen2020,ArmijoOlivo2014}
+\citation{Marshall2016}
+\citation{Lieberum2025,Scherbakov2025}
+\def\@LN@column{1}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{3}{section.1}\protected@file@percent }
+\newlabel{sec:introduction}{{1}{3}{Introduction}{section.1}{}}
+\def\@LN@column{1}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Methods}{4}{section.2}\protected@file@percent }
+\newlabel{sec:methods}{{2}{4}{Methods}{section.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Dataset}{4}{subsection.2.1}\protected@file@percent }
+\newlabel{sec:dataset}{{2.1}{4}{Dataset}{subsection.2.1}{}}
+\citation{Sterne2019}
+\citation{Higgins2011}
+\def\@LN@column{1}
+\citation{Wang2024MinerU}
+\def\@LN@column{1}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Ground-truth class distribution per RoB domain ($n = 227$ studies per domain). LR~=~Low Risk; HR~=~High Risk; UR~=~Unclear Risk.}}{6}{table.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:class-dist}{{1}{6}{Ground-truth class distribution per RoB domain ($n = 227$ studies per domain). LR~=~Low Risk; HR~=~High Risk; UR~=~Unclear Risk}{table.caption.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Document Preparation Pipeline}{6}{subsection.2.2}\protected@file@percent }
+\newlabel{sec:pipeline}{{2.2}{6}{Document Preparation Pipeline}{subsection.2.2}{}}
+\def\@LN@column{1}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Distribution of the 227 RCTs by intervention type.}}{7}{figure.caption.2}\protected@file@percent }
+\newlabel{fig:itype-dist}{{1}{7}{Distribution of the 227 RCTs by intervention type}{figure.caption.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Risk of Bias Assessment}{7}{subsection.2.3}\protected@file@percent }
+\newlabel{sec:rob-assessment}{{2.3}{7}{Risk of Bias Assessment}{subsection.2.3}{}}
+\newlabel{RF1}{8}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Distribution of the 227 RCTs by clinical domain (Cochrane Review Group categories, multi-label; total exceeds 227).}}{8}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:clinical-dist}{{2}{8}{Distribution of the 227 RCTs by clinical domain (Cochrane Review Group categories, multi-label; total exceeds 227)}{figure.caption.3}{}}
+\def\@LN@column{1}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Language Models}{9}{subsection.2.4}\protected@file@percent }
+\newlabel{sec:models}{{2.4}{9}{Language Models}{subsection.2.4}{}}
+\citation{Gwet2008,Feinstein1990}
+\def\@LN@column{1}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Language models evaluated. All models accessed via the OpenRouter API in June~2026 using the model identifier strings shown; zero-shot single-agent mode throughout. Context length: maximum tokens accepted per call as reported by OpenRouter at access time. Release date: date the model became available on OpenRouter. Exact checkpoint versions are opaque at the provider level; the identifiers below are the strings passed to the API and represent the model state at the time of inference.}}{10}{table.caption.4}\protected@file@percent }
+\newlabel{tab:models}{{2}{10}{Language models evaluated. All models accessed via the OpenRouter API in June~2026 using the model identifier strings shown; zero-shot single-agent mode throughout. Context length: maximum tokens accepted per call as reported by OpenRouter at access time. Release date: date the model became available on OpenRouter. Exact checkpoint versions are opaque at the provider level; the identifiers below are the strings passed to the API and represent the model state at the time of inference}{table.caption.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Evaluation Metrics}{10}{subsection.2.5}\protected@file@percent }
+\newlabel{sec:metrics}{{2.5}{10}{Evaluation Metrics}{subsection.2.5}{}}
+\newlabel{eq:f1}{{1}{10}{Evaluation Metrics}{equation.1}{}}
+\citation{Feinstein1990}
+\citation{Hartling2013}
+\citation{Konsgen2020}
+\def\@LN@column{1}
+\newlabel{eq:ac1}{{2}{11}{Evaluation Metrics}{equation.2}{}}
+\def\@LN@column{1}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Results}{12}{section.3}\protected@file@percent }
+\newlabel{sec:results}{{3}{12}{Results}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Overall Performance}{12}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:overall}{{3.1}{12}{Overall Performance}{subsection.3.1}{}}
+\def\@LN@column{1}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Performance by RoB Domain}{13}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:domain}{{3.2}{13}{Performance by RoB Domain}{subsection.3.2}{}}
+\newlabel{RF2}{14}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Overall performance on RoB~1.0 assessment ($n = 227$ studies; 1{,}589 cells). Models ranked by accuracy. F1-LR, F1-HR, F1-UR: F1 for Low Risk, High Risk, and Unclear Risk computed globally across all study--domain cells. Best value in each column shown in bold. \footnotesize  95\% confidence intervals (study-clustered bootstrap, 5{,}000 iterations, resampling 227 studies with replacement) are shown in \textit  {brackets} below each point estimate; all analyses are exploratory (see Methods, Statistical Inference).}}{14}{table.caption.5}\protected@file@percent }
+\newlabel{tab:overall}{{3}{14}{Overall performance on RoB~1.0 assessment ($n = 227$ studies; 1{,}589 cells). Models ranked by accuracy. F1-LR, F1-HR, F1-UR: F1 for Low Risk, High Risk, and Unclear Risk computed globally across all study--domain cells. Best value in each column shown in bold. \footnotesize 95\% confidence intervals (study-clustered bootstrap, 5{,}000 iterations, resampling 227 studies with replacement) are shown in \textit {brackets} below each point estimate; all analyses are exploratory (see Methods, Statistical Inference)}{table.caption.5}{}}
+\newlabel{RF3}{15}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Per-domain accuracy (\%) for each model. Colour scale: 0--100\%.}}{15}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:domain-heatmap}{{3}{15}{Per-domain accuracy (\%) for each model. Colour scale: 0--100\%}{figure.caption.6}{}}
+\def\@LN@column{1}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Per-class Analysis}{16}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:perclass}{{3.3}{16}{Per-class Analysis}{subsection.3.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces F1 scores for Low Risk (blue), High Risk (red), and Unclear Risk (purple) by domain and model. Colour intensity proportional to F1 (0--1).}}{16}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:perclass}{{4}{16}{F1 scores for Low Risk (blue), High Risk (red), and Unclear Risk (purple) by domain and model. Colour intensity proportional to F1 (0--1)}{figure.caption.7}{}}
+\def\@LN@column{1}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Stratification by Intervention Type}{17}{subsection.3.4}\protected@file@percent }
+\newlabel{sec:itype}{{3.4}{17}{Stratification by Intervention Type}{subsection.3.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Stratification by Clinical Domain}{17}{subsection.3.5}\protected@file@percent }
+\newlabel{sec:clinical}{{3.5}{17}{Stratification by Clinical Domain}{subsection.3.5}{}}
+\def\@LN@column{1}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Oracle Analysis}{18}{subsection.3.6}\protected@file@percent }
+\newlabel{sec:oracle}{{3.6}{18}{Oracle Analysis}{subsection.3.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7}Inference Mode Comparison}{18}{subsection.3.7}\protected@file@percent }
+\newlabel{sec:inference}{{3.7}{18}{Inference Mode Comparison}{subsection.3.7}{}}
+\newlabel{RF4}{19}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Macro-F1 by clinical domain and model (domains with $\geq 5$ studies; $n$ = number of studies in each domain, multi-label). Colour scale: 0--1.}}{19}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:clinical-heatmap}{{5}{19}{Macro-F1 by clinical domain and model (domains with $\geq 5$ studies; $n$ = number of studies in each domain, multi-label). Colour scale: 0--1}{figure.caption.8}{}}
+\def\@LN@column{1}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Per-domain vs.\ single-call inference mode comparison for Gemini~2.5~Flash and DeepSeek~v4-Flash ($n = 227$ studies; 1{,}589 cells each). F1 scores are computed globally across all cells (identical methodology to Table~\ref {tab:overall}); per-domain values reproduce the corresponding entries in Table~\ref {tab:overall}. $\Delta $: single-call minus per-domain; 95\% paired bootstrap CI (study-clustered, 5{,}000 iterations) shown in brackets. $\dagger $: CI excludes zero (unadjusted for multiplicity; all analyses exploratory).}}{20}{table.caption.9}\protected@file@percent }
+\newlabel{tab:inference}{{4}{20}{Per-domain vs.\ single-call inference mode comparison for Gemini~2.5~Flash and DeepSeek~v4-Flash ($n = 227$ studies; 1{,}589 cells each). F1 scores are computed globally across all cells (identical methodology to Table~\ref {tab:overall}); per-domain values reproduce the corresponding entries in Table~\ref {tab:overall}. $\Delta $: single-call minus per-domain; 95\% paired bootstrap CI (study-clustered, 5{,}000 iterations) shown in brackets. $\dagger $: CI excludes zero (unadjusted for multiplicity; all analyses exploratory)}{table.caption.9}{}}
+\def\@LN@column{1}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Conclusions}{21}{section.4}\protected@file@percent }
+\newlabel{sec:conclusions}{{4}{21}{Conclusions}{section.4}{}}
+\citation{ArmijoOlivo2014}
+\citation{Hartling2013}
+\citation{Konsgen2020}
+\def\@LN@column{1}
+\def\@LN@column{1}
+\bibstyle{unsrtnat}
+\bibdata{references}
+\bibcite{Higgins2019}{{1}{2019}{{Higgins et~al.}}{{Higgins, Thomas, Chandler, Cumpston, Li, Page, and Welch}}}
+\bibcite{Higgins2011}{{2}{2011}{{Higgins et~al.}}{{Higgins, Altman, and Sterne}}}
+\def\@LN@column{1}
+\bibcite{Konsgen2020}{{3}{2020}{{K{\"o}nsgen et~al.}}{{K{\"o}nsgen, Barcot, He{\ss }, Puljak, Goossen, Rombey, and Pieper}}}
+\bibcite{ArmijoOlivo2014}{{4}{2014}{{Armijo-Olivo et~al.}}{{Armijo-Olivo, Ospina, da~Costa, Egger, Saltaji, Fuentes, Ha, and Cummings}}}
+\bibcite{Marshall2016}{{5}{2016}{{Marshall et~al.}}{{Marshall, Kuiper, and Wallace}}}
+\bibcite{Lieberum2025}{{6}{2025}{{Lieberum et~al.}}{{Lieberum, Toews, Metzendorf, Heilmeyer, Siemens, Haverkamp, B{\"o}hringer, Meerpohl, and Eisele-Metzger}}}
+\bibcite{Scherbakov2025}{{7}{2025}{{Scherbakov et~al.}}{{Scherbakov, Hubig, Jansari, Bakumenko, and Lenert}}}
+\bibcite{Sterne2019}{{8}{2019}{{Sterne et~al.}}{{Sterne, Sav{\v {o}}vi{\'c}, Page, Roy, Higgins, Boutron, Cates, Cheng, Corbett, Eldridge, Emberson, Hernán, Hopewell, Hróbjartsson, Junqueira, Jüni, Kirkham, Lasserson, Li, McAleenan, Reeves, Shepperd, Shrier, Stewart, Tilling, White, Whiting, and Higgins}}}
+\def\@LN@column{1}
+\bibcite{Wang2024MinerU}{{9}{2024}{{Wang et~al.}}{{Wang, Xu, Zhao, Ouyang, Wu, Zhao, Xu, Liu, Qu, Shang, Zhang, Wei, Sui, Li, Shi, Qiao, Lin, and He}}}
+\bibcite{Gwet2008}{{10}{2008}{{Gwet}}{{}}}
+\bibcite{Feinstein1990}{{11}{1990}{{Feinstein and Cicchetti}}{{}}}
+\bibcite{Hartling2013}{{12}{2013}{{Hartling et~al.}}{{Hartling, Hamm, Milne, Vandermeer, Santaguida, Ansari, Tsertsvadze, Hempel, Shekelle, and Dryden}}}
+\def\@LN@column{1}
+\def\@LN@column{1}
+\newlabel{sec:suppinfo}{{}{27}{Supporting Information}{section*.14}{}}
+\newlabel{sec:si-prompt}{{}{27}{S1\quad Prompt Used for Single-Agent RoB Assessment}{section*.15}{}}
+\def\@LN@column{1}
+\def\@LN@column{1}
+\def\@LN@column{1}
+\def\@LN@column{1}
+\newlabel{sec:si-domain}{{}{31}{S2\quad Per-Domain Performance by Model}{section*.16}{}}
+\newlabel{sec:si-itype}{{}{31}{S3\quad Stratification by Intervention Type}{section*.19}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {S1}{\ignorespaces Macro-F1 heatmap by intervention type and model. Colour scale: 0--1.}}{31}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:si-itype}{{S1}{31}{Macro-F1 heatmap by intervention type and model. Colour scale: 0--1}{figure.caption.21}{}}
+\newlabel{sec:si-clinical}{{}{31}{S4\quad Stratification by Clinical Domain}{section*.22}{}}
+\newlabel{RF5}{32}
+\@writefile{lot}{\contentsline {table}{\numberline {S1}{\ignorespaces Per-domain accuracy (\%) for all eight models ($n = 227$ cells per domain). Best value per domain in bold.}}{32}{table.caption.17}\protected@file@percent }
+\newlabel{tab:domain-full}{{S1}{32}{Per-domain accuracy (\%) for all eight models ($n = 227$ cells per domain). Best value per domain in bold}{table.caption.17}{}}
+\newlabel{RF6}{33}
+\@writefile{lot}{\contentsline {table}{\numberline {S2}{\ignorespaces Per-domain Macro-F1 for all eight models ($n = 227$ cells per domain). Best value per domain in bold.}}{33}{table.caption.18}\protected@file@percent }
+\newlabel{tab:domain-f1}{{S2}{33}{Per-domain Macro-F1 for all eight models ($n = 227$ cells per domain). Best value per domain in bold}{table.caption.18}{}}
+\def\@LN@column{1}
+\@writefile{lot}{\contentsline {table}{\numberline {S3}{\ignorespaces Macro-F1 stratified by intervention type. Numbers in parentheses are study counts ($n_{\text  {studies}}$). Best value per row in bold.}}{34}{table.caption.20}\protected@file@percent }
+\newlabel{tab:itype-full}{{S3}{34}{Macro-F1 stratified by intervention type. Numbers in parentheses are study counts ($n_{\text {studies}}$). Best value per row in bold}{table.caption.20}{}}
+\newlabel{sec:si-pairwise}{{}{34}{S5\quad Pairwise Model Complementarity}{section*.24}{}}
+\newlabel{sec:si-ci}{{}{34}{S6\quad Confidence Interval Method Comparison}{section*.26}{}}
+\def\@LN@column{1}
+\@writefile{lot}{\contentsline {table}{\numberline {S4}{\ignorespaces Mean Macro-F1 across all eight models, stratified by clinical domain (24 Cochrane Review Groups, multi-label; study counts sum to more than 227). Ordered by descending mean F1.}}{35}{table.caption.23}\protected@file@percent }
+\newlabel{tab:clinical-full}{{S4}{35}{Mean Macro-F1 across all eight models, stratified by clinical domain (24 Cochrane Review Groups, multi-label; study counts sum to more than 227). Ordered by descending mean F1}{table.caption.23}{}}
+\newlabel{eq:wilson}{{S1}{35}{Wilson score interval}{equation.1}{}}
+\newlabel{RF7}{36}
+\@writefile{lot}{\contentsline {table}{\numberline {S5}{\ignorespaces Pairwise complementarity matrix. Cell~$(i,j)$ = \% of 1{,}589 cells where row model $i$ is incorrect and column model $j$ is correct. Row model abbreviations: Haiku~=~Claude~Haiku~4.5; GLM-5~=~GLM-5; Qwen~=~Qwen~3.7-Plus; Flash~=~Gemini~2.5~Flash; DSv4~=~DeepSeek~v4-Flash; Grok~=~Grok~4.3; GPT~=~GPT-5.4; Pro~=~Gemini~2.5~Pro.}}{36}{table.caption.25}\protected@file@percent }
+\newlabel{tab:pairwise}{{S5}{36}{Pairwise complementarity matrix. Cell~$(i,j)$ = \% of 1{,}589 cells where row model $i$ is incorrect and column model $j$ is correct. Row model abbreviations: Haiku~=~Claude~Haiku~4.5; GLM-5~=~GLM-5; Qwen~=~Qwen~3.7-Plus; Flash~=~Gemini~2.5~Flash; DSv4~=~DeepSeek~v4-Flash; Grok~=~Grok~4.3; GPT~=~GPT-5.4; Pro~=~Gemini~2.5~Pro}{table.caption.25}{}}
+\def\@LN@column{1}
+\newlabel{eq:neff}{{S2}{37}{Intraclass correlation and effective sample size}{equation.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {S6}{\ignorespaces Comparison of 95\% confidence interval methods for overall accuracy. Width in percentage points (pp). Bootstrap: study-clustered, 5{,}000 iterations. Wilson~$n_{\text  {cells}}$: Equation~\eqref  {eq:wilson} with $n = 1{,}589$. Wilson~$n_{\text  {eff}}$: Equation~\eqref  {eq:wilson} with $n = 1{,}257$ (Kish formula). Wilson~$n_{\text  {studies}}$: Equation~\eqref  {eq:wilson} with $n = 227$.}}{37}{table.caption.30}\protected@file@percent }
+\newlabel{tab:ci-comparison}{{S6}{37}{Comparison of 95\% confidence interval methods for overall accuracy. Width in percentage points (pp). Bootstrap: study-clustered, 5{,}000 iterations. Wilson~$n_{\text {cells}}$: Equation~\eqref {eq:wilson} with $n = 1{,}589$. Wilson~$n_{\text {eff}}$: Equation~\eqref {eq:wilson} with $n = 1{,}257$ (Kish formula). Wilson~$n_{\text {studies}}$: Equation~\eqref {eq:wilson} with $n = 227$}{table.caption.30}{}}
+\def\@LN@column{1}
+\gdef \@abspage@last{38}

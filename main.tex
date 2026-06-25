@@ -1,0 +1,162 @@
+\documentclass[12pt,a4paper]{article}
+
+% ── Encoding & language ───────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+
+% ── Subfiles ──────────────────────────────────────────────────────────
+\usepackage{subfiles}
+
+% ── Typography ────────────────────────────────────────────────────────
+\usepackage{microtype}
+\usepackage{lmodern}
+\usepackage{setspace}
+\doublespacing
+
+% ── Geometry ──────────────────────────────────────────────────────────
+\usepackage[top=2.5cm,bottom=2.5cm,left=3cm,right=3cm]{geometry}
+
+% ── Math ──────────────────────────────────────────────────────────────
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% ── Tables ────────────────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{array}
+\usepackage{rotating}      % sidewaystable
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+% ── Figures ───────────────────────────────────────────────────────────
+\usepackage{graphicx}
+\graphicspath{{img/}{../img/}}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subfig}
+
+% ── Hyperlinks & citations ────────────────────────────────────────────
+\usepackage[hidelinks,breaklinks]{hyperref}
+\usepackage[numbers,sort&compress]{natbib}
+
+% ── Line numbers (review) ─────────────────────────────────────────────
+\usepackage{lineno}
+\linenumbers
+
+% ── Misc ──────────────────────────────────────────────────────────────
+\usepackage{xcolor}
+\usepackage{url}
+
+% ═════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ── Title & authors ───────────────────────────────────────────────────
+\title{\textbf{Automated Risk of Bias Assessment in Systematic Reviews
+Using Large Language Models: A Multi-Model Single-Agent Benchmark
+on 227 Randomised Controlled Trials}}
+
+\author{
+  Luiz Felipe Guain Teixeira\textsuperscript{1}%
+  % TODO: add co-authors
+  \\[6pt]
+  \small\textsuperscript{1}% TODO: institution, department, city, country
+  \\[2pt]
+  \small Correspondence: % TODO: corresponding author e-mail
+}
+
+\date{}
+\maketitle
+\thispagestyle{empty}
+
+% ── Abstract ──────────────────────────────────────────────────────────
+\begin{abstract}
+\noindent\textbf{Background:}
+Risk of bias (RoB) assessment is a mandatory but labour-intensive step in
+systematic review production.
+Large language models (LLMs) offer the potential to automate this task in a
+zero-shot setting, yet systematic benchmarks spanning multiple frontier models
+and inference strategies are lacking.
+
+\noindent\textbf{Methods:}
+Eight state-of-the-art LLMs (Gemini~2.5~Pro, Gemini~2.5~Flash, GPT-5.4,
+Claude~Haiku~4.5, DeepSeek~v4-Flash, Grok~4.3, Qwen~3.7-Plus, and GLM-5)
+were evaluated on zero-shot, single-agent RoB~1.0 assessment of 227~randomised
+controlled trials drawn from 127~Cochrane systematic reviews published in~2024.
+Models were accessed via the OpenRouter API in June~2026 using a fixed prompt
+and provider-default generation parameters (exact OpenRouter identifier strings
+in Table~\ref{tab:models}).
+Ground-truth annotations were taken from the published Cochrane consensus
+judgements across seven methodological domains (1{,}589~cells total).
+Performance was assessed using accuracy, Macro-F1, and Gwet's~AC1, with
+study-clustered bootstrap 95\% confidence intervals.
+Two models (Gemini~2.5~Flash and DeepSeek~v4-Flash) were additionally
+evaluated under a single-call inference mode for comparison with the
+per-domain strategy.
+
+\noindent\textbf{Results:}
+Overall accuracy ranged from 57.6\% to 62.5\% across models, a spread
+smaller than the width of individual 95\% confidence intervals;
+Macro-F1 confidence intervals overlapped across all eight models.
+AC1 provided the clearest separation: Claude~Haiku~4.5
+(AC1~$= 0.485$; 95\%~CI $[0.443, 0.526]$) had non-overlapping CIs relative to
+Gemini~2.5~Pro ($[0.344, 0.420]$) and GPT-5.4 ($[0.349, 0.426]$),
+though this comparison is unadjusted and exploratory.
+Unclear Risk was the most consistently under-detected class
+(recall~$< 0.20$ in three of seven domains across most models).
+The oracle accuracy of 85.8\%---23 percentage points above the best
+individual model---confirmed substantial non-redundancy among models.
+The comparison of inference modes yielded small, largely non-significant
+differences: ten of twelve $\Delta$ metrics had confidence intervals
+spanning zero, and D7~(Other Bias)---the domain hypothesised to benefit
+most from joint assessment---showed negligible change under either mode.
+
+\noindent\textbf{Conclusions:}
+Frontier LLMs can perform zero-shot RoB~1.0 assessment at accuracy levels
+broadly consistent with estimates of human inter-rater variability for this task
+\citep{Hartling2013}, though direct comparison on this specific corpus was not
+performed; no single model dominates across all metrics, and no consistent
+advantage was found for single-call over per-domain inference.
+The primary practical distinction between inference modes is computational:
+single-call reduces inference calls by 7$\times$ without a reliable accuracy
+trade-off.
+All analyses are exploratory; results should be interpreted as directional
+benchmarks rather than definitive rankings.
+
+\noindent\textbf{Keywords:} risk of bias; systematic review; large language
+models; natural language processing; Cochrane; evidence synthesis; automation
+\end{abstract}
+
+\newpage
+
+% ── Main sections ─────────────────────────────────────────────────────
+\subfile{sections/introduction}
+
+\subfile{sections/methods}
+
+\subfile{sections/results}
+
+\subfile{sections/conclusions}
+
+% ── Acknowledgements ──────────────────────────────────────────────────
+\section*{Acknowledgements}
+% TODO: funding agencies and grant numbers
+% Example: This work was supported by [Agency] under grant [No.~XXXX/YYYY-Z].
+
+\section*{Data and Code Availability}
+% TODO: repository URL; note any restrictions on the ground-truth dataset
+
+\section*{Conflicts of Interest}
+The authors declare no conflicts of interest.
+
+% ── Bibliography ──────────────────────────────────────────────────────
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+
+% ── Supporting Information ────────────────────────────────────────────
+\newpage
+\subfile{sections/suppinfo}
+
+\end{document}

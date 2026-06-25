@@ -1,0 +1,420 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+
+\section*{Supporting Information}
+\label{sec:suppinfo}
+
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\setcounter{table}{0}
+\renewcommand{\thetable}{S\arabic{table}}
+\setcounter{equation}{0}
+\renewcommand{\theequation}{S\arabic{equation}}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection*{S1\quad Prompt Used for Single-Agent RoB Assessment}
+\label{sec:si-prompt}
+
+The following prompt was used without modification across all eight models and all
+227~studies.
+Each study was assessed in seven sequential inference calls---one per RoB domain---with
+the full Markdown text of the study report included in every call as the user message,
+followed by the domain identifier (e.g.\ \texttt{Domain: D1}).
+The prompt text below was supplied as the system message.
+
+\small
+\begin{verbatim}
+Goal: Systematically assess the risk of bias in a research article using
+Cochrane RoB 1.0. Evaluate bias domain, assign a judgment (Low, High,
+or Unclear Risk), and justify strictly from the article evidence.
+
+---
+
+Preliminary Considerations
+
+Before assessing, identify:
+1. Intervention Type: Pharmacological | Surgical/Procedural |
+   Non-pharmacological | Device
+2. Primary Outcome Type: Objective (mortality, lab values) |
+   Subjective (pain, QoL)
+3. Comparator: Placebo | Active comparator | Usual care | No intervention
+
+Critical Context: Blinding expectations vary by intervention type.
+For pharmacological interventions, lack of placebo is a serious flaw.
+For surgical/non-pharmacological interventions where blinding is impossible,
+focus on compensatory measures: blinding of outcome assessors and objective
+endpoints.
+
+---
+
+Bias Domains
+
+1. Random Sequence Generation (Selection Bias)
+   Signalling Question: Was a truly random method used?
+   Low Risk:    Random method adequately described (computer-generated,
+                random tables, coin toss, dice, shuffled envelopes,
+                minimization with random element)
+   High Risk:   Non-random method (alternation, date of birth, hospital
+                record number, clinician judgment)
+   Unclear Risk: States "randomized" but no method details provided
+
+2. Allocation Concealment (Selection Bias)
+   Signalling Question: Was the allocation sequence concealed from those
+   enrolling participants until assignment?
+   Low Risk:    Adequate concealment (central/telephone randomization,
+                sequentially numbered opaque sealed envelopes, numbered
+                drug containers, independent pharmacy)
+   High Risk:   Allocation not concealed or predictable (open list,
+                non-opaque envelopes, alternation)
+   Unclear Risk: Insufficient information to judge
+   Note: Allocation concealment (before randomization) is different from
+   blinding (after randomization).
+
+3. Blinding of Participants and Personnel (Performance Bias)
+   Signalling Questions: Were participants/personnel aware of assignments?
+   If yes, could this affect outcomes?
+   Pharmacological: Double-blinding expected; no placebo implies higher
+   risk for subjective outcomes.
+   Surgical/Non-pharmacological: Blinding may be impossible and is not
+   automatically High Risk; check compensatory safeguards.
+   Objective outcomes: Less susceptible to performance bias.
+   Low Risk:    Adequate blinding, OR blinding impossible with compensatory
+                measures, OR outcome is objective/hard endpoint
+   High Risk:   No blinding + subjective outcome + no compensatory measures
+   Unclear Risk: Insufficient blinding information
+
+4. Blinding of Outcome Assessors (Detection Bias)
+   Signalling Questions: Were assessors blinded? Is outcome objective or
+   subjective?
+   Low Risk:    Assessors blinded, OR objective outcome unlikely to be
+                influenced by assignment knowledge
+   High Risk:   Assessors not blinded + subjective outcome requiring
+                interpretation
+   Unclear Risk: Insufficient information
+   Note: For patient-reported outcomes, participant acts as assessor.
+
+5. Incomplete Outcome Data (Attrition Bias)
+   Signalling Questions: Are data available for most participants? Are
+   missing-data reasons balanced/unrelated to outcome?
+   Low Risk:    Minimal missingness (<5%), OR balanced missingness with
+                unrelated reasons, OR valid ITT/imputation
+   High Risk:   High missingness (>10-20%), OR imbalance between groups,
+                OR outcome-related missingness, OR per-protocol exclusions
+   Unclear Risk: Missingness not adequately reported
+
+6. Selective Reporting (Reporting Bias)
+   Signalling Questions: Is protocol/registry available? Were pre-specified
+   outcomes reported?
+   Low Risk:    All pre-specified outcomes reported, OR protocol/registry
+                aligns with publication
+   High Risk:   Selective non-reporting (methods outcomes missing in
+                results, changed primary outcome, significance-driven
+                reporting)
+   Unclear Risk: No protocol/registry and insufficient information
+
+7. Other Bias
+   Signalling Questions: Are there other bias sources (early stopping,
+   baseline imbalance, conflicts, contamination)?
+   Low Risk:    No relevant additional bias detected
+   High Risk:   Important additional bias present
+   Unclear Risk: Insufficient information
+
+---
+
+Key Principles
+1. Evidence-based only: Base judgments on explicit information. Do not
+   assume. If evidence is missing, choose "Unclear Risk".
+2. Cite evidence: Reference specific text or note absence of information.
+3. Context matters: Apply blinding expectations appropriate to intervention
+   type.
+4. Impossibility vs Negligence: Not blinding when impossible differs from
+   not blinding when feasible.
+5. Outcome sensitivity: Subjective outcomes require stricter blinding than
+   objective ones.
+
+---
+
+Return ONLY valid JSON with:
+{
+  "judgement": "Low Risk" | "High Risk" | "Unclear Risk",
+  "justification": "short justification"
+}
+\end{verbatim}
+\normalsize
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection*{S2\quad Per-Domain Performance by Model}
+\label{sec:si-domain}
+
+Tables~\ref{tab:domain-full} and~\ref{tab:domain-f1} report accuracy (\%) and
+Macro-F1 for each model in each of the seven RoB domains.
+
+\begin{sidewaystable}
+\centering
+\caption{Per-domain accuracy (\%) for all eight models
+($n = 227$ cells per domain). Best value per domain in bold.}
+\label{tab:domain-full}
+\begin{tabular}{lC{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}}
+\toprule
+Model & D1 & D2 & D3 & D4 & D5 & D6 & D7 \\
+\midrule
+Claude~Haiku~4.5   & 73.6 & 74.0 & 67.4          & 51.5 & \textbf{64.3} & 57.7 & 48.9 \\
+GLM-5              & 76.7 & 74.0 & 55.9          & 53.7 & 62.1          & 55.9 & 49.3 \\
+Qwen~3.7-Plus      & \textbf{77.5} & 74.9 & 49.8 & 52.0 & 59.9 & 56.4 & \textbf{55.5} \\
+Gemini~2.5~Flash   & 72.2 & 74.0 & \textbf{72.2} & 51.5 & 60.4 & \textbf{62.6} & 31.7 \\
+DeepSeek~v4-Flash  & 74.0 & 70.0 & 67.0          & \textbf{57.7} & 54.6 & 55.9 & 42.7 \\
+Grok~4.3           & 75.8 & 70.0 & 59.5          & 54.6 & 58.6 & 60.8 & 41.4 \\
+GPT-5.4            & 75.8 & 70.0 & 64.3          & 52.0 & 51.5 & 55.9 & 34.4 \\
+Gemini~2.5~Pro     & 76.7 & \textbf{74.4} & 62.6  & 55.1 & 55.1 & 55.1 & 24.2 \\
+\bottomrule
+\end{tabular}
+\end{sidewaystable}
+
+\begin{sidewaystable}
+\centering
+\caption{Per-domain Macro-F1 for all eight models
+($n = 227$ cells per domain). Best value per domain in bold.}
+\label{tab:domain-f1}
+\begin{tabular}{lC{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}}
+\toprule
+Model & D1 & D2 & D3 & D4 & D5 & D6 & D7 \\
+\midrule
+Claude~Haiku~4.5   & 0.572 & 0.618 & 0.527          & 0.425 & 0.394 & 0.387 & 0.269 \\
+GLM-5              & 0.632 & 0.657 & 0.462          & 0.479 & \textbf{0.514} & 0.443 & 0.345 \\
+Qwen~3.7-Plus      & \textbf{0.638} & 0.672 & 0.428 & 0.447 & 0.439 & 0.388 & 0.288 \\
+Gemini~2.5~Flash   & 0.549 & 0.663 & \textbf{0.626} & 0.411 & 0.412 & 0.438 & 0.280 \\
+DeepSeek~v4-Flash  & 0.602 & 0.610 & 0.583          & \textbf{0.521} & 0.419 & 0.424 & \textbf{0.347} \\
+Grok~4.3           & 0.618 & 0.668 & 0.524          & 0.492 & 0.423 & \textbf{0.449} & 0.315 \\
+GPT-5.4            & 0.625 & 0.635 & 0.515          & 0.469 & 0.419 & 0.397 & 0.317 \\
+Gemini~2.5~Pro     & 0.621 & \textbf{0.671} & 0.481  & 0.478 & 0.413 & 0.475 & 0.195 \\
+\bottomrule
+\end{tabular}
+\end{sidewaystable}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection*{S3\quad Stratification by Intervention Type}
+\label{sec:si-itype}
+
+Table~\ref{tab:itype-full} reports Macro-F1 for each model within each intervention
+type. Figure~\ref{fig:si-itype} shows the same data as a heatmap.
+
+\begin{table}[ht]
+\centering
+\caption{Macro-F1 stratified by intervention type. Numbers in parentheses are
+study counts ($n_{\text{studies}}$). Best value per row in bold.
+Subgroup estimates carry substantial uncertainty given the small group sizes;
+these analyses are descriptive only.}
+\label{tab:itype-full}
+\begin{tabular}{lcccc}
+\toprule
+Model
+  & \makecell{Drug /\\medication\\($n=104$)}
+  & \makecell{Non-pharma-\\cological\\($n=75$)}
+  & \makecell{Procedure\\($n=30$)}
+  & \makecell{Medical\\device\\($n=18$)} \\
+\midrule
+Claude~Haiku~4.5   & 0.548 & 0.530 & 0.494 & \textbf{0.627} \\
+GLM-5              & \textbf{0.559} & \textbf{0.590} & 0.514 & 0.471 \\
+Qwen~3.7-Plus      & \textbf{0.511} & 0.567 & 0.474 & 0.445 \\
+Gemini~2.5~Flash   & 0.540 & 0.574 & 0.529 & \textbf{0.596} \\
+DeepSeek~v4-Flash  & 0.548 & \textbf{0.582} & \textbf{0.520} & 0.543 \\
+Grok~4.3           & \textbf{0.552} & 0.561 & 0.519 & 0.531 \\
+GPT-5.4            & 0.515 & \textbf{0.595} & \textbf{0.530} & 0.502 \\
+Gemini~2.5~Pro     & 0.533 & 0.575 & 0.498 & 0.534 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{all_reviews_intervention_type_f1_heatmap}
+  \caption{Macro-F1 heatmap by intervention type and model.
+  Colour scale: 0--1.}
+  \label{fig:si-itype}
+\end{figure}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection*{S4\quad Stratification by Clinical Domain}
+\label{sec:si-clinical}
+
+Table~\ref{tab:clinical-full} reports mean Macro-F1 (averaged across all eight models)
+for all 24 Cochrane Review Group categories, ordered from highest to lowest mean~F1.
+Domains with fewer than five studies are included for completeness but should be
+interpreted with caution.
+
+\begin{table}[ht]
+\centering
+\caption{Mean Macro-F1 across all eight models, stratified by clinical domain
+(24 Cochrane Review Groups, multi-label; study counts sum to more than 227).
+Ordered by descending mean F1.
+Estimates for smaller groups carry substantial uncertainty; these analyses are
+descriptive only.}
+\label{tab:clinical-full}
+\begin{tabular}{lcc}
+\toprule
+Clinical domain & $n_{\text{studies}}$ & Mean Macro-F1 \\
+\midrule
+Orthopaedics \& trauma                 &  7 & 0.680 \\
+Endocrine \& metabolic                 & 10 & 0.638 \\
+Rheumatology                           &  5 & 0.637 \\
+Wounds                                 &  5 & 0.628 \\
+Dentistry \& oral health               & 15 & 0.597 \\
+Lungs \& airways                       & 14 & 0.589 \\
+Pregnancy \& childbirth                &  9 & 0.583 \\
+Neonatal                               & 17 & 0.578 \\
+Complementary \& alternative medicine  & 19 & 0.555 \\
+Child health                           & 72 & 0.550 \\
+Gastroenterology \& hepatology         & 21 & 0.538 \\
+Heart \& circulation                   & 45 & 0.536 \\
+Neurology                              & 11 & 0.519 \\
+Cancer                                 & 21 & 0.494 \\
+Effective practice \& health systems   &  4 & 0.487 \\
+Kidney disease                         & 31 & 0.484 \\
+Mental health                          & 11 & 0.481 \\
+Gynaecology                            & 11 & 0.480 \\
+Insurance medicine                     & 21 & 0.477 \\
+Blood disorders                        &  6 & 0.476 \\
+Genetic disorders                      &  9 & 0.473 \\
+Skin disorders                         &  3 & 0.448 \\
+Reproductive \& sexual health          &  8 & 0.437 \\
+Infectious disease                     &  8 & 0.425 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection*{S5\quad Pairwise Model Complementarity}
+\label{sec:si-pairwise}
+
+Table~\ref{tab:pairwise} reports pairwise complementarity across the eight models.
+Each cell~$(i,j)$ gives the percentage of the 1{,}589 study--domain cells in which
+model~$i$ produced an incorrect judgement and model~$j$ produced the correct one.
+High values indicate that model~$j$ recovers errors that model~$i$ misses, i.e.\
+that $j$ adds non-redundant information over $i$.
+The matrix is asymmetric: cell~$(i,j) \neq$ cell~$(j,i)$ because the two models may
+have different overall accuracy.
+
+\begin{sidewaystable}
+\centering
+\caption{Pairwise complementarity matrix. Cell~$(i,j)$ = \% of 1{,}589 cells
+where row model $i$ is incorrect and column model $j$ is correct.
+Row model abbreviations: Haiku~=~Claude~Haiku~4.5; GLM-5~=~GLM-5;
+Qwen~=~Qwen~3.7-Plus; Flash~=~Gemini~2.5~Flash; DSv4~=~DeepSeek~v4-Flash;
+Grok~=~Grok~4.3; GPT~=~GPT-5.4; Pro~=~Gemini~2.5~Pro.}
+\label{tab:pairwise}
+\begin{tabular}{lcccccccc}
+\toprule
+ & \textbf{Haiku} & \textbf{GLM-5} & \textbf{Qwen} & \textbf{Flash} & \textbf{DSv4} & \textbf{Grok} & \textbf{GPT} & \textbf{Pro} \\
+\midrule
+Haiku &  ---  & 12.5 & 10.6 &  9.9 & 12.3 & 12.5 & 12.6 & 12.4 \\
+GLM-5 & 13.9  &  ---  &  7.4 & 12.3 &  9.6 &  8.9 &  9.5 &  7.6 \\
+Qwen  & 12.3  &  7.6  &  ---  & 11.7 & 10.3 &  7.6 &  9.6 &  9.4 \\
+Flash & 11.7  & 12.8  & 11.9 &  ---  & 11.3 & 10.2 &  9.4 &  9.1 \\
+DSv4  & 14.5  & 10.4  & 10.8 & 11.7 &  ---  &  9.6 &  9.5 &  9.9 \\
+Grok  & 14.9  &  9.9  &  8.4 & 10.8 &  9.8 &  ---  &  9.0 &  8.4 \\
+GPT   & 17.4  & 12.9  & 12.7 & 12.4 & 12.1 & 11.4 &  ---  & 10.1 \\
+Pro   & 17.3  & 11.1  & 12.6 & 12.2 & 12.6 & 11.0 & 10.3 &  ---  \\
+\bottomrule
+\end{tabular}
+\end{sidewaystable}
+
+\subsection*{S6\quad Confidence Interval Method Comparison}
+\label{sec:si-ci}
+
+All confidence intervals reported in the main text were computed using
+study-clustered bootstrap (5{,}000 iterations, resampling the 227 studies
+with replacement).
+This section documents the comparison between bootstrap and two Wilson score
+interval variants for accuracy, and explains why the bootstrap approach was
+adopted for all metrics.
+
+\subsubsection*{Wilson score interval}
+
+For a proportion $p$ observed over $n$ independent Bernoulli trials,
+the Wilson 95\% CI is
+\begin{equation}
+  \left(
+    \frac{n p + \tfrac{z^2}{2}}{n + z^2}
+    \;\pm\;
+    \frac{z\,\sqrt{n p(1-p) + \tfrac{z^2}{4}}}{n + z^2}
+  \right),
+  \label{eq:wilson}
+\end{equation}
+with $z = 1.96$.
+Applied to accuracy ($p \approx 0.60$), two natural choices for $n$ exist:
+$n = 1{,}589$ (all annotated cells, assuming independence) or
+$n = 227$ (studies as the primary sampling unit).
+
+\subsubsection*{Intraclass correlation and effective sample size}
+
+The 1{,}589 cells are not independent: seven domain judgements are drawn from
+the same study.
+Pearson's one-way intraclass correlation coefficient (ICC) for the
+correct/wrong binary indicator across the seven domains within each study
+was estimated at $\hat\rho = 0.044$ (computed for Claude~Haiku~4.5 as a
+representative model).
+The low ICC indicates that whether a model correctly judges one domain bears
+little information about its judgement on another domain of the same study,
+which is consistent with the domain-specific nature of each RoB criterion.
+
+Using the Kish~(1965) design-effect formula, the effective sample size is
+\begin{equation}
+  n_{\text{eff}} = \frac{n_{\text{cells}}}{1 + (k-1)\hat\rho}
+                = \frac{1{,}589}{1 + 6 \times 0.044} \approx 1{,}257,
+  \label{eq:neff}
+\end{equation}
+where $k = 7$ domains per study.
+
+\subsubsection*{Numerical comparison}
+
+Table~\ref{tab:ci-comparison} reports accuracy CIs for five models under three
+methods.
+
+\begin{table}[ht]
+\centering
+\caption{Comparison of 95\% confidence interval methods for overall accuracy.
+Width in percentage points (pp).
+Bootstrap: study-clustered, 5{,}000 iterations.
+Wilson~$n_{\text{cells}}$: Equation~\eqref{eq:wilson} with $n = 1{,}589$.
+Wilson~$n_{\text{eff}}$: Equation~\eqref{eq:wilson} with $n = 1{,}257$ (Kish formula).
+Wilson~$n_{\text{studies}}$: Equation~\eqref{eq:wilson} with $n = 227$.}
+\label{tab:ci-comparison}
+\begin{tabular}{lcccc}
+\toprule
+Model & Accuracy & Wilson $n_{\text{cells}}$ (width) & Wilson $n_{\text{eff}}$ (width) & Bootstrap (width) \\
+\midrule
+Claude~Haiku~4.5  & 62.5\% & [60.1, 64.8] (4.8) & [59.8, 65.1] (5.3) & [59.8, 65.2] (5.4) \\
+Gemini~2.5~Flash  & 60.7\% & [58.2, 63.0] (4.8) & [57.9, 63.4] (5.4) & [58.2, 63.1] (4.9) \\
+DeepSeek~v4-Flash & 60.3\% & [57.9, 62.7] (4.8) & [57.6, 63.0] (5.4) & [57.7, 62.9] (5.2) \\
+GPT-5.4           & 57.7\% & [55.3, 60.1] (4.9) & [54.9, 60.4] (5.4) & [55.1, 60.3] (5.2) \\
+Gemini~2.5~Pro    & 57.6\% & [55.1, 60.0] (4.9) & [54.8, 60.3] (5.4) & [55.1, 60.0] (4.9) \\
+\midrule
+\multicolumn{2}{l}{Wilson $n_{\text{studies}} = 227$} & \multicolumn{3}{l}{widths $\approx$ 12.5--12.8 pp (not shown; see text)} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Wilson with $n_{\text{cells}}$ underestimates uncertainty by $\sim$10\% relative
+to bootstrap (widths 4.8~pp vs.\ 5.1~pp).
+Wilson with $n_{\text{eff}}$ virtually matches the bootstrap (widths 5.3~pp
+vs.\ 5.1~pp); the two methods agree to within 0.1~pp for every model.
+Wilson with $n_{\text{studies}}$ overestimates uncertainty by $\sim$2.5$\times$
+because it discards the domain-level information and treats each study as a
+single binary observation.
+
+\subsubsection*{Why bootstrap was adopted for all metrics}
+
+The numerical equivalence between Wilson~$n_{\text{eff}}$ and bootstrap for
+accuracy confirms that the low ICC ($\hat\rho = 0.044$) makes the independence
+assumption nearly tenable.
+Nevertheless, bootstrap was used uniformly for three reasons.
+First, Macro-F1 and Gwet's~AC1 are composite statistics with no closed-form
+variance expression; bootstrap applies without modification.
+Second, the paired-bootstrap procedure used for inference-mode $\Delta$ values
+(Table~\ref{tab:inference}) jointly resamples both conditions, correctly
+propagating correlation between them; Wilson intervals cannot be directly
+adapted for paired differences of non-proportion statistics.
+Third, a single method for all reported CIs ensures internal consistency and
+simplifies interpretation.
+
+\end{document}

@@ -1,0 +1,122 @@
+\begin{thebibliography}{12}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Higgins et~al.(2019)Higgins, Thomas, Chandler, Cumpston, Li, Page, and
+  Welch]{Higgins2019}
+Julian~PT Higgins, James Thomas, Jacqueline Chandler, Miranda Cumpston,
+  Tianjing Li, Matthew~J Page, and Vivian~A Welch, editors.
+\newblock \emph{Cochrane Handbook for Systematic Reviews of Interventions}.
+\newblock John Wiley \& Sons, 2nd edition, 2019.
+\newblock \doi{10.1002/9781119536604}.
+
+\bibitem[Higgins et~al.(2011)Higgins, Altman, and Sterne]{Higgins2011}
+Julian~PT Higgins, Douglas~G Altman, and Jonathan~AC Sterne.
+\newblock Assessing risk of bias in included studies.
+\newblock In Julian~PT Higgins and Sally Green, editors, \emph{Cochrane
+  Handbook for Systematic Reviews of Interventions}, chapter~8. The Cochrane
+  Collaboration, 5.1.0 edition, 2011.
+
+\bibitem[K{\"o}nsgen et~al.(2020)K{\"o}nsgen, Barcot, He{\ss}, Puljak, Goossen,
+  Rombey, and Pieper]{Konsgen2020}
+Nadja K{\"o}nsgen, Ognjen Barcot, Simone He{\ss}, Livia Puljak, K{\"a}the
+  Goossen, Tanja Rombey, and Dawid Pieper.
+\newblock Inter-review agreement of risk-of-bias judgments varied in {Cochrane}
+  reviews.
+\newblock \emph{Journal of Clinical Epidemiology}, 120:\penalty0 25--32, 2020.
+\newblock \doi{10.1016/j.jclinepi.2019.12.016}.
+
+\bibitem[Armijo-Olivo et~al.(2014)Armijo-Olivo, Ospina, da~Costa, Egger,
+  Saltaji, Fuentes, Ha, and Cummings]{ArmijoOlivo2014}
+Susan Armijo-Olivo, Maria Ospina, Bruno~R da~Costa, Matthias Egger, Humam
+  Saltaji, Jorge Fuentes, Christine Ha, and Greta~G Cummings.
+\newblock Poor reliability between {Cochrane} reviewers and blinded external
+  reviewers when applying the {Cochrane} risk of bias tool in physical therapy
+  trials.
+\newblock \emph{PLOS ONE}, 9\penalty0 (5):\penalty0 e96920, 2014.
+\newblock \doi{10.1371/journal.pone.0096920}.
+
+\bibitem[Marshall et~al.(2016)Marshall, Kuiper, and Wallace]{Marshall2016}
+Iain~J Marshall, Jo{\"e}l Kuiper, and Byron~C Wallace.
+\newblock {RobotReviewer}: evaluation of a system for automatically assessing
+  bias in clinical trials.
+\newblock \emph{Journal of the American Medical Informatics Association},
+  23\penalty0 (1):\penalty0 193--201, 2016.
+\newblock \doi{10.1093/jamia/ocv044}.
+
+\bibitem[Lieberum et~al.(2025)Lieberum, Toews, Metzendorf, Heilmeyer, Siemens,
+  Haverkamp, B{\"o}hringer, Meerpohl, and Eisele-Metzger]{Lieberum2025}
+Judith-Lisa Lieberum, Markus Toews, Maria-Inti Metzendorf, Felix Heilmeyer,
+  Waldemar Siemens, Christian Haverkamp, Daniel B{\"o}hringer, Joerg~J
+  Meerpohl, and Angelika Eisele-Metzger.
+\newblock Large language models for conducting systematic reviews: on the rise,
+  but not yet ready for use---a scoping review.
+\newblock \emph{Journal of Clinical Epidemiology}, 181:\penalty0 111746, 2025.
+\newblock \doi{10.1016/j.jclinepi.2025.111746}.
+
+\bibitem[Scherbakov et~al.(2025)Scherbakov, Hubig, Jansari, Bakumenko, and
+  Lenert]{Scherbakov2025}
+Dmitry Scherbakov, Nina Hubig, Vinita Jansari, Alexander Bakumenko, and
+  Leslie~A Lenert.
+\newblock The emergence of large language models as tools in literature
+  reviews: a large language model-assisted systematic review.
+\newblock \emph{Journal of the American Medical Informatics Association},
+  32\penalty0 (6):\penalty0 1071--1086, 2025.
+\newblock \doi{10.1093/jamia/ocaf063}.
+
+\bibitem[Sterne et~al.(2019)Sterne, Sav{\v{o}}vi{\'c}, Page, Roy, Higgins,
+  Boutron, Cates, Cheng, Corbett, Eldridge, Emberson, Hernán, Hopewell,
+  Hróbjartsson, Junqueira, Jüni, Kirkham, Lasserson, Li, McAleenan, Reeves,
+  Shepperd, Shrier, Stewart, Tilling, White, Whiting, and Higgins]{Sterne2019}
+Jonathan~AC Sterne, Jelena Sav{\v{o}}vi{\'c}, Matthew~J Page, Pankaj Roy,
+  Julian~PT Higgins, Isabelle Boutron, Christopher~J Cates, Hao-Yun Cheng,
+  Matthew~S Corbett, Sandra~M Eldridge, Jonathan~R Emberson, Miguel~A Hernán,
+  Sally Hopewell, Asbjørn Hróbjartsson, Daniela~R Junqueira, Peter Jüni,
+  Jamie~J Kirkham, Toby Lasserson, Tianjing Li, Alexandra McAleenan, Barnaby~C
+  Reeves, Sasha Shepperd, Ian Shrier, Lesley~A Stewart, Kate Tilling, Ian~R
+  White, Penny~F Whiting, and Julian~PT Higgins.
+\newblock {RoB~2}: a revised tool for assessing risk of bias in randomised
+  trials.
+\newblock \emph{BMJ}, 366:\penalty0 l4898, 2019.
+\newblock \doi{10.1136/bmj.l4898}.
+
+\bibitem[Wang et~al.(2024)Wang, Xu, Zhao, Ouyang, Wu, Zhao, Xu, Liu, Qu, Shang,
+  Zhang, Wei, Sui, Li, Shi, Qiao, Lin, and He]{Wang2024MinerU}
+Bin Wang, Chao Xu, Xiaomeng Zhao, Linke Ouyang, Fan Wu, Zhiyuan Zhao, Rui Xu,
+  Kaiwen Liu, Yuan Qu, Fukai Shang, Bo~Zhang, Liqun Wei, Zhihao Sui, Wei Li,
+  Botian Shi, Yu~Qiao, Dahua Lin, and Conghui He.
+\newblock {MinerU}: An open-source solution for precise document content
+  extraction.
+\newblock \emph{arXiv preprint arXiv:2409.18839}, 2024.
+\newblock \doi{10.48550/arXiv.2409.18839}.
+
+\bibitem[Gwet(2008)]{Gwet2008}
+Kilem~L Gwet.
+\newblock Computing inter-rater reliability and its variance in the presence of
+  high agreement.
+\newblock \emph{British Journal of Mathematical and Statistical Psychology},
+  61\penalty0 (1):\penalty0 29--48, 2008.
+\newblock \doi{10.1348/000711006X126600}.
+
+\bibitem[Feinstein and Cicchetti(1990)]{Feinstein1990}
+Alvan~R Feinstein and Domenic~V Cicchetti.
+\newblock High agreement but low kappa: {I}. {T}he problems of two paradoxes.
+\newblock \emph{Journal of Clinical Epidemiology}, 43\penalty0 (6):\penalty0
+  543--549, 1990.
+\newblock \doi{10.1016/0895-4356(90)90158-L}.
+
+\bibitem[Hartling et~al.(2013)Hartling, Hamm, Milne, Vandermeer, Santaguida,
+  Ansari, Tsertsvadze, Hempel, Shekelle, and Dryden]{Hartling2013}
+Lisa Hartling, Michele~P Hamm, Andrea Milne, Ben Vandermeer, P~Lina Santaguida,
+  Mohammed Ansari, Alexander Tsertsvadze, Susanne Hempel, Paul Shekelle, and
+  Donna~M Dryden.
+\newblock Testing the risk of bias tool showed low reliability between
+  individual reviewers and across consensus assessments of reviewer pairs.
+\newblock \emph{Journal of Clinical Epidemiology}, 66\penalty0 (9):\penalty0
+  973--981, 2013.
+\newblock \doi{10.1016/j.jclinepi.2012.07.005}.
+
+\end{thebibliography}

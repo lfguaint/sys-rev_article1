@@ -1,0 +1,316 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+
+\section{Methods}
+\label{sec:methods}
+
+\subsection{Dataset}
+\label{sec:dataset}
+
+The ground-truth dataset was constructed from Cochrane systematic reviews published
+in 2024.
+Of the 149 reviews published that year, 127 were accessible through our
+institutional subscription; from each accessible review, up to three included randomised controlled trials
+(RCTs) were selected on the basis of full-text PDF availability: all included
+RCTs for which a PDF was retrievable were included, up to a maximum of three per
+review, yielding a final corpus of \textbf{227 RCTs} drawn from 127 distinct
+Cochrane reviews.
+
+Risk of bias annotations were obtained directly from the published Cochrane
+review reports and reflect the consensus judgements produced by the original
+review teams following standard Cochrane procedures (independent assessment by
+at least two trained reviewers, with disagreements resolved by discussion or
+arbitration).
+These annotations were not re-produced or independently adjudicated for the
+present study; they represent the published Cochrane consensus, which constitutes
+the reference standard used by the field.
+Although the revised Risk of Bias~2.0 tool (RoB~2; \citealt{Sterne2019}) is
+now recommended for new systematic reviews, it reorganises the domain structure
+and changes the rating scale, rendering it incompatible with the existing
+RoB~1.0 corpus.
+RoB~1.0 remains the basis for the large majority of existing systematic review
+annotations --- including all 127 reviews sampled here and most of the large
+labelled datasets used for training and evaluation of automated systems --- so
+this study's focus on RoB~1.0 is both corpus-driven and practically motivated.
+Each study was annotated using the Cochrane Risk of Bias~1.0 (RoB~1.0) tool
+\citep{Higgins2011}, which covers seven methodological domains:
+D1~(random sequence generation),
+D2~(allocation concealment),
+D3~(blinding of participants and personnel),
+D4~(blinding of outcome assessment),
+D5~(incomplete outcome data),
+D6~(selective outcome reporting), and
+D7~(other sources of bias).
+Each domain received one of three judgements---\emph{Low Risk}, \emph{High Risk},
+or \emph{Unclear Risk}---yielding 1{,}589 annotated cells ($227 \times 7$).
+
+Class prevalence varied substantially across domains (Table~\ref{tab:class-dist}).
+Low Risk was the largest class in six of seven domains, and the majority class
+($>$50\%) in four of them (D1, D5, D6, D7); only D3~(blinding of participants
+and personnel) had High Risk as its largest class (45\%), reflecting the
+predominance of unblinded pharmacological trials in the corpus.
+At the skewed extreme, D1 had a 69\% Low Risk majority and only 5 High Risk cases
+(2\%); D5 and D7 were similarly imbalanced at 63\% and 61\% Low Risk, respectively.
+D4~(blinding of outcome assessors) was the most balanced domain overall
+(44\% Low Risk, 28\% High Risk, 29\% Unclear Risk), closely followed by D2, in
+which Low Risk and Unclear Risk were nearly equally represented (50\% vs.\ 46\%).
+
+\begin{table}[ht]
+\centering
+\caption{Ground-truth class distribution per RoB domain ($n = 227$ studies per
+domain). LR~=~Low Risk; HR~=~High Risk; UR~=~Unclear Risk.}
+\label{tab:class-dist}
+\begin{tabular}{lccccc}
+\toprule
+Domain & LR & HR & UR & Majority class & Majority (\%) \\
+\midrule
+D1 & 157 &   5 &  65 & Low Risk   & 69.2 \\
+D2 & 113 &  10 & 104 & Low Risk   & 49.8 \\
+D3 &  74 & 103 &  50 & High Risk  & 45.4 \\
+D4 &  99 &  63 &  65 & Low Risk   & 43.6 \\
+D5 & 143 &  39 &  45 & Low Risk   & 63.0 \\
+D6 & 125 &  25 &  77 & Low Risk   & 55.1 \\
+D7 & 139 &  31 &  57 & Low Risk   & 61.2 \\
+\midrule
+\textbf{Total} & \textbf{850} & \textbf{276} & \textbf{463} & Low Risk & 53.5 \\
+               & (53.5\%)     & (17.4\%)     & (29.1\%)     &          &      \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Intervention type.}
+Each study was assigned a single intervention category:
+drug/medication ($n = 104$),
+non-pharmacological intervention ($n = 75$),
+procedure ($n = 30$), or
+medical device ($n = 18$).
+
+\textbf{Clinical domain.}
+Studies were tagged with one or more of 24 Cochrane Review Group categories
+(multi-label; 120 of 227 studies belonged to more than one group).
+The most frequent categories were Child Health ($n = 72$),
+Heart \& Circulation ($n = 45$), and Kidney Disease ($n = 31$);
+the least frequent were Skin Disorders ($n = 3$),
+Effective Practice \& Health Systems ($n = 4$),
+Rheumatology ($n = 5$), and Wounds ($n = 5$).
+For stratified analyses, each multi-domain study was included in every applicable
+group.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.75\linewidth]{ground_truth_227_tipo_intervencao}
+  \caption{Distribution of the 227 RCTs by intervention type.}
+  \label{fig:itype-dist}
+\end{figure}
+
+\begin{sidewaysfigure}
+  \centering
+  \includegraphics[width=\linewidth]{ground_truth_227_dominio_clinico}
+  \caption{Distribution of the 227 RCTs by clinical domain (Cochrane Review
+  Group categories, multi-label; total exceeds 227).}
+  \label{fig:clinical-dist}
+\end{sidewaysfigure}
+
+\subsection{Document Preparation Pipeline}
+\label{sec:pipeline}
+
+Full-text study reports (PDF) were processed through a two-stage pipeline designed
+to produce fully text-based study representations consumable by any large
+language model without multimodal (image) input.
+
+\textbf{Stage~1 --- PDF-to-Markdown conversion.}
+Each PDF was converted to structured Markdown using MinerU \citep{Wang2024MinerU},
+which preserves headings, tables, and inline text whilst replacing embedded figures
+with placeholder tokens of the form \texttt{[Figure~$k$]}.
+
+\textbf{Stage~2 --- Figure description.}
+Each figure placeholder was resolved by a vision-language model (VLM) that
+received the corresponding page image and generated a textual description,
+which was then inserted in place of the placeholder.
+After Stage~2, the document was a self-contained Markdown file in which all
+information---including the content of charts, CONSORT flow diagrams, Kaplan--Meier
+curves, and forest plots---was represented as plain text.
+This design eliminates the need to pass images alongside the prompt during
+RoB assessment, enabling evaluation of text-only models and ensuring a consistent
+input format across all eight models tested.
+
+\subsection{Risk of Bias Assessment}
+\label{sec:rob-assessment}
+
+All models were evaluated in a zero-shot, single-agent setting: each processed
+Markdown document was submitted to the model with a fixed assessment prompt
+(reproduced in full in Supporting Information~S1), which specified the domain
+criteria, the three admissible judgements (Low Risk, High Risk, Unclear Risk),
+and the required JSON output format.
+No few-shot examples were provided, and the prompt was used without modification
+across all models.
+
+\textbf{Inference modes.}
+We evaluated two inference strategies that differ in how the seven RoB domains
+are requested from the model.
+In the \emph{per-domain} mode, seven sequential inference calls are made per
+study: each call supplies the full Markdown text together with a single domain
+identifier (e.g.\ \texttt{Domain: D1}), and the model returns a JSON object
+containing a judgement and justification for that domain only.
+In the \emph{single-call} mode, a single inference call per study is made:
+the model receives the full Markdown text and is instructed to return a JSON
+array containing judgements and justifications for all seven domains
+simultaneously.
+All eight models were evaluated under the per-domain mode.
+Gemini~2.5~Flash and DeepSeek~v4-Flash were additionally evaluated under the
+single-call mode on the same 227 studies, enabling a controlled comparison of
+the two inference strategies whilst holding model, prompt content, and corpus
+constant.
+
+\subsection{Language Models}
+\label{sec:models}
+
+Eight state-of-the-art LLMs were evaluated (Table~\ref{tab:models}).
+All models were accessed via the OpenRouter~API in June~2026 using the
+identifier strings listed in Table~\ref{tab:models}.
+No fine-tuning or prompt adaptation specific to individual models was performed.
+All inference calls used provider-default sampling parameters (temperature and
+other generation settings at the API defaults); each study received a single
+inference call per condition (one call per domain in per-domain mode; one call
+for all seven domains in single-call mode), with no repeated sampling.
+This design was intentional: the aim is to benchmark models as they are
+available to practitioners, not under artificial conditions.
+Manipulating generation parameters such as temperature would (i)~require a
+separate optimisation procedure for each model, introducing a confound between
+prompt design and generation settings, and (ii)~produce heterogeneous
+evaluation conditions given that different model families exhibit varying
+sensitivity to the same temperature value.
+Strategies such as majority voting over repeated draws or ensembling outputs
+across runs---which can improve reliability---represent post-hoc optimisation
+beyond the scope of a zero-shot benchmark; their evaluation is left to future
+work.
+The OpenRouter identifier strings in Table~\ref{tab:models} represent the model
+state routed at the time of inference; providers may silently update the
+underlying weights associated with a fixed identifier string, so results
+reported here reflect the model checkpoints active during the June~2026
+inference window.
+
+\begin{table}[ht]
+\centering
+\caption{Language models evaluated. All models accessed via the OpenRouter API
+in June~2026 using the model identifier strings shown; zero-shot single-agent
+mode throughout.
+Context length: maximum tokens accepted per call as reported by OpenRouter at
+access time.
+Release date: date the model became available on OpenRouter.
+Exact checkpoint versions are opaque at the provider level; the identifiers
+below are the strings passed to the API and represent the model state at the
+time of inference.}
+\label{tab:models}
+\begin{tabular}{llccc}
+\toprule
+Model & OpenRouter identifier & Context & Release & Studies \\
+\midrule
+Gemini~2.5~Pro    & \texttt{google/gemini-2.5-pro}          & 1M  & Jun 2025 & 227 \\
+Gemini~2.5~Flash  & \texttt{google/gemini-2.5-flash}        & 1M  & Jun 2025 & 227 \\
+GPT-5.4           & \texttt{openai/gpt-5.4}                 & 1M  & Mar 2026 & 227 \\
+Claude~Haiku~4.5  & \texttt{anthropic/claude-haiku-4.5}     & 200K & Oct 2025 & 227 \\
+DeepSeek~v4-Flash & \texttt{deepseek/deepseek-v4-flash}     & 1M  & Apr 2026 & 227 \\
+Grok~4.3          & \texttt{x-ai/grok-4.3}                  & 1M  & Apr 2026 & 227 \\
+Qwen~3.7-Plus     & \texttt{qwen/qwen3.7-plus}              & 1M  & May 2026 & 227 \\
+GLM-5             & \texttt{z-ai/glm-5}                     & 203K & Feb 2026 & 227 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Evaluation Metrics}
+\label{sec:metrics}
+
+\textbf{Overall accuracy.}
+The proportion of cells in which the model's judgement matched the ground-truth
+label, computed across all 1{,}589 study--domain pairs.
+
+\textbf{Per-class F1.}
+For each class $k \in \{\text{Low Risk, High Risk, Unclear Risk}\}$, the F1 score
+is the harmonic mean of precision and recall:
+\begin{equation}
+  \mathrm{F1}_k = \frac{2 \cdot \mathrm{Precision}_k \cdot \mathrm{Recall}_k}
+                       {\mathrm{Precision}_k + \mathrm{Recall}_k},
+  \label{eq:f1}
+\end{equation}
+computed across all study--domain cells.
+Per-class F1 reveals class-specific failure modes independently of overall performance.
+
+\textbf{Macro-F1.}
+Per-class F1 is computed over the full pool of 1{,}589 cells; the three class-level
+F1 scores are then averaged with equal weight:
+Macro-F1 $= \frac{1}{K}\sum_{k=1}^{K} \mathrm{F1}_k$ with $K = 3$.
+Macro-F1 assigns equal weight to each category regardless of prevalence, thereby
+penalising models that achieve high accuracy by concentrating predictions on
+majority classes.
+
+\textbf{Gwet's AC1.}
+A chance-corrected agreement coefficient robust to the prevalence paradox
+\citep{Gwet2008, Feinstein1990}: when marginal distributions are highly skewed,
+classical chance-corrected coefficients approach zero even when observed agreement
+is substantial.
+AC1 is defined as
+\begin{equation}
+  \mathrm{AC1} = \frac{p_o - p_e}{1 - p_e},
+  \qquad
+  p_e = \frac{1}{K-1}\sum_{k=1}^{K} \pi_k(1 - \pi_k),
+  \label{eq:ac1}
+\end{equation}
+where $p_o$ is the observed proportion of agreement,
+$K = 3$ is the number of categories, and
+$\pi_k = \bigl(\hat{p}_{k,\text{model}} + \hat{p}_{k,\text{gt}}\bigr)/2$
+is the mean marginal proportion for category $k$, with $\hat{p}_{k,\text{model}}$
+and $\hat{p}_{k,\text{gt}}$ the marginal proportions of class $k$ in the model
+predictions and ground truth, respectively.
+All metrics---including AC1---are computed globally by pooling all 1{,}589
+study--domain cells; domain-level values are not aggregated.
+Given the pronounced class imbalance documented in Table~\ref{tab:class-dist}---six
+of seven domains have Low Risk as the majority class---AC1 is more appropriate than
+Cohen's $\kappa$ as the primary agreement metric for this task, since $\kappa$
+approaches zero under heavy prevalence skew even when observed agreement is
+substantial (the prevalence paradox; \citealt{Feinstein1990}).
+Importantly, the ground-truth annotations used here reflect published Cochrane
+consensus judgements rather than a second independent annotator; AC1 therefore
+quantifies model-to-published-standard agreement, not inter-rater reliability in
+the classical sense.
+Human inter-rater reliability for RoB~1.0 is moderate at best: even among
+formally trained reviewers applying the same protocol, Hartling et al.\
+\citep{Hartling2013} reported $\kappa = 0.79$ for D1 but only $\kappa = 0.24$--$0.37$
+for the remaining domains, with agreement between independent consensus pairs
+falling further to $\kappa = 0.05$--$0.09$ in several domains.
+Agreement also varies substantially between distinct Cochrane review teams
+evaluating the same trials \citep{Konsgen2020}.
+These findings contextualise model performance against a noisy reference
+standard rather than a true human ceiling, and motivate domain-level rather
+than aggregate interpretation of results.
+
+\textbf{Oracle upper bound.}
+For each study--domain cell, the \emph{any-correct oracle} is defined as correct
+if at least one of the eight models matched the ground truth.
+Oracle accuracy quantifies the theoretical ceiling achievable by a hypothetical
+perfect model-selection strategy and characterises the degree of complementarity
+among models.
+
+\textbf{Stratified analyses.}
+All primary metrics were recomputed within subgroups defined by intervention type
+(four categories) and clinical domain (24 Cochrane Review Groups, multi-label).
+For clinical domain, studies were included in every group to which they belonged,
+so group sample sizes sum to more than 227.
+
+\textbf{Statistical inference.}
+All analyses are descriptive and exploratory.
+Confidence intervals are reported to characterise estimation uncertainty and
+facilitate comparison across models and conditions; they are not interpreted
+as the outcome of pre-specified confirmatory hypothesis tests.
+No familywise error rate correction was applied: the number of comparisons
+across models, domains, classes, and inference modes is large and the outcomes
+are correlated, making conventional multiplicity corrections either too
+conservative (Bonferroni) or difficult to calibrate without a pre-specified
+primary endpoint.
+Where 95\% bootstrap CIs exclude zero, this is noted descriptively
+(``CI excludes zero''); the 95\% level serves as a conventional descriptive
+reference threshold and carries no confirmatory implication in this exploratory
+context---it marks an unadjusted signal that may warrant further investigation,
+not a principled significance claim.
+
+\end{document}

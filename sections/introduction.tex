@@ -1,0 +1,68 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+
+\section{Introduction}
+\label{sec:introduction}
+
+Systematic reviews and meta-analyses occupy the apex of the evidence hierarchy in
+evidence-based medicine \citep{Higgins2019}.
+Their validity depends critically on the quality of the primary studies included:
+a meta-analysis that aggregates trials with uncontrolled confounding or selective
+outcome reporting inherits---and can amplify---those methodological flaws.
+The Cochrane Risk of Bias~1.0 tool (RoB~1.0) \citep{Higgins2011} was developed
+precisely to render this quality appraisal explicit and reproducible.
+By requiring reviewers to judge each included trial across seven pre-specified
+methodological domains, RoB~1.0 transforms a subjective quality impression into a
+structured, auditable record.
+
+Despite this formalisation, RoB assessment remains a major bottleneck in systematic
+review production.
+Each trial must be read by two independent reviewers, who compare judgements and
+resolve disagreements through discussion or adjudication.
+For a review covering dozens of trials, this process routinely demands tens to
+hundreds of person-hours.
+Inter-rater reliability, even among trained reviewers, is moderate at best
+\citep{Konsgen2020, ArmijoOlivo2014}---a consequence of genuine ambiguity in
+reporting, domain-specific expertise requirements, and the epistemic character of
+the \emph{Unclear Risk} category, which denotes insufficient information rather
+than a graded risk level.
+These limitations have motivated sustained interest in automating, or at least
+augmenting, the RoB assessment workflow.
+
+Early automation efforts relied on rule-based systems and supervised machine learning
+trained on sentence-level text fragments \citep{Marshall2016}.
+Such approaches demonstrated that natural language processing could identify
+methodological descriptions in trial reports with above-chance accuracy, but they
+were constrained by limited contextual understanding, sensitivity to reporting style,
+and the need for substantial labelled training data for each domain.
+
+Large language models (LLMs) trained on diverse corpora with instruction-following
+capabilities represent a qualitatively different paradigm
+\citep{Lieberum2025, Scherbakov2025}.
+Without task-specific fine-tuning, general-purpose LLMs can be prompted to read a
+full trial report, locate domain-relevant passages, and produce structured judgements
+with free-text justifications---closely mimicking the expert reviewer workflow.
+A prompt template can address all seven RoB~1.0 domains either sequentially---one
+domain per inference call---or simultaneously in a single call; whether this
+choice affects assessment quality is an open empirical question.
+As frontier LLMs have grown more capable and their inference costs have fallen,
+evaluating their effectiveness for RoB assessment has become both feasible and
+practically important.
+
+The present study provides a systematic empirical comparison of eight state-of-the-art
+LLMs on zero-shot, single-agent RoB~1.0 assessment applied to 227~randomised
+controlled trials drawn from 127~Cochrane systematic reviews published in~2024.
+All models were evaluated on a common benchmark under identical conditions: the same
+prompt, the same fully text-based study representations produced by a standardised
+PDF-to-Markdown pipeline, and the same ground-truth human annotations.
+We report accuracy, Macro-F1, and Gwet's~AC1---metrics selected to characterise
+both aggregate performance and class-level sensitivity without imposing an ordinal
+interpretation on the three nominal RoB categories.
+Stratified analyses by intervention type and clinical domain identify sources of
+systematic variation across the benchmark.
+Additionally, we compare two inference strategies---per-domain and
+single-call---using Gemini~2.5~Flash and DeepSeek~v4-Flash, the two models
+evaluated under both conditions, to assess whether querying all seven domains
+simultaneously affects performance relative to sequential per-domain calls.
+
+\end{document}
