@@ -4,6 +4,7 @@
 \section*{Supporting Information}
 \label{sec:suppinfo}
 
+\clearpage
 \setcounter{figure}{0}
 \renewcommand{\thefigure}{S\arabic{figure}}
 \setcounter{table}{0}
@@ -143,7 +144,54 @@ Return ONLY valid JSON with:
 \normalsize
 
 % ─────────────────────────────────────────────────────────────────────────────
-\subsection*{S2\quad Per-Domain Performance by Model}
+\subsection*{S2\quad Overall Model Performance}
+\label{sec:si-overall}
+
+\begin{sidewaystable}
+\centering
+\caption{Overall performance on RoB~1.0 assessment ($n = 227$ studies;
+1{,}589 cells). Models ranked by accuracy.
+F1-LR, F1-HR, F1-UR: F1 for Low Risk, High Risk, and Unclear Risk computed
+globally across all study--domain cells.
+Best value in each column shown in bold.
+95\% confidence intervals (study-clustered bootstrap, 5{,}000 iterations,
+resampling 227 studies with replacement) are shown in \textit{brackets} below
+each point estimate; all analyses are exploratory (see Methods, Statistical
+Inference).}
+\label{tab:overall}
+\begin{tabular}{lcccccc}
+\toprule
+Model & Accuracy (\%) & Macro-F1 & F1-LR & F1-HR & F1-UR & Gwet's AC1 \\
+\midrule
+Claude~Haiku~4.5   & \textbf{62.5}   & 0.541           & \textbf{0.743}  & 0.469           & 0.413           & \textbf{0.485}  \\
+                   & \footnotesize[59.8, 65.2] & \footnotesize[0.511, 0.569] & \footnotesize[0.718, 0.767] & \footnotesize[0.412, 0.521] & \footnotesize[0.361, 0.463] & \footnotesize[0.443, 0.526] \\
+\addlinespace[3pt]
+GLM-5              & 61.1            & 0.557           & 0.709           & 0.441           & \textbf{0.520}  & 0.449           \\
+                   & \footnotesize[58.7, 63.5] & \footnotesize[0.529, 0.582] & \footnotesize[0.682, 0.735] & \footnotesize[0.385, 0.494] & \footnotesize[0.479, 0.561] & \footnotesize[0.411, 0.485] \\
+\addlinespace[3pt]
+Qwen~3.7-Plus      & 60.9            & 0.525           & 0.718           & 0.356           & 0.503           & 0.457           \\
+                   & \footnotesize[58.3, 63.4] & \footnotesize[0.496, 0.552] & \footnotesize[0.691, 0.743] & \footnotesize[0.293, 0.413] & \footnotesize[0.459, 0.543] & \footnotesize[0.417, 0.495] \\
+\addlinespace[3pt]
+Gemini~2.5~Flash   & 60.7            & \textbf{0.558}  & 0.718           & \textbf{0.474}  & 0.484           & 0.437           \\
+                   & \footnotesize[58.2, 63.1] & \footnotesize[0.533, 0.582] & \footnotesize[0.690, 0.744] & \footnotesize[0.424, 0.516] & \footnotesize[0.443, 0.526] & \footnotesize[0.399, 0.475] \\
+\addlinespace[3pt]
+DeepSeek~v4-Flash  & 60.3            & \textbf{0.558}  & 0.704           & \textbf{0.480}  & 0.489           & 0.433           \\
+                   & \footnotesize[57.7, 62.9] & \footnotesize[0.531, 0.585] & \footnotesize[0.676, 0.730] & \footnotesize[0.429, 0.530] & \footnotesize[0.447, 0.530] & \footnotesize[0.394, 0.472] \\
+\addlinespace[3pt]
+Grok~4.3           & 60.1            & 0.549           & 0.696           & 0.432           & 0.518           & 0.433           \\
+                   & \footnotesize[57.8, 62.5] & \footnotesize[0.523, 0.574] & \footnotesize[0.670, 0.722] & \footnotesize[0.376, 0.486] & \footnotesize[0.478, 0.556] & \footnotesize[0.397, 0.471] \\
+\addlinespace[3pt]
+GPT-5.4            & 57.7            & 0.546           & 0.668           & 0.464           & 0.506           & 0.387           \\
+                   & \footnotesize[55.1, 60.3] & \footnotesize[0.519, 0.572] & \footnotesize[0.636, 0.698] & \footnotesize[0.410, 0.511] & \footnotesize[0.468, 0.543] & \footnotesize[0.349, 0.426] \\
+\addlinespace[3pt]
+Gemini~2.5~Pro     & 57.6            & 0.543           & 0.674           & 0.455           & 0.502           & 0.383           \\
+                   & \footnotesize[55.1, 60.0] & \footnotesize[0.517, 0.569] & \footnotesize[0.643, 0.702] & \footnotesize[0.407, 0.501] & \footnotesize[0.458, 0.542] & \footnotesize[0.344, 0.420] \\
+\bottomrule
+\end{tabular}
+\end{sidewaystable}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection*{S3\quad Per-Domain Performance by Model}
 \label{sec:si-domain}
 
 Tables~\ref{tab:domain-full} and~\ref{tab:domain-f1} report accuracy (\%) and
@@ -192,11 +240,34 @@ Gemini~2.5~Pro     & 0.621 & \textbf{0.671} & 0.481  & 0.478 & 0.413 & 0.475 & 0
 \end{sidewaystable}
 
 % ─────────────────────────────────────────────────────────────────────────────
-\subsection*{S3\quad Stratification by Intervention Type}
+\subsection*{S4\quad Stratification by Intervention Type}
 \label{sec:si-itype}
 
+Figure~\ref{fig:si-cdomain-itype} shows the distribution of intervention types
+within each clinical domain in the 227-study corpus.
+Because each study can be tagged with multiple clinical domains, the counts
+across domains sum to more than 227; a study tagged with two domains contributes
+its intervention type to both.
+The distribution is markedly non-uniform: Pregnancy \& childbirth and
+Complementary \& alternative medicine are almost exclusively pharmacological,
+Effective practice \& health systems and Mental health are predominantly
+non-pharmacological, and Orthopaedics \& trauma contains no pharmacological
+studies.
 Table~\ref{tab:itype-full} reports Macro-F1 for each model within each intervention
 type. Figure~\ref{fig:si-itype} shows the same data as a heatmap.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{all_reviews_clinical_domain_intervention_table}
+  \caption{Distribution of intervention types across clinical domains
+  ($n = 227$ studies; studies with multiple clinical domain tags are counted
+  in each relevant domain).
+  Cell colour encodes the fraction of that domain's studies belonging to each
+  intervention type (pastel red = low proportion, pastel blue = high proportion);
+  grey cells indicate zero studies.
+  Domains are sorted by total study count (descending).}
+  \label{fig:si-cdomain-itype}
+\end{figure}
 
 \begin{table}[ht]
 \centering
@@ -234,7 +305,7 @@ Gemini~2.5~Pro     & 0.533 & 0.575 & 0.498 & 0.534 \\
 \end{figure}
 
 % ─────────────────────────────────────────────────────────────────────────────
-\subsection*{S4\quad Stratification by Clinical Domain}
+\subsection*{S5\quad Stratification by Clinical Domain}
 \label{sec:si-clinical}
 
 Table~\ref{tab:clinical-full} reports mean Macro-F1 (averaged across all eight models)
@@ -283,7 +354,7 @@ Infectious disease                     &  8 & 0.425 \\
 \end{table}
 
 % ─────────────────────────────────────────────────────────────────────────────
-\subsection*{S5\quad Pairwise Model Complementarity}
+\subsection*{S6\quad Pairwise Model Complementarity}
 \label{sec:si-pairwise}
 
 Table~\ref{tab:pairwise} reports pairwise complementarity across the eight models.
@@ -318,7 +389,7 @@ Pro   & 17.3  & 11.1  & 12.6 & 12.2 & 12.6 & 11.0 & 10.3 &  ---  \\
 \end{tabular}
 \end{sidewaystable}
 
-\subsection*{S6\quad Confidence Interval Method Comparison}
+\subsection*{S7\quad Confidence Interval Method Comparison}
 \label{sec:si-ci}
 
 All confidence intervals reported in the main text were computed using

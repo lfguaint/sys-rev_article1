@@ -7,7 +7,7 @@
 \subsection{Overall Performance}
 \label{sec:overall}
 
-Table~\ref{tab:overall} reports accuracy, Macro-F1, per-class F1, and Gwet's AC1
+Figure~\ref{fig:overall-forest} summarises accuracy, Macro-F1, per-class F1, and Gwet's AC1
 for all eight models across the 1{,}589 annotated cells, together with
 study-clustered bootstrap 95\% confidence intervals (5{,}000 iterations,
 resampling the 227 studies---the unit of clustering---with replacement to
@@ -30,75 +30,88 @@ extremes: the 95\%~CI for Claude~Haiku~4.5 (AC1~$= 0.485$; CI~$[0.443, 0.526]$)
 does not overlap with those of Gemini~2.5~Pro ($[0.344, 0.420]$) or
 GPT-5.4 ($[0.349, 0.426]$), indicating that Haiku's higher chance-corrected
 agreement is not attributable to sampling variation.
-The oracle upper bound reached \textbf{85.8\%}, representing a 23.3
-percentage-point gap above the best individual model.
+Consensus failures---cells where no model in the ensemble was correct---accounted
+for 226 of 1{,}589 cells (14.2\%); the complementary any-correct rate of 85.8\%
+confirms that the eight models make substantially non-redundant errors
+(Section~\ref{sec:consensus-failures}).
 
-\begin{sidewaystable}
-\centering
-\caption{Overall performance on RoB~1.0 assessment ($n = 227$ studies;
-1{,}589 cells). Models ranked by accuracy.
-F1-LR, F1-HR, F1-UR: F1 for Low Risk, High Risk, and Unclear Risk computed
-globally across all study--domain cells.
-Best value in each column shown in bold.
-\footnotesize 95\% confidence intervals (study-clustered bootstrap, 5{,}000 iterations,
-resampling 227 studies with replacement) are shown in \textit{brackets} below each point estimate;
-all analyses are exploratory (see Methods, Statistical Inference).}
-\label{tab:overall}
-\begin{tabular}{lcccccc}
-\toprule
-Model & Accuracy (\%) & Macro-F1 & F1-LR & F1-HR & F1-UR & Gwet's AC1 \\
-\midrule
-Claude~Haiku~4.5   & \textbf{62.5}   & 0.541           & \textbf{0.743}  & 0.469           & 0.413           & \textbf{0.485}  \\
-                   & \footnotesize[59.8, 65.2] & \footnotesize[0.511, 0.569] & \footnotesize[0.718, 0.767] & \footnotesize[0.412, 0.521] & \footnotesize[0.361, 0.463] & \footnotesize[0.443, 0.526] \\
-\addlinespace[3pt]
-GLM-5              & 61.1            & 0.557           & 0.709           & 0.441           & \textbf{0.520}  & 0.449           \\
-                   & \footnotesize[58.7, 63.5] & \footnotesize[0.529, 0.582] & \footnotesize[0.682, 0.735] & \footnotesize[0.385, 0.494] & \footnotesize[0.479, 0.561] & \footnotesize[0.411, 0.485] \\
-\addlinespace[3pt]
-Qwen~3.7-Plus      & 60.9            & 0.525           & 0.718           & 0.356           & 0.503           & 0.457           \\
-                   & \footnotesize[58.3, 63.4] & \footnotesize[0.496, 0.552] & \footnotesize[0.691, 0.743] & \footnotesize[0.293, 0.413] & \footnotesize[0.459, 0.543] & \footnotesize[0.417, 0.495] \\
-\addlinespace[3pt]
-Gemini~2.5~Flash   & 60.7            & \textbf{0.558}  & 0.718           & \textbf{0.474}  & 0.484           & 0.437           \\
-                   & \footnotesize[58.2, 63.1] & \footnotesize[0.533, 0.582] & \footnotesize[0.690, 0.744] & \footnotesize[0.424, 0.516] & \footnotesize[0.443, 0.526] & \footnotesize[0.399, 0.475] \\
-\addlinespace[3pt]
-DeepSeek~v4-Flash  & 60.3            & \textbf{0.558}  & 0.704           & \textbf{0.480}  & 0.489           & 0.433           \\
-                   & \footnotesize[57.7, 62.9] & \footnotesize[0.531, 0.585] & \footnotesize[0.676, 0.730] & \footnotesize[0.429, 0.530] & \footnotesize[0.447, 0.530] & \footnotesize[0.394, 0.472] \\
-\addlinespace[3pt]
-Grok~4.3           & 60.1            & 0.549           & 0.696           & 0.432           & 0.518           & 0.433           \\
-                   & \footnotesize[57.8, 62.5] & \footnotesize[0.523, 0.574] & \footnotesize[0.670, 0.722] & \footnotesize[0.376, 0.486] & \footnotesize[0.478, 0.556] & \footnotesize[0.397, 0.471] \\
-\addlinespace[3pt]
-GPT-5.4            & 57.7            & 0.546           & 0.668           & 0.464           & 0.506           & 0.387           \\
-                   & \footnotesize[55.1, 60.3] & \footnotesize[0.519, 0.572] & \footnotesize[0.636, 0.698] & \footnotesize[0.410, 0.511] & \footnotesize[0.468, 0.543] & \footnotesize[0.349, 0.426] \\
-\addlinespace[3pt]
-Gemini~2.5~Pro     & 57.6            & 0.543           & 0.674           & 0.455           & 0.502           & 0.383           \\
-                   & \footnotesize[55.1, 60.0] & \footnotesize[0.517, 0.569] & \footnotesize[0.643, 0.702] & \footnotesize[0.407, 0.501] & \footnotesize[0.458, 0.542] & \footnotesize[0.344, 0.420] \\
-\midrule
-\textit{Oracle}    & \textit{85.8}   & ---             & ---             & ---             & ---             & ---             \\
-\bottomrule
-\end{tabular}
-\end{sidewaystable}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{all_reviews_overall_forest}
+  \caption{Overall performance on RoB~1.0 assessment for the eight models
+  ($n = 227$ studies; 1{,}589 cells).
+  Each row is one model; columns show accuracy (\%), Macro-F1,
+  F1 for each risk class (F1-LR, F1-HR, F1-UR), and Gwet's AC1.
+  Filled circles are point estimates; horizontal bars are 95\% study-clustered
+  bootstrap confidence intervals (5{,}000 iterations, resampling 227 studies
+  with replacement).
+  Dashed vertical lines mark the cross-model mean for each metric.
+  Colours identify models consistently throughout the paper.
+  Full numerical values are reported in Table~S\ref{tab:overall}.}
+  \label{fig:overall-forest}
+\end{figure}
 
 \textbf{Metric divergence.}
 The discrepancy between accuracy and Macro-F1 rankings reflects differential
 handling of the class imbalance documented in Table~\ref{tab:class-dist}.
-The per-class F1 columns in Table~\ref{tab:overall} make the trade-off explicit:
+Figure~\ref{fig:overall-forest} makes the trade-off explicit:
 models with higher Low Risk F1 tend to achieve higher accuracy but lower High Risk
 and Unclear Risk F1, since Low Risk is the majority class in six of seven domains.
 Macro-F1 penalises this behaviour by weighting each class equally, shifting
 the ranking toward models with more balanced per-class detection.
+Inspection of Figure~\ref{fig:overall-forest} also reveals that the rank orderings
+for accuracy, AC1, and F1-LR are nearly identical across the eight models.
+This co-linearity suggests that all three metrics are largely co-determined by
+Low Risk performance: a model that reliably assigns Low Risk to majority-class
+cells captures most of the variance in both accuracy and chance-corrected agreement,
+since Low Risk prevalence (53.5\%) dominates both the observed agreement count and
+the marginal distributions that enter the AC1 correction.
+Macro-F1 disrupts this co-linearity by treating each class as equally important
+regardless of prevalence.
+However, equal class weighting does not reflect the empirical frequency of
+judgements---High Risk accounts for only 17.4\% of cells
+(Table~\ref{tab:class-dist})---so macro-F1 amplifies the contribution of the
+rarest class beyond its share of the data.
+A prevalence-weighted F1 would instead converge toward accuracy, whereas
+macro-F1 should be interpreted as a measure of balanced class coverage:
+how well a model performs across \emph{all three} nominal categories, independently
+of how often each arises.
 
 \subsection{Performance by RoB Domain}
 \label{sec:domain}
 
-% Figure: domain accuracy heatmap
+% Figure: domain accuracy grouped bar chart
 \begin{sidewaysfigure}
   \centering
-  \includegraphics[width=\linewidth]{all_reviews_domain_accuracy_heatmap}
-  \caption{Per-domain accuracy (\%) for each model. Colour scale: 0--100\%.}
-  \label{fig:domain-heatmap}
+  \includegraphics[width=\linewidth]{all_reviews_domain_grouped_bars_bootstrap}
+  \caption{Per-domain accuracy by model (95\% bootstrap CIs; study-clustered,
+  5{,}000 iterations, resampling 227 studies with replacement).
+  Each group of eight bars corresponds to one RoB domain; colours identify models
+  as shown in the legend.
+  The dashed horizontal line marks 50\% (majority-class baseline).
+  All analyses are exploratory.
+  See Figure~\ref{fig:domain-metrics} for the breakdown by Macro-F1,
+  per-class F1, and Gwet's AC1.}
+  \label{fig:domain-bars}
 \end{sidewaysfigure}
 
-Domain-level accuracy (Figure~\ref{fig:domain-heatmap};
-Table~S\ref{tab:domain-full} in Supporting Information) revealed two tiers of
+% Figure: domain metrics forest plot (5 panels)
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{all_reviews_domain_grouped_bars_metrics_bootstrap}
+  \caption{Per-domain performance by model across five metrics: Macro-F1,
+  F1 for Low Risk, Unclear Risk, and High Risk, and Gwet's AC1
+  (95\% bootstrap CIs; study-clustered, 5{,}000 iterations,
+  resampling 227 studies with replacement).
+  Each panel shares the same domain grouping on the $x$-axis;
+  diamonds are point estimates; vertical bars are 95\% CIs.
+  The dashed horizontal line marks 0.5.
+  Colours identify models consistently throughout the paper.}
+  \label{fig:domain-metrics}
+\end{figure}
+
+Domain-level accuracy (Figure~\ref{fig:domain-bars};
+Table~S\ref{tab:domain-full}) revealed two tiers of
 difficulty.
 \textbf{D1}~(sequence generation) and \textbf{D2}~(allocation concealment) were
 the most accurately assessed domains, with mean accuracy of 75.3\% and 72.7\%,
@@ -119,24 +132,47 @@ Both strategies yielded similarly poor Macro-F1 in D7 ($\leq 0.37$ for both),
 demonstrating that high accuracy on a single class does not translate to overall
 competence.
 
-The oracle accuracy per domain was highest for D2 (91.2\%) and lowest for D4
-(78.0\%), indicating that the 226 cells where no model was correct were not
-uniformly distributed across domains.
+Consensus failures were not uniformly distributed across domains: the
+consensus failure rate was lowest for D2 (8.8\% of its 227 cells) and highest
+for D4 (22.0\%), consistent with the greater class balance and annotation
+difficulty in D4 relative to D2.
+
+The domain-level pattern identifies two structurally distinct types of
+difficulty.
+\textbf{D4}~(blinding of outcome assessors) exhibits systematic, directionally
+consistent errors: across all eight models, the large majority of errors are
+lenient---models assign Low Risk when the ground truth is High Risk (see
+Figure~\ref{fig:error-direction})---a pattern present across all intervention
+types.
+In drug trials in particular, models appear to conflate the objectivity of the
+outcome measure with the adequacy of blinding of the outcome assessor,
+defaulting to Low Risk when no explicit blinding failure is stated.
+\textbf{D7}~(other sources of bias), by contrast, is characterised by
+inter-model divergence: models adopt idiosyncratic strategies---some biased
+toward High Risk, others toward Low Risk---so that errors are distributed roughly
+equally between lenient and cautious directions.
+The wide accuracy spread across models in D7 (31~pp) and its near-zero
+chance-corrected agreement thus reflect not a shared systematic error but genuine
+criterion ambiguity; the residual difficulty in D7 is unlikely to be resolved by
+prompt refinement alone.
 
 \subsection{Per-class Analysis}
 \label{sec:perclass}
 
-% Figure: per-class F1 heatmap (3 panels)
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=\linewidth]{all_reviews_per_class_f1_by_domain}
-  \caption{F1 scores for Low Risk (blue), High Risk (red), and Unclear Risk
-  (purple) by domain and model. Colour intensity proportional to F1 (0--1).}
-  \label{fig:perclass}
-\end{figure}
-
-Figure~\ref{fig:perclass} disaggregates Macro-F1 into its three constituent
+Figure~\ref{fig:domain-metrics} disaggregates Macro-F1 into its three constituent
 classes.
+Across all models, the ordering F1-LR~$\gg$~F1-UR~$\geq$~F1-HR holds as a
+near-universal pattern, closely mirroring the prevalence ordering of the three
+classes (53.5\%, 29.1\%, and 17.4\%, respectively; Table~\ref{tab:class-dist}).
+Models detect each class roughly in proportion to how often they encounter it
+in training and inference, producing a performance gradient that tracks
+class frequency.
+The sole exception is Claude~Haiku~4.5, which inverts the UR--HR ordering
+(F1-HR~$= 0.469 >$ F1-UR~$= 0.413$), suggesting a different response
+calibration: Haiku is more willing to assign High Risk when text signals a
+methodological concern, at the cost of under-using Unclear Risk as an
+epistemic hedge---a pattern consistent with its highest F1-LR (0.743) and
+lowest F1-UR (0.413) in the entire benchmark.
 
 \textbf{Low Risk} detection was strong and consistent across models in D1 and D2
 (F1 $> 0.75$ for all models).
@@ -147,6 +183,12 @@ Risk-biased prediction strategy described above.
 \textbf{High Risk} detection was reliable only in D3 (F1: 0.47--0.79), the single
 domain in which High Risk cases outnumbered Low Risk cases in the ground truth
 (103 vs.\ 74; Table~\ref{tab:class-dist}).
+The wide bootstrap confidence intervals for F1-HR visible in D1 and D2
+in Figure~\ref{fig:domain-metrics} are a direct consequence of the small number
+of High Risk cases in those domains (D1: $n = 5$; D2: $n = 10$ of 227 studies),
+such that a single misclassified study shifts the F1 estimate substantially
+under resampling; the point estimates themselves carry accordingly low precision
+and should not be compared across models in those domains.
 In D6~(selective outcome reporting), four models reported High Risk F1~$= 0.00$
 (Gemini~2.5~Flash, GPT-5.4, Claude~Haiku~4.5, and Qwen~3.7-Plus), corresponding
 to zero true-positive High Risk predictions across all 227 studies in that domain.
@@ -163,8 +205,81 @@ The most accurately detected Unclear Risk domain was D2, where all models
 achieved F1 $> 0.70$, consistent with the near-equal prevalence of Low Risk and
 Unclear Risk judgements in that domain (113 vs.\ 104).
 
+\textbf{Unclear Risk as abstention.}
+The pattern of Unclear Risk under-detection reflects an asymmetric decision
+behaviour.
+In D3, D4, D5, and D7---domains where the ground-truth Unclear Risk rate ranges
+from 20\% to 29\%---all models used Unclear Risk substantially less often than
+the Cochrane reviewer, committing to definitive Low Risk or High Risk judgements
+even in cases where the reviewer judged methodological information to be
+insufficient.
+In D2 and D6, the pattern reverses: models over-used Unclear Risk relative to
+the ground truth, reflecting excessive hedging in the face of ambiguous reporting.
+This bidirectional discrepancy indicates that models calibrate their
+uncertainty threshold differently across domains and that reducing false
+positives for Unclear Risk in the blinding domains (D3--D4) is a necessary
+condition for improving High Risk recall there.
+
+\subsection{Error Direction: Leniency and Caution}
+\label{sec:error-direction}
+
+% Figure: error direction heatmap
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{all_reviews_error_direction_leniency_optionC}
+  \caption{Error direction by RoB domain and intervention type.
+  Each cell shows the percentage of errors that are lenient
+  (model assigns a lower-risk class than the ground truth)
+  under an ordinal scale Low Risk $<$ Unclear Risk $<$ High Risk;
+  $n$ = total errors in each cell.
+  Values above 50\% indicate a lenient bias; values below 50\% indicate a
+  cautious bias.}
+  \label{fig:error-direction}
+\end{figure}
+
+Among cells where models erred, errors were not directionally neutral.
+Figure~\ref{fig:error-direction} shows the percentage of errors that were
+lenient across domains and intervention types.
+
+\textbf{D4}~(blinding of outcome assessors) exhibited the most pronounced and
+consistent leniency, with lenient errors exceeding 70\% in drug/medication
+trials across almost all models.
+This is interpretable: in pharmacological trials, the use of double-blind
+placebo-controlled designs is common, and models may be defaulting to Low Risk
+when such language is absent, rather than correctly inferring High Risk from
+the lack of an explicit blinding protocol.
+
+\textbf{D3}~(blinding of participants and personnel) showed a gradient by
+intervention type: drug trials showed lower leniency (blinding is frequently
+achieved), whereas device and procedural trials showed the highest leniency
+rates, consistent with the fact that physical intervention concealment is
+often impossible in those settings yet models continued to default to Low Risk.
+
+\textbf{D1}~(sequence generation) and \textbf{D2}~(allocation concealment)
+showed approximately balanced error directions across all models and intervention
+types, consistent with their higher accuracy and the availability of explicit
+methodological language in well-reported trials.
+\textbf{D7}~(other sources of bias) showed no dominant direction, with models
+diverging between lenient and cautious errors---confirming the heterogeneous
+character of errors in this domain noted in Section~\ref{sec:domain}.
+
+\clearpage
 \subsection{Stratification by Intervention Type}
 \label{sec:itype}
+
+% Figure: domain accuracy by intervention type (4x1 panel)
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{all_reviews_domain_grouped_bars_by_itype_bootstrap}
+  \caption{Per-domain accuracy by model, stratified by intervention type
+  (95\% bootstrap CIs; study-clustered, 5{,}000 iterations).
+  Panels from top to bottom: drug/medication ($n = 104$),
+  non-pharmacological intervention ($n = 75$),
+  procedure ($n = 30$), and medical device ($n = 18$).
+  Bootstrap CIs for the two smaller strata are wide and should be
+  interpreted with caution; see Supporting Information~S4 for numeric estimates.}
+  \label{fig:itype-bars}
+\end{figure}
 
 Mean Macro-F1 across all models ranked intervention types as follows:
 non-pharmacological intervention (0.572, $n = 75$ studies),
@@ -173,8 +288,27 @@ medical device (0.531, $n = 18$), and
 procedure (0.510, $n = 30$).
 The 6.2-point gap between non-pharmacological interventions and procedures was
 consistent across most models; no single model reversed this ordering.
-Individual model rankings within each intervention type are provided in
-Table~S\ref{tab:itype-full}.
+Individual model rankings within each intervention type are shown in
+Figure~\ref{fig:itype-bars} and provided in full in Table~S\ref{tab:itype-full}.
+
+The interaction between intervention type and blinding assessment reveals a
+specific failure mode.
+In \textbf{D3}~(blinding of participants and personnel), accuracy for
+drug/medication trials substantially exceeded that for device and procedural
+trials; in the latter, the ground-truth High Risk prevalence is highest---because
+physical concealment of the intervention is frequently impossible---yet models
+assigned Low Risk to the majority of cells, producing leniency rates above 65\%
+(Figure~\ref{fig:error-direction}).
+In \textbf{D4}~(blinding of outcome assessors), the leniency bias reached its
+maximum in drug trials (exceeding 80\%), where models appear to assume that
+objective outcome measurement implies adequate assessor blinding.
+These findings converge on a specific prompt deficiency: the current zero-shot
+prompt does not distinguish between trial types when applying blinding criteria.
+Models apply a ``blinding is feasible and likely'' default regardless of the
+physical feasibility of concealment, an error that a single conditional rule
+in the prompt (e.g., flagging as High Risk by default when concealment is
+structurally impossible and no blinding mechanism is described) would
+substantially reduce.
 
 \subsection{Stratification by Clinical Domain}
 \label{sec:clinical}
@@ -220,21 +354,164 @@ corpora.
   \label{fig:clinical-heatmap}
 \end{sidewaysfigure}
 
-\subsection{Oracle Analysis}
-\label{sec:oracle}
+\subsection{Ground-Truth Uncertainty and Inter-Annotator Agreement}
+\label{sec:iaa}
 
-The oracle accuracy of 85.8\% (1{,}363 of 1{,}589 cells) establishes a
-theoretical upper bound for any strategy that selects among the eight evaluated
-models; it is not achievable in practice, since it requires prior knowledge of
-which model is correct for each cell.
-Of the 226 cells where no model was correct, 50 (22.1\%) occurred in D4 and
-44 (19.5\%) in D5---the two domains with the most balanced three-class
-distributions and, correspondingly, the lowest oracle ceilings (78.0\% and 80.2\%,
-respectively).
-Pairwise complementarity analysis (Supporting Information S\ref{sec:si-pairwise})
-showed that for any two models, between 7.4\% and 17.4\% of cells were
-correctable by substituting one model for the other, confirming substantial
-non-redundant coverage across the ensemble.
+The benchmark treats published Cochrane annotations as the reference standard,
+but those annotations carry their own measurement error: independent Cochrane
+reviewer pairs achieve $\kappa = 0.24$--$0.37$ for non-D1 domains (Section~\ref{sec:conclusions}).
+Figure~\ref{fig:agreement-matrix} places model performance in this context
+by displaying the full $9 \times 9$ label-agreement matrix across Ground Truth
+and all eight models.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{all_reviews_agreement_matrix}
+  \caption{Label agreement matrix for Ground Truth and all eight models
+  ($n = 1{,}589$ cells).
+  Cell~$(i,j)$ = percentage of cells in which annotator~$i$ and
+  annotator~$j$ assigned the \emph{same} label, irrespective of correctness.
+  The diagonal is 100\% by definition.
+  The white lines isolate the Ground Truth row and column.
+  Colour scale: 55--100\% (Blues).}
+  \label{fig:agreement-matrix}
+\end{figure}
+
+The Ground Truth row (first row) reproduces the known model accuracies
+(57.6\%--62.5\%), representing agreement between each model and the
+Cochrane reference.
+All inter-model cells (the lower-right $8 \times 8$ block) exceed these values,
+ranging from 63.1\% (Claude~Haiku~4.5 and Gemini~2.5~Pro) to 82.0\%
+(Qwen~3.7-Plus and GLM-5).
+These pairwise statistics are descriptive: no bootstrap confidence intervals
+were computed for them.
+Because cells from the same study share textual context and are correlated
+across domains, the effective sampling unit is the study ($n = 227$), not the
+cell ($n = 1{,}589$); each pairwise proportion therefore carries an approximate
+95\% uncertainty of $\pm$6~pp ($\text{SE}\approx\sqrt{p(1-p)/227}$,
+evaluated at $p\approx0.70$).
+Differences smaller than this margin should not be over-interpreted; the
+patterns noted below reflect the overall structure of the matrix rather than
+fine-grained rankings between adjacent cells.
+This systematic gap---models agree with each other more than they agree with
+the ground truth---indicates that the eight models share systematic prediction
+tendencies that diverge from the Cochrane standard in coordinated ways.
+It does not imply that the models are collectively more reliable than the
+ground truth; rather, it reflects shared training priors that cause
+convergent errors.
+
+The magnitude of the gap is interpretable in light of the known reference
+noise: if Cochrane reviewer pairs themselves agree at $\approx$60--79\%
+(the $\kappa = 0.24$--$0.37$ range, converted to expected agreement under
+the observed class distribution), then the inter-model agreement range of
+63--82\% is broadly comparable to or modestly above human inter-rater
+reliability on this task.
+The ground-truth column therefore represents one reference annotator among
+many possible ones, and the model accuracy figures (57--63\%) should be
+interpreted as lower bounds on the models' latent capability rather than
+definitive measurements of their performance against a noise-free standard.
+
+\subsection{Consensus Failures and Model Complementarity}
+\label{sec:consensus-failures}
+
+Of the 1{,}589 study--domain cells, 226 (14.2\%) were \emph{consensus failures}:
+no model in the ensemble produced the correct judgement.
+These cells may reflect genuine textual ambiguity, inconsistency in the Cochrane
+annotation, or systematic limitations shared across all frontier models evaluated
+here.
+Consensus failures were concentrated in the most difficult domains: 50 (22.1\%)
+occurred in D4 and 44 (19.5\%) in D5---the two domains with the most balanced
+three-class distributions---corresponding to consensus failure rates of 22.0\%
+and 19.4\% in those domains, respectively; D2 had the lowest consensus failure
+rate (8.8\%).
+Figure~\ref{fig:intersection} shows the pairwise intersection matrix:
+cell~$(i,j)$ gives $P(A_i \cap A_j)$, the percentage of the 1{,}589 cells
+in which \emph{both} model~$i$ and model~$j$ produced the correct judgement.
+The diagonal entries report each model's overall accuracy ($P(A_i)$).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\linewidth]{all_reviews_pairwise_intersection_heatmap}
+  \caption{Pairwise intersection matrix.
+  Cell~$(i,j)$ = $P(A_i \cap A_j)$: percentage of the 1{,}589 study--domain
+  cells in which both models were correct.
+  Diagonal entries (bold) = individual model accuracy.
+  Colour scale: 40--65\% (YlOrRd); deeper red = greater overlap in correct cells.
+  Upper triangle omitted by symmetry.}
+  \label{fig:intersection}
+\end{figure}
+
+Off-diagonal intersection values range from 45.1\% (Claude~Haiku~4.5 and GPT-5.4)
+to 53.5\% (Qwen~3.7-Plus and GLM-5), all substantially below the respective
+diagonal entries (57.6\%--62.5\%).
+The gap between diagonal and off-diagonal reflects that no two models
+share all of their correct cells: a non-trivial fraction of each model's
+successes are unique to that model.
+Expressing overlap as the Jaccard similarity
+$J(A,B) = P(A \cap B)\,/\,P(A \cup B)$---the fraction of cells correct
+for \emph{at least one} model that are correct for \emph{both}---yields
+values between 60.0\% and 78.1\% across the 28 pairs.
+The highest Jaccard, Qwen~3.7-Plus and GLM-5 ($J = 78.1\%$, $P(A\cap B) = 53.5\%$),
+indicates that nearly four in five cells that either model answers correctly
+are answered correctly by both, confirming this as the most redundant pair.
+The lowest Jaccard, Claude~Haiku~4.5 and GPT-5.4 ($J = 60.0\%$,
+$P(A\cap B) = 45.1\%$), indicates that two in five jointly-correct cells
+belong exclusively to one model---the highest non-redundancy in the ensemble
+and a direct predictor of the high complementarity entry
+visible in Figure~\ref{fig:complementarity}.
+
+Figure~\ref{fig:complementarity} shows the full pairwise complementarity matrix:
+cell~$(i,j)$ gives the percentage of the 1{,}589 cells in which model~$i$ erred
+and model~$j$ was correct.
+Values range from 7.4\% to 17.4\%, with all off-diagonal entries exceeding 7\%,
+confirming that no two models in the ensemble are redundant.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\linewidth]{all_reviews_pairwise_complementarity_heatmap}
+  \caption{Pairwise complementarity matrix.
+  Cell~$(i,j)$ = percentage of the 1{,}589 study--domain cells in which the
+  row model erred and the column model was correct.
+  Colour scale: 0--20\% (PuOr); purple = high complementarity,
+  orange = low complementarity; grey diagonal = undefined.
+  Full numeric values are reported in Table~S\ref{tab:pairwise}.}
+  \label{fig:complementarity}
+\end{figure}
+
+The most salient feature of Figure~\ref{fig:complementarity} is the Claude~Haiku~4.5
+column: it is the darkest column overall, meaning that when any other model errs,
+Haiku recovers those cells at the highest rate (12.3\%--17.4\%).
+This is the direct complement of its accuracy profile---Haiku leads on
+overall accuracy and AC1 by concentrating predictions on the majority class,
+which makes its correct cells less likely to be errors for other models,
+but also makes its errors structurally distinct from theirs.
+The two highest individual entries in the matrix---GPT-5.4~$\to$~Haiku (17.4\%)
+and Gemini~2.5~Pro~$\to$~Haiku (17.3\%)---correspond to the two models with the
+lowest overall accuracy; their larger error sets overlap least with Haiku's.
+The same structural distinctiveness is visible in the agreement matrix
+(Figure~\ref{fig:agreement-matrix}): Haiku has the lowest mean inter-model
+agreement across the ensemble (67.9\%, versus 71.7\%--74.9\% for all other models),
+driven by consistently low agreement with Gemini~2.5~Pro and GPT-5.4
+(63--64\%)---the same dyads that top the complementarity column.
+High complementarity and low overall agreement are two sides of the same coin:
+because Haiku assigns labels differently from the ensemble cluster, it agrees
+with other models less often irrespective of correctness, but those disagreements
+are disproportionately cases where Haiku is right and the other model is wrong.
+At the opposite extreme, the Qwen~3.7-Plus~$\leftrightarrow$~GLM-5 pair
+shows the lowest bidirectional complementarity (7.4\% and 7.6\%), indicating
+the most overlapping error profiles of any pair in the ensemble.
+Grok~4.3 also shows low complementarity as a \emph{column} model for the
+Qwen and GLM-5 rows (7.6\% and 8.9\%), suggesting that these three models
+share a similar error structure that is not well covered by the others.
+This pattern is reinforced by the agreement matrix (Figure~\ref{fig:agreement-matrix}):
+the three highest pairwise inter-model agreements---Qwen~3.7-Plus / GLM-5 (82.0\%),
+GLM-5 / Grok~4.3 (80.2\%), and Qwen~3.7-Plus / Grok~4.3 (77.6\%)---are all
+concentrated within this trio; the trio's mean agreement (79.9\%) exceeds the
+mean of cross-trio pairs by 7.2~pp.
+Taken together, the matrix indicates that Claude~Haiku~4.5, Gemini~2.5~Pro,
+and GPT-5.4 form the most complementary triad: their pairwise entries are
+uniformly above 10\%, and combining any two of them recovers more than a
+fifth of all cells that either individually misses.
 
 \subsection{Inference Mode Comparison}
 \label{sec:inference}
@@ -247,12 +524,13 @@ for the two models evaluated under both conditions.
 \caption{Per-domain vs.\ single-call inference mode comparison for
 Gemini~2.5~Flash and DeepSeek~v4-Flash ($n = 227$ studies; 1{,}589 cells each).
 F1 scores are computed globally across all cells (identical methodology to
-Table~\ref{tab:overall}); per-domain values reproduce the corresponding entries
-in Table~\ref{tab:overall}.
+Table~S\ref{tab:overall}); per-domain values reproduce the corresponding entries
+in Table~S\ref{tab:overall}.
 $\Delta$: single-call minus per-domain; 95\% paired bootstrap CI
 (study-clustered, 5{,}000 iterations) shown in brackets.
 $\dagger$: CI excludes zero (unadjusted for multiplicity; all analyses exploratory).}
 \label{tab:inference}
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{lcccccc}
 \toprule
 Model & Accuracy (\%) & Macro-F1 & F1-LR & F1-HR & F1-UR & Gwet's AC1 \\
@@ -269,7 +547,7 @@ Model & Accuracy (\%) & Macro-F1 & F1-LR & F1-HR & F1-UR & Gwet's AC1 \\
 \quad $\Delta$     & $+$2.3 & $+$0.018 & $+$0.026$^\dagger$ & $-$0.005 & $+$0.034 & $+$0.033 \\
 \quad              & \footnotesize[$-$0.1, $+$4.7] & \footnotesize[$-$0.007, $+$0.044] & \footnotesize[$+$0.004, $+$0.047] & \footnotesize[$-$0.049, $+$0.041] & \footnotesize[$-$0.003, $+$0.072] & \footnotesize[$-$0.001, $+$0.066] \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \end{table}
 
 The overall picture from this two-model pilot comparison

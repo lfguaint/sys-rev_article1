@@ -59,12 +59,15 @@ Using Large Language Models: A Multi-Model Single-Agent Benchmark
 on 227 Randomised Controlled Trials}}
 
 \author{
-  Luiz Felipe Guain Teixeira\textsuperscript{1}%
-  % TODO: add co-authors
+  Luiz Felipe Guain Teixeira\textsuperscript{1,2,3}\quad
+  Cassiano Pereira de Barros\textsuperscript{4}\quad \\
+  Renato Vicente\textsuperscript{1,2,3}
   \\[6pt]
-  \small\textsuperscript{1}% TODO: institution, department, city, country
-  \\[2pt]
-  \small Correspondence: % TODO: corresponding author e-mail
+  \small\textsuperscript{1}TELUS Digital Research Hub\\
+  \small\textsuperscript{2}Center for Artificial Intelligence and Machine Learning, University of São Paulo\\
+  \small\textsuperscript{3}Institute of Mathematics, Statistics and Computer Science, University of São Paulo\\[2pt]
+  \small\textsuperscript{4}Paulista School of Medicine, Federal University of São Paulo\\[2pt]
+  \small \texttt{\{luiz.felipe.teixeira, rvicente\}@usp.br}
 }
 
 \date{}
@@ -106,8 +109,9 @@ Gemini~2.5~Pro ($[0.344, 0.420]$) and GPT-5.4 ($[0.349, 0.426]$),
 though this comparison is unadjusted and exploratory.
 Unclear Risk was the most consistently under-detected class
 (recall~$< 0.20$ in three of seven domains across most models).
-The oracle accuracy of 85.8\%---23 percentage points above the best
-individual model---confirmed substantial non-redundancy among models.
+Consensus failures (cells where no model was correct) accounted for only
+14.2\% of the benchmark, confirming substantial non-redundancy among models;
+the remaining 85.8\% of cells had at least one correct model.
 The comparison of inference modes yielded small, largely non-significant
 differences: ten of twelve $\Delta$ metrics had confidence intervals
 spanning zero, and D7~(Other Bias)---the domain hypothesised to benefit
@@ -142,11 +146,11 @@ models; natural language processing; Cochrane; evidence synthesis; automation
 
 % ── Acknowledgements ──────────────────────────────────────────────────
 \section*{Acknowledgements}
-% TODO: funding agencies and grant numbers
-% Example: This work was supported by [Agency] under grant [No.~XXXX/YYYY-Z].
+We gratefully acknowledge the financial support of the TELUS Digital Research Hub.
 
 \section*{Data and Code Availability}
-% TODO: repository URL; note any restrictions on the ground-truth dataset
+The analysis code is publicly available at
+\url{https://github.com/ACS-USP/systematic-reviews}.
 
 \section*{Conflicts of Interest}
 The authors declare no conflicts of interest.

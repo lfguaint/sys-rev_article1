@@ -165,30 +165,32 @@ constant.
 \subsection{Language Models}
 \label{sec:models}
 
-Eight state-of-the-art LLMs were evaluated (Table~\ref{tab:models}).
-All models were accessed via the OpenRouter~API in June~2026 using the
-identifier strings listed in Table~\ref{tab:models}.
-No fine-tuning or prompt adaptation specific to individual models was performed.
-All inference calls used provider-default sampling parameters (temperature and
-other generation settings at the API defaults); each study received a single
-inference call per condition (one call per domain in per-domain mode; one call
-for all seven domains in single-call mode), with no repeated sampling.
-This design was intentional: the aim is to benchmark models as they are
-available to practitioners, not under artificial conditions.
-Manipulating generation parameters such as temperature would (i)~require a
-separate optimisation procedure for each model, introducing a confound between
-prompt design and generation settings, and (ii)~produce heterogeneous
-evaluation conditions given that different model families exhibit varying
-sensitivity to the same temperature value.
-Strategies such as majority voting over repeated draws or ensembling outputs
-across runs---which can improve reliability---represent post-hoc optimisation
-beyond the scope of a zero-shot benchmark; their evaluation is left to future
-work.
-The OpenRouter identifier strings in Table~\ref{tab:models} represent the model
-state routed at the time of inference; providers may silently update the
-underlying weights associated with a fixed identifier string, so results
-reported here reflect the model checkpoints active during the June~2026
-inference window.
+Eight frontier LLMs were evaluated (Table~\ref{tab:models}), accessed via the
+OpenRouter~API in June~2026 using the identifier strings listed therein.
+No model-specific fine-tuning, prompt engineering beyond the fixed assessment
+prompt (Section~\ref{sec:rob-assessment}), or retrieval augmentation was applied.
+
+\textbf{Evaluation protocol.}
+All calls used provider-default generation parameters and each study--condition
+pair received a single inference draw with no output aggregation, constituting
+a hyperparameter-free single-draw evaluation protocol.
+This design reflects two constraints.
+First, decoding parameters such as temperature interact with model architecture
+and training objective in model-family-specific ways; varying them across models
+would confound generation configuration with prompt design, rendering
+cross-model comparisons uninterpretable.
+Second, post-hoc reliability strategies---including self-consistency decoding
+\citep{Wang2023}, output ensembling, and majority voting over repeated
+draws---are optimisations orthogonal to native zero-shot capability and
+constitute a separate experimental question outside the scope of this benchmark.
+
+\textbf{Reproducibility and versioning.}
+OpenRouter routes each identifier string to the provider-current checkpoint at
+inference time; underlying weights may be updated by the provider without a
+corresponding change to the public identifier.
+All results are therefore conditioned on the checkpoint states active during the
+June~2026 inference window and should not be assumed to generalise to subsequent
+revisions of the same identifier strings.
 
 \begin{table}[ht]
 \centering
@@ -284,12 +286,17 @@ These findings contextualise model performance against a noisy reference
 standard rather than a true human ceiling, and motivate domain-level rather
 than aggregate interpretation of results.
 
-\textbf{Oracle upper bound.}
-For each study--domain cell, the \emph{any-correct oracle} is defined as correct
-if at least one of the eight models matched the ground truth.
-Oracle accuracy quantifies the theoretical ceiling achievable by a hypothetical
-perfect model-selection strategy and characterises the degree of complementarity
-among models.
+\textbf{Consensus failures and model complementarity.}
+For each study--domain cell, we recorded whether at least one of the eight models
+matched the ground truth.
+Cells where \emph{no} model was correct are termed \emph{consensus failures} and
+represent cases in which all evaluated models failed simultaneously, regardless of
+which model was consulted.
+The \emph{any-correct rate} (proportion of cells where at least one model
+succeeded) characterises the degree of complementarity among models: a high
+any-correct rate alongside low individual-model accuracy indicates that different
+models fail on different cells, yielding non-redundant coverage across the
+ensemble.
 
 \textbf{Stratified analyses.}
 All primary metrics were recomputed within subgroups defined by intervention type

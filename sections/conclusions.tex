@@ -26,15 +26,22 @@ Domain-level and stratification analyses revealed structured heterogeneity in
 performance.
 Sequence generation~(D1) and allocation concealment~(D2) were reliably assessed
 across all models, whereas other sources of bias~(D7) showed the greatest
-inter-model accuracy spread and blinding of outcome assessors~(D4) had the lowest
-oracle ceiling (78.0\%).
+inter-model accuracy spread and blinding of outcome assessors~(D4) had the
+highest consensus failure rate (22.0\%---no model correct in 50 of 227~cells).
 Clinical domains with clear, domain-specific methodological criteria (Orthopaedics
 \& Trauma, Endocrine \& Metabolic) supported higher Macro-F1 than domains with more
 heterogeneous study designs (Infectious Disease, Reproductive \& Sexual Health).
 
-The oracle accuracy of 85.8\%---23 percentage points above the best individual
-model---confirms that the eight models make substantially non-redundant errors,
-establishing a firm empirical ceiling for any multi-model selection strategy.
+Consensus failures---cells where no model was correct---accounted for 14.2\%
+(226 of 1{,}589 cells) and were concentrated in D4 and D5, the two most
+ambiguous domains.
+These cases identify the boundaries of current frontier model capability under
+this evaluation design and may reflect genuine annotation uncertainty as much
+as model failure.
+The remaining 85.8\% of cells had at least one correct model, yet pairwise
+complementarity analysis showed that 7.4\%--17.4\% of cells are correctable
+by substituting any one model for another, confirming that the eight models
+make substantially non-redundant errors.
 
 The comparison between per-domain and single-call inference modes
 (Section~\ref{sec:inference}) produced small differences that do not
@@ -53,6 +60,46 @@ not identify a meaningful performance rationale for preferring single-call
 over per-domain assessment; the primary practical distinction between the
 two modes is computational (single-call reduces inference calls by 7$\times$)
 rather than one of accuracy.
+
+Reframing High Risk detection as a binary classification task (High Risk
+vs.\ not High Risk) highlights the clinical stakes of the leniency bias
+documented above.
+Under this framing, the best-performing models for High Risk recall detected
+fewer than two thirds of High Risk cells (F1-HR: 0.455--0.480 for the
+top-ranked models), meaning roughly one in three cells that should trigger
+reviewer scrutiny passed undetected.
+Because the cost of a false negative---a biased study classified as acceptable
+and included unquestioned in a meta-analysis---substantially exceeds the cost of
+a false positive, tools intended to assist real-world screening workflows would
+need to prioritise sensitivity over overall accuracy, a trade-off not currently
+optimised by the zero-shot prompt evaluated here.
+
+The cell-level concordance partition offers a practical framework for directing
+qualitative review effort.
+Cells in which all models converge on the correct answer require no additional
+attention.
+Cells in which all models converge on the \emph{same wrong} answer are the
+highest-priority targets for prompt refinement or annotation review: unanimity
+of error across architecturally diverse models makes model-idiosyncratic
+explanation implausible, pointing instead to shared training priors, prompt
+ambiguity, or genuine ground-truth noise.
+Cells in which a single model is the sole outlier---either the only model
+correct or the only model incorrect---index model-specific capacity gaps
+independent of task difficulty.
+Targeting qualitative analysis at consensus errors before individual outliers
+maximises diagnostic yield per unit of human effort.
+
+The domain and stratification analyses converge on a specific, actionable
+direction for prompt improvement: a blinding rule sensitive to intervention
+type.
+Models would benefit from explicit guidance distinguishing trials in which
+blinding is physically feasible (pharmacological interventions with matched
+placebos) from those in which it is not (surgical procedures, physiotherapy,
+medical devices), with the latter receiving a conservative default that does
+not presuppose the availability of a blinding mechanism.
+This single rule targets D4---the domain with the most systematic and
+directionally consistent errors in the benchmark---and has direct implications
+for the High Risk recall deficit identified above.
 
 Several limitations should be noted.
 First, the ground-truth annotations derive from published Cochrane review
@@ -117,12 +164,12 @@ appear in paywalled journals, making full-text ingestion at training time less
 likely for the majority of papers.
 Moreover, the empirical pattern is inconsistent with memorisation at scale:
 the best individual model (Claude~Haiku~4.5) achieved a perfect 7/7 score on
-only 12 of 227 studies (5.3\%), and even the oracle across all eight models
-reached 7/7 on only 40 studies (17.6\%).
+only 12 of 227 studies (5.3\%), and even across the full ensemble of eight
+models all seven domains were correct in only 40 studies (17.6\%).
 Both figures are consistent with the rates expected under independent domain
 judgements at the observed per-domain accuracy ($0.60^7 \approx 2.8\%$; inflated
 modestly by the low intraclass correlation of $\hat\rho = 0.044$ to roughly
-4--5\% per model; see Supporting Information~S6 for derivation), leaving no systematic excess attributable to retrieval.
+4--5\% per model; see Supporting Information~S7 for derivation), leaving no systematic excess attributable to retrieval.
 Targeted contamination probes (e.g.\ membership inference or verbatim
 reproduction tests) were not conducted, as the opaque training corpora of the
 evaluated models preclude rigorous analysis; this remains a caveat for
