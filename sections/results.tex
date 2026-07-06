@@ -37,15 +37,22 @@ confirms that the eight models make substantially non-redundant errors
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=\linewidth]{all_reviews_overall_forest}
+  \includegraphics[width=\linewidth]{all_reviews_overall_barh_bootstrap}
   \caption{Overall performance on RoB~1.0 assessment for the eight models
   ($n = 227$ studies; 1{,}589 cells).
-  Each row is one model; columns show accuracy (\%), Macro-F1,
-  F1 for each risk class (F1-LR, F1-HR, F1-UR), and Gwet's AC1.
-  Filled circles are point estimates; horizontal bars are 95\% study-clustered
+  Each row is one model; columns show accuracy (\%), Cohen's~$\kappa$,
+  Gwet's~AC1, and F1 for each risk class (F1-LR, F1-HR, F1-UR).
+  $\kappa$ and AC1 are placed side by side to expose their divergence under
+  class imbalance (prevalence paradox).
+  Bars represent point estimates; error bars are 95\% study-clustered
   bootstrap confidence intervals (5{,}000 iterations, resampling 227 studies
   with replacement).
-  Dashed vertical lines mark the cross-model mean for each metric.
+  Dashed vertical lines show analytical baselines: \emph{Always LR} (green),
+  \emph{Always HR} (red), \emph{Always UR} (orange), and \emph{Random} uniform
+  (blue dotted); baselines with F1\,$=$\,0 or $\kappa$\,$=$\,0 for a given
+  metric are not drawn.
+  For $\kappa$ and AC1, the dashed grey line marks zero (chance-level agreement).
+  Macro-F1 is reported in Table~S\ref{tab:overall}.
   Colours identify models consistently throughout the paper.
   Full numerical values are reported in Table~S\ref{tab:overall}.}
   \label{fig:overall-forest}
@@ -99,13 +106,19 @@ of how often each arises.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\linewidth]{all_reviews_domain_grouped_bars_metrics_bootstrap}
-  \caption{Per-domain performance by model across five metrics: Macro-F1,
+  \caption{Per-domain performance by model across five metrics: Cohen's~$\kappa$,
   F1 for Low Risk, Unclear Risk, and High Risk, and Gwet's AC1
   (95\% bootstrap CIs; study-clustered, 5{,}000 iterations,
   resampling 227 studies with replacement).
   Each panel shares the same domain grouping on the $x$-axis;
-  diamonds are point estimates; vertical bars are 95\% CIs.
-  The dashed horizontal line marks 0.5.
+  bars are point estimates; error bars are 95\% CIs.
+  Short horizontal segments show domain-specific analytical baselines
+  (\emph{Always LR} green, \emph{Always HR} red, \emph{Always UR} orange),
+  computed from each domain's class prevalence; the blue dotted line is the
+  \emph{Random} uniform baseline (constant 1/3 across domains).
+  Baselines with F1\,$=$\,0 for a given metric are not drawn.
+  For $\kappa$ and AC1, the dashed grey line marks zero (chance-level agreement).
+  Macro-F1 by domain is reported in Table~S\ref{tab:domain-f1}.
   Colours identify models consistently throughout the paper.}
   \label{fig:domain-metrics}
 \end{figure}
@@ -156,112 +169,118 @@ chance-corrected agreement thus reflect not a shared systematic error but genuin
 criterion ambiguity; the residual difficulty in D7 is unlikely to be resolved by
 prompt refinement alone.
 
-\subsection{Per-class Analysis}
-\label{sec:perclass}
-
-Figure~\ref{fig:domain-metrics} disaggregates Macro-F1 into its three constituent
-classes.
+\textbf{Per-class breakdown.}
+Figure~\ref{fig:domain-metrics} disaggregates performance into the three
+constituent classes across all domains.
 Across all models, the ordering F1-LR~$\gg$~F1-UR~$\geq$~F1-HR holds as a
-near-universal pattern, closely mirroring the prevalence ordering of the three
-classes (53.5\%, 29.1\%, and 17.4\%, respectively; Table~\ref{tab:class-dist}).
-Models detect each class roughly in proportion to how often they encounter it
-in training and inference, producing a performance gradient that tracks
-class frequency.
+near-universal pattern, closely mirroring the prevalence ordering
+(53.5\%, 29.1\%, and 17.4\%, respectively; Table~\ref{tab:class-dist}).
 The sole exception is Claude~Haiku~4.5, which inverts the UR--HR ordering
-(F1-HR~$= 0.469 >$ F1-UR~$= 0.413$), suggesting a different response
-calibration: Haiku is more willing to assign High Risk when text signals a
-methodological concern, at the cost of under-using Unclear Risk as an
-epistemic hedge---a pattern consistent with its highest F1-LR (0.743) and
-lowest F1-UR (0.413) in the entire benchmark.
+(F1-HR~$= 0.469 >$ F1-UR~$= 0.413$): Haiku is more willing to assign High Risk
+when text signals a methodological concern, at the cost of under-using Unclear
+Risk as an epistemic hedge---consistent with its highest F1-LR (0.743) and
+lowest F1-UR (0.413) in the benchmark.
 
 \textbf{Low Risk} detection was strong and consistent across models in D1 and D2
-(F1 $> 0.75$ for all models).
-Performance deteriorated in D7, where most models reported Low Risk F1 below 0.60;
-Gemini~2.5~Pro collapsed to F1~$= 0.29$ in D7 as a consequence of its High
-Risk-biased prediction strategy described above.
+(F1 $> 0.75$ for all models), but deteriorated in D7: most models reported
+F1-LR below 0.60 there, and Gemini~2.5~Pro collapsed to F1~$= 0.29$ as a
+consequence of its High Risk-biased prediction strategy.
 
-\textbf{High Risk} detection was reliable only in D3 (F1: 0.47--0.79), the single
-domain in which High Risk cases outnumbered Low Risk cases in the ground truth
+\textbf{High Risk} detection was reliable only in D3 (F1: 0.47--0.79), the
+single domain where High Risk cases outnumbered Low Risk in the ground truth
 (103 vs.\ 74; Table~\ref{tab:class-dist}).
-The wide bootstrap confidence intervals for F1-HR visible in D1 and D2
-in Figure~\ref{fig:domain-metrics} are a direct consequence of the small number
-of High Risk cases in those domains (D1: $n = 5$; D2: $n = 10$ of 227 studies),
-such that a single misclassified study shifts the F1 estimate substantially
-under resampling; the point estimates themselves carry accordingly low precision
-and should not be compared across models in those domains.
-In D6~(selective outcome reporting), four models reported High Risk F1~$= 0.00$
-(Gemini~2.5~Flash, GPT-5.4, Claude~Haiku~4.5, and Qwen~3.7-Plus), corresponding
-to zero true-positive High Risk predictions across all 227 studies in that domain.
-High Risk is the least prevalent class in D6 (25 of 227 cases, 11\%;
-Table~\ref{tab:class-dist}), and these models predicted fewer than three High Risk
-cases in D6 each, systematically defaulting to Low Risk or Unclear Risk in the
-absence of explicit evidence of selective reporting.
+The wide bootstrap CIs for F1-HR in D1 and D2
+(Figure~\ref{fig:domain-metrics}) reflect the small number of High Risk cases
+in those domains (D1: $n = 5$; D2: $n = 10$), such that a single
+misclassified study shifts the F1 estimate substantially under resampling.
+In D6~(selective outcome reporting), four models (Gemini~2.5~Flash, GPT-5.4,
+Claude~Haiku~4.5, and Qwen~3.7-Plus) reported High Risk F1~$= 0.00$,
+corresponding to zero true-positive High Risk predictions across all 227 studies:
+High Risk is the least prevalent class in D6 (25 of 227 cases, 11\%), and these
+models systematically defaulted to Low Risk or Unclear Risk in the absence of
+explicit evidence of selective reporting.
 
 \textbf{Unclear Risk} was the most consistently under-detected class.
-Mean recall across all models fell below 0.20 in D3, D5, and D7.
-The worst single result was Claude~Haiku~4.5 in D5: recall~$= 0.04$, meaning the
-model correctly identified only 2 of the 45 Unclear Risk cases in D5.
+Mean recall fell below 0.20 in D3, D5, and D7 across all models.
+The worst single result was Claude~Haiku~4.5 in D5: recall~$= 0.04$
+(2 of 45 Unclear Risk cases correctly identified).
 The most accurately detected Unclear Risk domain was D2, where all models
 achieved F1 $> 0.70$, consistent with the near-equal prevalence of Low Risk and
-Unclear Risk judgements in that domain (113 vs.\ 104).
-
-\textbf{Unclear Risk as abstention.}
-The pattern of Unclear Risk under-detection reflects an asymmetric decision
-behaviour.
-In D3, D4, D5, and D7---domains where the ground-truth Unclear Risk rate ranges
-from 20\% to 29\%---all models used Unclear Risk substantially less often than
-the Cochrane reviewer, committing to definitive Low Risk or High Risk judgements
-even in cases where the reviewer judged methodological information to be
-insufficient.
-In D2 and D6, the pattern reverses: models over-used Unclear Risk relative to
-the ground truth, reflecting excessive hedging in the face of ambiguous reporting.
-This bidirectional discrepancy indicates that models calibrate their
-uncertainty threshold differently across domains and that reducing false
-positives for Unclear Risk in the blinding domains (D3--D4) is a necessary
-condition for improving High Risk recall there.
+Unclear Risk in that domain (113 vs.\ 104).
+The pattern of under-detection reflects an asymmetric decision behaviour:
+in D3, D4, D5, and D7---where the ground-truth Unclear Risk rate ranges from
+20\% to 29\%---all models committed to definitive Low Risk or High Risk
+judgements more often than the Cochrane reviewer, even in cases judged as
+informationally insufficient.
+In D2 and D6 the pattern reverses, with models over-using Unclear Risk relative
+to the ground truth.
+This bidirectional discrepancy indicates that models calibrate their uncertainty
+threshold differently across domains; reducing false positives for Unclear Risk
+in the blinding domains (D3--D4) is a necessary condition for improving
+High Risk recall there.
 
 \subsection{Error Direction: Leniency and Caution}
 \label{sec:error-direction}
 
-% Figure: error direction heatmap
+% Figure: error direction tripartite heatmap
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=\linewidth]{all_reviews_error_direction_leniency_optionC}
-  \caption{Error direction by RoB domain and intervention type.
-  Each cell shows the percentage of errors that are lenient
-  (model assigns a lower-risk class than the ground truth)
-  under an ordinal scale Low Risk $<$ Unclear Risk $<$ High Risk;
-  $n$ = total errors in each cell.
-  Values above 50\% indicate a lenient bias; values below 50\% indicate a
-  cautious bias.}
+  \includegraphics[width=\linewidth]{all_reviews_error_direction_tripartite}
+  \caption{Error direction by RoB domain and intervention type
+  under the LR-anchor framework (three panels, pooled across all eight models).
+  \textbf{Lenient} (red): model assigns Low Risk when ground truth was High
+  Risk or Unclear Risk---the study passes unscrutinised.
+  \textbf{Cautious} (blue): model assigns High Risk or Unclear Risk when
+  ground truth was Low Risk---a valid study is flagged for unnecessary review.
+  \textbf{Lateral} (orange): model confuses High Risk with Unclear Risk or
+  vice versa---the study remains in the flagged pile but with a mislabelled
+  severity.
+  The three percentages sum to 100\% in each cell; $n$ = total errors for
+  that domain--intervention combination (identical across all three panels).
+  Grey cells indicate no errors in that combination.}
   \label{fig:error-direction}
 \end{figure}
 
 Among cells where models erred, errors were not directionally neutral.
-Figure~\ref{fig:error-direction} shows the percentage of errors that were
-lenient across domains and intervention types.
+Figure~\ref{fig:error-direction} decomposes errors into three categories under
+the LR-anchor framework: \emph{lenient} (Low Risk assigned when High Risk or
+Unclear Risk was correct), \emph{cautious} (High Risk or Unclear Risk assigned
+when Low Risk was correct), and \emph{lateral} (High Risk and Unclear Risk
+confused with each other---the study remains flagged but with a mislabelled severity).
 
 \textbf{D4}~(blinding of outcome assessors) exhibited the most pronounced and
-consistent leniency, with lenient errors exceeding 70\% in drug/medication
-trials across almost all models.
-This is interpretable: in pharmacological trials, the use of double-blind
-placebo-controlled designs is common, and models may be defaulting to Low Risk
-when such language is absent, rather than correctly inferring High Risk from
-the lack of an explicit blinding protocol.
+consistent leniency (50--74\% across intervention types), with
+drug/medication trials showing the highest lenient fraction (74\%) and
+lateral confusion remaining low ($\leq$35\%).
+Models appear to conflate the objectivity of the outcome measure with
+adequate assessor blinding, defaulting to Low Risk when no explicit blinding
+failure is stated.
 
-\textbf{D3}~(blinding of participants and personnel) showed a gradient by
-intervention type: drug trials showed lower leniency (blinding is frequently
-achieved), whereas device and procedural trials showed the highest leniency
-rates, consistent with the fact that physical intervention concealment is
-often impossible in those settings yet models continued to default to Low Risk.
+\textbf{D3}~(blinding of participants and personnel) showed both high leniency
+and the highest lateral fraction in the benchmark.
+While leniency was elevated across all intervention types (48--76\%), the
+lateral fraction was highest for non-pharmacological interventions (42\%) and
+medical devices (24\%), indicating that models often recognised a blinding
+concern without resolving whether it warranted High Risk or Unclear Risk---a
+distinction that turns on reporting quality rather than intervention feasibility.
 
 \textbf{D1}~(sequence generation) and \textbf{D2}~(allocation concealment)
-showed approximately balanced error directions across all models and intervention
-types, consistent with their higher accuracy and the availability of explicit
-methodological language in well-reported trials.
-\textbf{D7}~(other sources of bias) showed no dominant direction, with models
-diverging between lenient and cautious errors---confirming the heterogeneous
-character of errors in this domain noted in Section~\ref{sec:domain}.
+showed a predominantly \emph{cautious} error profile: when models erred
+on these domains, they over-flagged Low Risk studies as High Risk or Unclear
+Risk (55--87\% cautious in D1; 49--100\% in D2).
+This reversal relative to D3--D4 is consistent with the explicit, formulaic
+language used to describe randomisation procedures---models rarely miss a
+clear statement of adequate randomisation and instead raise false concerns
+when reports are terse.
+
+\textbf{D6}~(selective outcome reporting) was also predominantly cautious
+(48--72\%), reflecting a tendency to flag concerns in the absence of a
+registered protocol even when the ground-truth judgement was Low Risk.
+
+\textbf{D7}~(other sources of bias) showed no dominant direction, with
+roughly balanced lenient and cautious fractions and a lateral component of
+12--21\%---confirming the idiosyncratic, criterion-ambiguous character of
+errors in this domain noted in Section~\ref{sec:domain}.
 
 \clearpage
 \subsection{Stratification by Intervention Type}

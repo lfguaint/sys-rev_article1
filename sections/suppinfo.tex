@@ -153,39 +153,42 @@ Return ONLY valid JSON with:
 1{,}589 cells). Models ranked by accuracy.
 F1-LR, F1-HR, F1-UR: F1 for Low Risk, High Risk, and Unclear Risk computed
 globally across all study--domain cells.
+Cohen's~$\kappa$ and Gwet's~AC1 are both chance-corrected agreement
+coefficients; they differ in how the expected chance agreement $p_e$ is
+computed (see Methods).
 Best value in each column shown in bold.
 95\% confidence intervals (study-clustered bootstrap, 5{,}000 iterations,
 resampling 227 studies with replacement) are shown in \textit{brackets} below
 each point estimate; all analyses are exploratory (see Methods, Statistical
 Inference).}
 \label{tab:overall}
-\begin{tabular}{lcccccc}
+\begin{tabular}{lccccccc}
 \toprule
-Model & Accuracy (\%) & Macro-F1 & F1-LR & F1-HR & F1-UR & Gwet's AC1 \\
+Model & Accuracy (\%) & Macro-F1 & F1-LR & F1-HR & F1-UR & Cohen's $\kappa$ & Gwet's AC1 \\
 \midrule
-Claude~Haiku~4.5   & \textbf{62.5}   & 0.541           & \textbf{0.743}  & 0.469           & 0.413           & \textbf{0.485}  \\
-                   & \footnotesize[59.8, 65.2] & \footnotesize[0.511, 0.569] & \footnotesize[0.718, 0.767] & \footnotesize[0.412, 0.521] & \footnotesize[0.361, 0.463] & \footnotesize[0.443, 0.526] \\
+Claude~Haiku~4.5   & \textbf{62.5}   & 0.541           & \textbf{0.743}  & 0.469           & 0.413           & 0.325           & \textbf{0.485}  \\
+                   & \footnotesize[59.8, 65.2] & \footnotesize[0.511, 0.569] & \footnotesize[0.718, 0.767] & \footnotesize[0.412, 0.521] & \footnotesize[0.361, 0.463] & \footnotesize[0.286, 0.365] & \footnotesize[0.443, 0.526] \\
 \addlinespace[3pt]
-GLM-5              & 61.1            & 0.557           & 0.709           & 0.441           & \textbf{0.520}  & 0.449           \\
-                   & \footnotesize[58.7, 63.5] & \footnotesize[0.529, 0.582] & \footnotesize[0.682, 0.735] & \footnotesize[0.385, 0.494] & \footnotesize[0.479, 0.561] & \footnotesize[0.411, 0.485] \\
+GLM-5              & 61.1            & 0.557           & 0.709           & 0.441           & \textbf{0.520}  & 0.341           & 0.449           \\
+                   & \footnotesize[58.7, 63.5] & \footnotesize[0.529, 0.582] & \footnotesize[0.682, 0.735] & \footnotesize[0.385, 0.494] & \footnotesize[0.479, 0.561] & \footnotesize[0.301, 0.380] & \footnotesize[0.411, 0.485] \\
 \addlinespace[3pt]
-Qwen~3.7-Plus      & 60.9            & 0.525           & 0.718           & 0.356           & 0.503           & 0.457           \\
-                   & \footnotesize[58.3, 63.4] & \footnotesize[0.496, 0.552] & \footnotesize[0.691, 0.743] & \footnotesize[0.293, 0.413] & \footnotesize[0.459, 0.543] & \footnotesize[0.417, 0.495] \\
+Qwen~3.7-Plus      & 60.9            & 0.525           & 0.718           & 0.356           & 0.503           & 0.306           & 0.457           \\
+                   & \footnotesize[58.3, 63.4] & \footnotesize[0.496, 0.552] & \footnotesize[0.691, 0.743] & \footnotesize[0.293, 0.413] & \footnotesize[0.459, 0.543] & \footnotesize[0.266, 0.345] & \footnotesize[0.417, 0.495] \\
 \addlinespace[3pt]
-Gemini~2.5~Flash   & 60.7            & \textbf{0.558}  & 0.718           & \textbf{0.474}  & 0.484           & 0.437           \\
-                   & \footnotesize[58.2, 63.1] & \footnotesize[0.533, 0.582] & \footnotesize[0.690, 0.744] & \footnotesize[0.424, 0.516] & \footnotesize[0.443, 0.526] & \footnotesize[0.399, 0.475] \\
+Gemini~2.5~Flash   & 60.7            & \textbf{0.558}  & 0.718           & \textbf{0.474}  & 0.484           & \textbf{0.349}  & 0.437           \\
+                   & \footnotesize[58.2, 63.1] & \footnotesize[0.533, 0.582] & \footnotesize[0.690, 0.744] & \footnotesize[0.424, 0.516] & \footnotesize[0.443, 0.526] & \footnotesize[0.312, 0.384] & \footnotesize[0.399, 0.475] \\
 \addlinespace[3pt]
-DeepSeek~v4-Flash  & 60.3            & \textbf{0.558}  & 0.704           & \textbf{0.480}  & 0.489           & 0.433           \\
-                   & \footnotesize[57.7, 62.9] & \footnotesize[0.531, 0.585] & \footnotesize[0.676, 0.730] & \footnotesize[0.429, 0.530] & \footnotesize[0.447, 0.530] & \footnotesize[0.394, 0.472] \\
+DeepSeek~v4-Flash  & 60.3            & \textbf{0.558}  & 0.704           & \textbf{0.480}  & 0.489           & 0.337           & 0.433           \\
+                   & \footnotesize[57.7, 62.9] & \footnotesize[0.531, 0.585] & \footnotesize[0.676, 0.730] & \footnotesize[0.429, 0.530] & \footnotesize[0.447, 0.530] & \footnotesize[0.296, 0.377] & \footnotesize[0.394, 0.472] \\
 \addlinespace[3pt]
-Grok~4.3           & 60.1            & 0.549           & 0.696           & 0.432           & 0.518           & 0.433           \\
-                   & \footnotesize[57.8, 62.5] & \footnotesize[0.523, 0.574] & \footnotesize[0.670, 0.722] & \footnotesize[0.376, 0.486] & \footnotesize[0.478, 0.556] & \footnotesize[0.397, 0.471] \\
+Grok~4.3           & 60.1            & 0.549           & 0.696           & 0.432           & 0.518           & 0.326           & 0.433           \\
+                   & \footnotesize[57.8, 62.5] & \footnotesize[0.523, 0.574] & \footnotesize[0.670, 0.722] & \footnotesize[0.376, 0.486] & \footnotesize[0.478, 0.556] & \footnotesize[0.288, 0.362] & \footnotesize[0.397, 0.471] \\
 \addlinespace[3pt]
-GPT-5.4            & 57.7            & 0.546           & 0.668           & 0.464           & 0.506           & 0.387           \\
-                   & \footnotesize[55.1, 60.3] & \footnotesize[0.519, 0.572] & \footnotesize[0.636, 0.698] & \footnotesize[0.410, 0.511] & \footnotesize[0.468, 0.543] & \footnotesize[0.349, 0.426] \\
+GPT-5.4            & 57.7            & 0.546           & 0.668           & 0.464           & 0.506           & 0.322           & 0.387           \\
+                   & \footnotesize[55.1, 60.3] & \footnotesize[0.519, 0.572] & \footnotesize[0.636, 0.698] & \footnotesize[0.410, 0.511] & \footnotesize[0.468, 0.543] & \footnotesize[0.282, 0.361] & \footnotesize[0.349, 0.426] \\
 \addlinespace[3pt]
-Gemini~2.5~Pro     & 57.6            & 0.543           & 0.674           & 0.455           & 0.502           & 0.383           \\
-                   & \footnotesize[55.1, 60.0] & \footnotesize[0.517, 0.569] & \footnotesize[0.643, 0.702] & \footnotesize[0.407, 0.501] & \footnotesize[0.458, 0.542] & \footnotesize[0.344, 0.420] \\
+Gemini~2.5~Pro     & 57.6            & 0.543           & 0.674           & 0.455           & 0.502           & 0.331           & 0.383           \\
+                   & \footnotesize[55.1, 60.0] & \footnotesize[0.517, 0.569] & \footnotesize[0.643, 0.702] & \footnotesize[0.407, 0.501] & \footnotesize[0.458, 0.542] & \footnotesize[0.293, 0.367] & \footnotesize[0.344, 0.420] \\
 \bottomrule
 \end{tabular}
 \end{sidewaystable}

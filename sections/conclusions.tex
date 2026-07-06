@@ -5,7 +5,9 @@
 \label{sec:conclusions}
 
 Eight state-of-the-art LLMs assessed RoB~1.0 for 227 randomised controlled trials
-in a zero-shot, single-agent setting.
+in a zero-shot, single-agent setting, addressing whether the reliability shortfall
+documented in prior work is uniform across the RoB~1.0 structure or varies
+predictably by domain and intervention type.
 Overall accuracy ranged narrowly from 57.6\% to 62.5\%, but Macro-F1 and Gwet's~AC1
 revealed meaningful differences in how models handled the three nominal classes.
 Models with the highest accuracy achieved it partly by concentrating predictions on
@@ -100,6 +102,30 @@ not presuppose the availability of a blinding mechanism.
 This single rule targets D4---the domain with the most systematic and
 directionally consistent errors in the benchmark---and has direct implications
 for the High Risk recall deficit identified above.
+
+The aggregate performance range observed here is consistent with the recent
+preregistered evaluation by \citet{Nyrhi2026}, who applied four contemporary LLMs
+to 100~RCTs from Cochrane reviews under RoB~1.0 and reported interobserver
+$\kappa$ of 0.27--0.39---concluding, as we do, that current models do not meet the
+reliability threshold for autonomous use.
+Our study extends that comparison in three directions.
+First, evaluating eight models spanning five provider families reveals that aggregate
+performance is approximately stable across frontier models, shifting the central
+question from \emph{which model} to \emph{which domains and intervention types}
+support reliable assistance---a question that aggregate summaries cannot answer.
+Second, domain-stratified analysis shows that D1 and D2, where models achieve
+accuracy and concordance broadly comparable to a second human reviewer, are
+plausible targets for assisted screening today, whereas the systematic leniency
+bias in D4 and the idiosyncratic divergence in D7 identify specific failure modes
+that require targeted prompt improvements before reliable assistance is achievable.
+Third, explicit degenerate baselines and the juxtaposition of Cohen's~$\kappa$
+with Gwet's~AC1 expose analytical pitfalls specific to this task: the margin above
+trivially achievable strategies is narrowest for the clinically consequential
+classes (High Risk and Unclear Risk), and the two agreement coefficients diverge
+most sharply for the model with the highest accuracy (Claude~Haiku~4.5:
+$\kappa = 0.325$ vs AC1~$= 0.485$), cautioning against treating AC1-based
+summaries as a direct proxy for classification performance when class distributions
+are skewed.
 
 Several limitations should be noted.
 First, the ground-truth annotations derive from published Cochrane review

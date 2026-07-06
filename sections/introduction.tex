@@ -48,21 +48,30 @@ choice affects assessment quality is an open empirical question.
 As frontier LLMs have grown more capable and their inference costs have fallen,
 evaluating their effectiveness for RoB assessment has become both feasible and
 practically important.
+A recent preregistered comparative study applied four contemporary LLMs to
+100~RCTs from Cochrane reviews under the RoB~1.0 instrument, reporting
+interobserver $\kappa$ of 0.27--0.39 and concluding that none reached the
+reliability threshold required for autonomous use \citep{Nyrhi2026}.
+Whether this shortfall is uniform across the RoB~1.0 structure---or whether
+reliable assistance is already viable for specific domains and intervention types
+while systematic failures persist elsewhere---has direct implications for how
+LLMs can be integrated into real screening workflows.
 
-The present study provides a systematic empirical comparison of eight state-of-the-art
-LLMs on zero-shot, single-agent RoB~1.0 assessment applied to 227~randomised
-controlled trials drawn from 127~Cochrane systematic reviews published in~2024.
+The present study addresses this question with a systematic comparison of eight
+state-of-the-art LLMs on zero-shot, single-agent RoB~1.0 assessment applied to
+227~randomised controlled trials drawn from 127~Cochrane systematic reviews
+published in~2024.
 All models were evaluated on a common benchmark under identical conditions: the same
 prompt, the same fully text-based study representations produced by a standardised
 PDF-to-Markdown pipeline, and the same ground-truth human annotations.
-We report accuracy, Macro-F1, and Gwet's~AC1---metrics selected to characterise
-both aggregate performance and class-level sensitivity without imposing an ordinal
-interpretation on the three nominal RoB categories.
-Stratified analyses by intervention type and clinical domain identify sources of
-systematic variation across the benchmark.
+Beyond aggregate accuracy and Macro-F1, we report Cohen's~$\kappa$, Gwet's~AC1,
+and per-class F1---placing $\kappa$ and AC1 side by side to expose reliability
+estimates that diverge under class imbalance.
+Domain- and intervention-stratified analyses identify where systematic biases arise
+and locate the improvement opportunities most likely to yield practical gains for
+assisted screening.
 Additionally, we compare two inference strategies---per-domain and
-single-call---using Gemini~2.5~Flash and DeepSeek~v4-Flash, the two models
-evaluated under both conditions, to assess whether querying all seven domains
-simultaneously affects performance relative to sequential per-domain calls.
+single-call---to assess whether querying all seven domains simultaneously
+affects performance relative to sequential per-domain calls.
 
 \end{document}

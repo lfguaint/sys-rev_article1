@@ -103,13 +103,13 @@ group.
   \label{fig:itype-dist}
 \end{figure}
 
-\begin{sidewaysfigure}
+\begin{figure}[ht]
   \centering
-  \includegraphics[width=\linewidth]{ground_truth_227_dominio_clinico}
+  \includegraphics[width=0.75\linewidth]{ground_truth_227_dominio_clinico}
   \caption{Distribution of the 227 RCTs by clinical domain (Cochrane Review
   Group categories, multi-label; total exceeds 227).}
   \label{fig:clinical-dist}
-\end{sidewaysfigure}
+\end{figure}
 
 \subsection{Document Preparation Pipeline}
 \label{sec:pipeline}
@@ -228,14 +228,32 @@ The proportion of cells in which the model's judgement matched the ground-truth
 label, computed across all 1{,}589 study--domain pairs.
 
 \textbf{Per-class F1.}
-For each class $k \in \{\text{Low Risk, High Risk, Unclear Risk}\}$, the F1 score
-is the harmonic mean of precision and recall:
+RoB assessment is a three-class problem ($K = 3$).
+Per-class metrics are computed under a one-vs-rest scheme: for each class
+$k \in \{\text{Low Risk, High Risk, Unclear Risk}\}$, each study--domain cell is
+treated as a binary classification (``class $k$'' vs.\ ``not class $k$''),
+yielding four counts:
+\begin{itemize}
+  \item $\mathrm{TP}_k$: model and ground truth both assigned class $k$;
+  \item $\mathrm{FN}_k$: ground truth was $k$, model assigned another class
+        (positive missed);
+  \item $\mathrm{FP}_k$: model assigned $k$, ground truth was another class
+        (false alarm);
+  \item $\mathrm{TN}_k$: neither model nor ground truth assigned class $k$.
+\end{itemize}
+Precision (positive predictive value) and recall (sensitivity) for class $k$ are
+\begin{equation}
+  \mathrm{Precision}_k = \frac{\mathrm{TP}_k}{\mathrm{TP}_k + \mathrm{FP}_k},
+  \qquad
+  \mathrm{Recall}_k    = \frac{\mathrm{TP}_k}{\mathrm{TP}_k + \mathrm{FN}_k},
+  \label{eq:prec-rec}
+\end{equation}
+and their harmonic mean is the F1 score for class $k$:
 \begin{equation}
   \mathrm{F1}_k = \frac{2 \cdot \mathrm{Precision}_k \cdot \mathrm{Recall}_k}
-                       {\mathrm{Precision}_k + \mathrm{Recall}_k},
+                       {\mathrm{Precision}_k + \mathrm{Recall}_k}.
   \label{eq:f1}
 \end{equation}
-computed across all study--domain cells.
 Per-class F1 reveals class-specific failure modes independently of overall performance.
 
 \textbf{Macro-F1.}
