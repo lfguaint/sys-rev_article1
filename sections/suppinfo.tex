@@ -494,80 +494,63 @@ simplifies interpretation.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \clearpage
-\subsection*{S8\quad Estimated Inference Cost vs.\ Performance}
+\subsection*{S8\quad Inference Cost vs.\ Performance}
 \label{sec:si-cost}
 
-Table~\ref{tab:cost} reports estimated inference costs for the eight models
-evaluated across the 227-study benchmark, together with their performance metrics.
-Costs are estimates derived from two components.
-\emph{Input tokens}: median study text length in Markdown (44{,}917 characters,
-corresponding to $\approx 11{,}230$ tokens) plus the prompt template (6{,}107
-characters, $\approx 1{,}530$ tokens), giving a median of 12{,}756 input tokens
-per call.
-\emph{Output tokens}: median character count of stored domain judgements and
-free-text justifications across all 227 studies, divided by~4 to convert to tokens.
-Per-token prices were taken from OpenRouter on 7~July~2026 and are reported per
-million tokens (Table~\ref{tab:cost}).
-For reasoning models (DeepSeek~v4-Flash, Gemini~2.5~Flash, and Gemini~2.5~Pro),
-internal chain-of-thought tokens are not reflected in stored justification text;
-actual billed output costs for these models are therefore likely higher than
-reported here.
+Table~\ref{tab:cost} reports actual billed inference costs for the eight models
+across the 227-study benchmark, retrieved from the OpenRouter account history.
+All costs correspond to per-domain inference mode (seven sequential calls per study).
+For Gemini~2.5~Flash and DeepSeek~v4-Flash, which were also evaluated in
+single-call mode (Section~\ref{sec:inference}), the single-call costs were
+\$2.05 and \$0.54 respectively---4.6$\times$ and 6.5$\times$ lower than their
+per-domain counterparts---reflecting the reduction from seven calls to one per study.
 
 \begin{table}[ht]
 \centering
-\caption{Estimated inference cost and performance for the eight models.
-Input tokens: median 12{,}756 per call (study text + prompt).
-Output tokens: median estimated from stored justification text.
-Prices: OpenRouter, 7~July~2026.
-$^\dagger$Reasoning model: stored output underestimates billed tokens.
-Total cost: cost per study $\times$ 227.}
+\caption{Billed inference cost and performance for the eight models
+(per-domain mode, 227~studies).
+Costs from OpenRouter account history, accessed 7~July~2026.
+Cost/study = total $\div$ 227.
+$\times$DS = cost relative to DeepSeek~v4-Flash.}
 \label{tab:cost}
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{lrrrrrrr}
+\begin{tabular}{lrrrrrr}
 \toprule
-Model & \multicolumn{2}{c}{Est.\ tokens/study} & \multicolumn{2}{c}{Price (\$/1M tokens)} & Est.\ cost/study & Est.\ total & Macro-F1 \\
-      & Input & Output & Input & Output & (USD) & (USD) & \\
+Model & Total (USD) & Cost/study (USD) & $\times$DS & Macro-F1 & Gwet's AC1 & Accuracy (\%) \\
 \midrule
-DeepSeek~v4-Flash$^\dagger$ &  12{,}756 &   719 & 0.09 &  0.18 & 0.0013 &  0.29 & 0.558 \\
-Qwen~3.7-Plus               &  12{,}756 &   624 & 0.32 &  1.28 & 0.0049 &  1.11 & 0.525 \\
-Gemini~2.5~Flash$^\dagger$  &  12{,}756 &   948 & 0.30 &  2.50 & 0.0062 &  1.41 & 0.558 \\
-GLM-5                       &  12{,}756 &   936 & 0.90 &  2.86 & 0.0142 &  3.21 & 0.557 \\
-Grok~4.3                    &  12{,}756 &   398 & 1.25 &  2.50 & 0.0169 &  3.85 & 0.549 \\
-Claude~Haiku~4.5            &  12{,}756 & 1{,}587 & 1.00 & 5.00 & 0.0207 &  4.70 & 0.541 \\
-Gemini~2.5~Pro$^\dagger$    &  12{,}756 &   757 & 1.25 & 10.00 & 0.0235 &  5.34 & 0.543 \\
-GPT-5.4                     &  12{,}756 &   740 & 2.50 & 15.00 & 0.0430 &  9.76 & 0.546 \\
+DeepSeek~v4-Flash &  3.50 & 0.015 &  1.0$\times$ & 0.558 & 0.433 & 60.3 \\
+Gemini~2.5~Flash  &  9.42 & 0.042 &  2.7$\times$ & 0.558 & 0.437 & 60.7 \\
+Qwen~3.7-Plus     & 11.40 & 0.050 &  3.3$\times$ & 0.525 & 0.457 & 60.9 \\
+GLM-5             & 30.70 & 0.135 &  8.8$\times$ & 0.557 & 0.449 & 61.1 \\
+Claude~Haiku~4.5  & 32.40 & 0.143 &  9.3$\times$ & 0.541 & 0.485 & 62.5 \\
+Grok~4.3          & 33.50 & 0.148 &  9.6$\times$ & 0.549 & 0.433 & 60.1 \\
+Gemini~2.5~Pro    & 54.10 & 0.238 & 15.5$\times$ & 0.543 & 0.383 & 57.6 \\
+GPT-5.4           & 69.30 & 0.305 & 19.8$\times$ & 0.546 & 0.387 & 57.7 \\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-Figure~\ref{fig:cost-perf} plots Macro-F1 and Gwet's~AC1 against estimated total
-cost for the 227-study evaluation.
-No positive relationship between cost and performance is observed: the two models
-with the highest Macro-F1 (DeepSeek~v4-Flash and Gemini~2.5~Flash) rank first and
-third in cost-efficiency respectively, whereas the most expensive model
-(GPT-5.4, estimated \$9.76) achieves neither the highest Macro-F1 nor the
-highest AC1 in the benchmark.
-For Gwet's~AC1, Claude~Haiku~4.5 achieves the highest value (0.485) at
-an intermediate cost (\$4.70), while Gemini~2.5~Pro and GPT-5.4---the two costliest
-models---return the lowest AC1 values (0.383 and 0.387 respectively).
-Across the full performance range observed here (Macro-F1: 0.525--0.558;
-AC1: 0.383--0.485), costs vary by a factor of~34 ($\times$34 from DeepSeek to
-GPT-5.4), indicating that model selection on cost grounds does not carry a
-meaningful accuracy penalty within this benchmark.
-These estimates carry important caveats: actual costs depend on study text
-length, caching behaviour, and provider-side pricing changes; reasoning models
-incur additional billed tokens for internal chain-of-thought not captured here.
+Figure~\ref{fig:cost-perf} plots Macro-F1 and Gwet's~AC1 against total billed cost.
+No positive relationship between cost and performance is observed.
+The two models with the highest Macro-F1---DeepSeek~v4-Flash (\$3.50) and
+Gemini~2.5~Flash (\$9.42)---are the two cheapest models evaluated; GLM-5 (\$30.70)
+achieves comparable Macro-F1 at nearly nine times the cost.
+The two most expensive models, GPT-5.4 (\$69.30) and Gemini~2.5~Pro (\$54.10),
+return the lowest AC1 values (0.387 and 0.383) and rank in the bottom half on
+Macro-F1.
+The highest AC1 (0.485) belongs to Claude~Haiku~4.5 at an intermediate cost
+(\$32.40); Qwen~3.7-Plus offers a competitive AC1 (0.457) at \$11.40.
+Across the full performance range (Macro-F1: 0.525--0.558; AC1: 0.383--0.485),
+billed costs span a factor of~20, indicating that model selection on cost grounds
+does not entail a meaningful performance penalty within this benchmark.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\linewidth]{all_reviews_cost_vs_performance}
-  \caption{Estimated total inference cost vs.\ Macro-F1~(A) and Gwet's~AC1~(B)
-  for the 227-study benchmark.
+  \caption{Total billed inference cost vs.\ Macro-F1~(A) and Gwet's~AC1~(B)
+  for the 227-study benchmark (per-domain inference mode).
   Colours identify models as throughout the paper.
-  $^\dagger$Reasoning models (DeepSeek~v4-Flash, Gemini~2.5~Flash,
-  Gemini~2.5~Pro): stored output text likely underestimates actual billed
-  tokens (internal chain-of-thought not stored).
-  Prices from OpenRouter, 7~July~2026.}
+  Costs from OpenRouter account history, 7~July~2026.}
   \label{fig:cost-perf}
 \end{figure}
 
