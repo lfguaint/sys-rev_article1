@@ -563,10 +563,10 @@ incur additional billed tokens for internal chain-of-thought not captured here.
   \includegraphics[width=\linewidth]{all_reviews_cost_vs_performance}
   \caption{Estimated total inference cost vs.\ Macro-F1~(A) and Gwet's~AC1~(B)
   for the 227-study benchmark.
-  Marker size is proportional to Gwet's~AC1 in panel~A.
-  Diamond markers~($\diamond$) indicate reasoning models
-  (DeepSeek~v4-Flash, Gemini~2.5~Flash, Gemini~2.5~Pro) whose stored output
-  text likely underestimates actual billed tokens.
+  Colours identify models as throughout the paper.
+  $^\dagger$Reasoning models (DeepSeek~v4-Flash, Gemini~2.5~Flash,
+  Gemini~2.5~Pro): stored output text likely underestimates actual billed
+  tokens (internal chain-of-thought not stored).
   Prices from OpenRouter, 7~July~2026.}
   \label{fig:cost-perf}
 \end{figure}
