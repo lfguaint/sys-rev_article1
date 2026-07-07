@@ -494,64 +494,60 @@ simplifies interpretation.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \clearpage
-\subsection*{S8\quad Inference Cost vs.\ Performance}
+\subsection*{S8\quad Inference Cost}
 \label{sec:si-cost}
 
-Table~\ref{tab:cost} reports actual billed inference costs for the eight models
+Table~\ref{tab:cost} reports total billed inference costs for the eight models
 across the 227-study benchmark, retrieved from the OpenRouter account history.
 All costs correspond to per-domain inference mode (seven sequential calls per study).
+The total cost of running the full eight-model benchmark was approximately
+\$244~USD, providing an order-of-magnitude reference for the practical
+feasibility of this type of evaluation.
+
+These figures should not be used to draw cross-model cost-efficiency conclusions.
+The pipeline permitted up to two retries per domain call in the event of API
+errors, timeouts, or invalid responses, and some studies required full
+re-queuing; the number of retry attempts was not recorded per model.
+Because billed costs reflect total API consumption including failed calls,
+models with higher retry rates appear more expensive for reasons unrelated to
+output quality or token generation.
+Cross-model cost comparisons are therefore confounded by differential reliability
+of provider APIs during the evaluation window and are not reported.
+
 For Gemini~2.5~Flash and DeepSeek~v4-Flash, which were also evaluated in
-single-call mode (Section~\ref{sec:inference}), the single-call costs were
-\$2.05 and \$0.54 respectively---4.6$\times$ and 6.5$\times$ lower than their
-per-domain counterparts---reflecting the reduction from seven calls to one per study.
+single-call mode (Section~\ref{sec:inference}), the billed single-call costs
+were \$2.05 and \$0.54 respectively, compared to \$9.42 and \$3.50 for
+per-domain mode---a 4.6$\times$ and 6.5$\times$ reduction attributable to
+the decrease from seven calls to one per study.
+This cost differential is informative because both modes were run under
+identical conditions for the same two models, making the within-model
+comparison independent of the retry confound.
 
 \begin{table}[ht]
 \centering
-\caption{Billed inference cost and performance for the eight models
-(per-domain mode, 227~studies).
-Costs from OpenRouter account history, accessed 7~July~2026.
-Cost/study = total $\div$ 227.
-$\times$DS = cost relative to DeepSeek~v4-Flash.}
+\caption{Total billed inference costs for the eight models (per-domain mode,
+227~studies), retrieved from OpenRouter account history, 7~July~2026.
+Costs include retries due to API errors or invalid responses; the number of
+retries was not recorded per model and cross-model comparisons should not be
+drawn from these figures.
+Total across all eight models: \$244.32.}
 \label{tab:cost}
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{lrrrrrr}
+\begin{tabular}{lr}
 \toprule
-Model & Total (USD) & Cost/study (USD) & $\times$DS & Macro-F1 & Gwet's AC1 & Accuracy (\%) \\
+Model & Total billed cost (USD) \\
 \midrule
-DeepSeek~v4-Flash &  3.50 & 0.015 &  1.0$\times$ & 0.558 & 0.433 & 60.3 \\
-Gemini~2.5~Flash  &  9.42 & 0.042 &  2.7$\times$ & 0.558 & 0.437 & 60.7 \\
-Qwen~3.7-Plus     & 11.40 & 0.050 &  3.3$\times$ & 0.525 & 0.457 & 60.9 \\
-GLM-5             & 30.70 & 0.135 &  8.8$\times$ & 0.557 & 0.449 & 61.1 \\
-Claude~Haiku~4.5  & 32.40 & 0.143 &  9.3$\times$ & 0.541 & 0.485 & 62.5 \\
-Grok~4.3          & 33.50 & 0.148 &  9.6$\times$ & 0.549 & 0.433 & 60.1 \\
-Gemini~2.5~Pro    & 54.10 & 0.238 & 15.5$\times$ & 0.543 & 0.383 & 57.6 \\
-GPT-5.4           & 69.30 & 0.305 & 19.8$\times$ & 0.546 & 0.387 & 57.7 \\
+DeepSeek~v4-Flash &  3.50 \\
+Gemini~2.5~Flash  &  9.42 \\
+Qwen~3.7-Plus     & 11.40 \\
+GLM-5             & 30.70 \\
+Claude~Haiku~4.5  & 32.40 \\
+Grok~4.3          & 33.50 \\
+Gemini~2.5~Pro    & 54.10 \\
+GPT-5.4           & 69.30 \\
+\midrule
+Total             & 244.32 \\
 \bottomrule
-\end{tabular}}
+\end{tabular}
 \end{table}
-
-Figure~\ref{fig:cost-perf} plots Macro-F1 and Gwet's~AC1 against total billed cost.
-No positive relationship between cost and performance is observed.
-The two models with the highest Macro-F1---DeepSeek~v4-Flash (\$3.50) and
-Gemini~2.5~Flash (\$9.42)---are the two cheapest models evaluated; GLM-5 (\$30.70)
-achieves comparable Macro-F1 at nearly nine times the cost.
-The two most expensive models, GPT-5.4 (\$69.30) and Gemini~2.5~Pro (\$54.10),
-return the lowest AC1 values (0.387 and 0.383) and rank in the bottom half on
-Macro-F1.
-The highest AC1 (0.485) belongs to Claude~Haiku~4.5 at an intermediate cost
-(\$32.40); Qwen~3.7-Plus offers a competitive AC1 (0.457) at \$11.40.
-Across the full performance range (Macro-F1: 0.525--0.558; AC1: 0.383--0.485),
-billed costs span a factor of~20, indicating that model selection on cost grounds
-does not entail a meaningful performance penalty within this benchmark.
-
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=\linewidth]{all_reviews_cost_vs_performance}
-  \caption{Total billed inference cost vs.\ Macro-F1~(A) and Gwet's~AC1~(B)
-  for the 227-study benchmark (per-domain inference mode).
-  Colours identify models as throughout the paper.
-  Costs from OpenRouter account history, 7~July~2026.}
-  \label{fig:cost-perf}
-\end{figure}
 
 \end{document}
