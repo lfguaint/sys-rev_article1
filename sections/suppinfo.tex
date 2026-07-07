@@ -515,13 +515,13 @@ Cross-model cost comparisons are therefore confounded by differential reliabilit
 of provider APIs during the evaluation window and are not reported.
 
 For Gemini~2.5~Flash and DeepSeek~v4-Flash, which were also evaluated in
-single-call mode (Section~\ref{sec:inference}), the billed single-call costs
-were \$2.05 and \$0.54 respectively, compared to \$9.42 and \$3.50 for
-per-domain mode---a 4.6$\times$ and 6.5$\times$ reduction attributable to
-the decrease from seven calls to one per study.
-This cost differential is informative because both modes were run under
-identical conditions for the same two models, making the within-model
-comparison independent of the retry confound.
+single-call mode (Section~\ref{sec:inference}), billed single-call costs
+were lower than per-domain costs (\$2.05 vs.\ \$9.42 and \$0.54 vs.\ \$3.50
+respectively).
+The direction of this difference is expected---single-call issues one API
+request per study versus seven---but the magnitude should not be interpreted
+as a precise cost ratio because retry counts were not recorded for either
+inference mode.
 
 \begin{table}[ht]
 \centering
