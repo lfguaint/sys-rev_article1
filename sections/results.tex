@@ -28,11 +28,11 @@ Low Risk F1 (0.743) but the lowest High Risk F1 (0.469) and Unclear Risk F1
 Among the three metrics, Gwet's~AC1 shows the clearest separation at the
 extremes: the 95\%~CI for Claude~Haiku~4.5 (AC1~$= 0.485$; CI~$[0.443, 0.526]$)
 does not overlap with those of Gemini~2.5~Pro ($[0.344, 0.420]$) or
-GPT-5.4 ($[0.349, 0.426]$), indicating that Haiku's higher chance-corrected
-agreement is not attributable to sampling variation.
+GPT-5.4 ($[0.349, 0.426]$), suggesting that Haiku's higher chance-corrected
+agreement is unlikely to be attributable to sampling variation alone.
 Consensus failures---cells where no model in the ensemble was correct---accounted
-for 226 of 1{,}589 cells (14.2\%); the complementary any-correct rate of 85.8\%
-confirms that the eight models make substantially non-redundant errors
+for 226 of 1{,}589 cells (14.2\%); pairwise complementarity analysis suggests
+that models make substantially non-redundant errors
 (Section~\ref{sec:consensus-failures}).
 
 \begin{figure}[ht]
@@ -218,6 +218,14 @@ This bidirectional discrepancy indicates that models calibrate their uncertainty
 threshold differently across domains; reducing false positives for Unclear Risk
 in the blinding domains (D3--D4) is a necessary condition for improving
 High Risk recall there.
+One prompt-design factor may contribute to the over-use of Unclear Risk in D6:
+the prompt specifies a \emph{compound} criterion for that domain
+(\emph{``no protocol/registry \textbf{and} insufficient information''}),
+requiring both conditions simultaneously, whereas all other domains require only
+\emph{``insufficient information''} to trigger Unclear Risk.
+This asymmetry may lower the Unclear Risk threshold in D6 relative to other
+domains, resulting in higher Unclear Risk assignment rates and correspondingly
+lower Low Risk rates.
 
 \subsection{Error Direction: Leniency and Caution}
 \label{sec:error-direction}
@@ -306,7 +314,12 @@ drug/medication (0.538, $n = 104$),
 medical device (0.531, $n = 18$), and
 procedure (0.510, $n = 30$).
 The 6.2-point gap between non-pharmacological interventions and procedures was
-consistent across most models; no single model reversed this ordering.
+consistent in direction across most models; no single model reversed this
+ordering.
+However, bootstrap CIs for the two smaller strata (medical device, $n = 18$;
+procedure, $n = 30$) are wide (see Figure~\ref{fig:itype-bars}), so this
+pattern should be interpreted as a descriptive observation rather than a
+reliable rank ordering pending replication in larger strata.
 Individual model rankings within each intervention type are shown in
 Figure~\ref{fig:itype-bars} and provided in full in Table~S\ref{tab:itype-full}.
 
@@ -377,8 +390,17 @@ corpora.
 \label{sec:iaa}
 
 The benchmark treats published Cochrane annotations as the reference standard,
-but those annotations carry their own measurement error: independent Cochrane
-reviewer pairs achieve $\kappa = 0.24$--$0.37$ for non-D1 domains (Section~\ref{sec:conclusions}).
+but those annotations carry their own measurement error.
+Even among formally trained reviewers applying the same protocol,
+\citet{Hartling2013} reported $\kappa = 0.79$ for D1 but only
+$\kappa = 0.24$--$0.37$ for the remaining six domains, with agreement between
+independent consensus pairs falling further to $\kappa = 0.05$--$0.09$ in
+several domains.
+Agreement also varies substantially between distinct Cochrane review teams
+evaluating the same trials \citep{Konsgen2020}.
+These findings contextualise model performance against a noisy reference
+standard rather than a noise-free human ceiling, and motivate domain-level
+rather than aggregate interpretation of results.
 Figure~\ref{fig:agreement-matrix} places model performance in this context
 by displaying the full $9 \times 9$ label-agreement matrix across Ground Truth
 and all eight models.
@@ -433,16 +455,98 @@ definitive measurements of their performance against a noise-free standard.
 \subsection{Consensus Failures and Model Complementarity}
 \label{sec:consensus-failures}
 
-Of the 1{,}589 study--domain cells, 226 (14.2\%) were \emph{consensus failures}:
-no model in the ensemble produced the correct judgement.
-These cells may reflect genuine textual ambiguity, inconsistency in the Cochrane
-annotation, or systematic limitations shared across all frontier models evaluated
-here.
-Consensus failures were concentrated in the most difficult domains: 50 (22.1\%)
-occurred in D4 and 44 (19.5\%) in D5---the two domains with the most balanced
-three-class distributions---corresponding to consensus failure rates of 22.0\%
-and 19.4\% in those domains, respectively; D2 had the lowest consensus failure
-rate (8.8\%).
+Table~\ref{tab:agreement-distribution} summarises the full distribution of
+per-cell model agreement across the 1{,}589 study--domain cells.
+The distribution is markedly bimodal: the two largest individual categories are
+\emph{all models correct} (499 cells, 31.4\%) and \emph{consensus failure}
+(226 cells, 14.2\%), with the intermediate categories together accounting for
+the remaining 54.4\%.
+This bimodality suggests that cell difficulty is largely an intrinsic property
+of the item rather than the model: most cells are either solvable by all frontier
+models evaluated here, or intractable for all of them given the prompt context.
+
+\begin{table}[H]
+\centering
+\caption{Distribution of per-cell model agreement across the 1{,}589
+  study--domain cells (8 models).
+  \emph{Majority} and \emph{minority} thresholds are defined relative to $n = 8$;
+  see Section~\ref{sec:methods-complementarity} for the generalised formula.}
+\label{tab:agreement-distribution}
+\begin{tabular}{lrr}
+\toprule
+Category & $N$ & \% \\
+\midrule
+All correct (8/8)  & 499     & 31.4 \\
+Majority (5--7/8)  & 418     & 26.3 \\
+Split (4/8)        &  96     &  6.0 \\
+Minority (1--3/8)  & 350     & 22.0 \\
+None correct (0/8) & 226     & 14.2 \\
+\midrule
+Total              & 1{,}589 & 100.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:agreement-domain} disaggregates the distribution by domain.
+D1 and D2 are the easiest: 54.2\% and 46.3\% of their cells achieve full
+eight-model consensus, and consensus failure rates are 11.0\% and 8.8\%,
+respectively.
+D7 (other sources of bias) stands apart in a different way: only 4.0\% of its
+cells are answered correctly by all models, and 45.8\% are answered correctly
+only by a minority (1--3 models), reflecting a domain where models
+systematically diverge in their judgements.
+D4 and D5 present a third pattern: their consensus failure rates (22.0\% and
+19.8\%) are the highest in the corpus---higher even than D7 (12.3\%)---indicating
+that when models err in D4/D5 they tend to do so collectively, whereas in D7
+errors are more dispersed across models.
+
+\begin{table}[H]
+\centering
+\caption{Per-cell agreement distribution by domain (row percentages; $n = 227$
+  per domain).}
+\label{tab:agreement-domain}
+\begin{tabular}{lrrrrr}
+\toprule
+Domain & All (8/8) & Majority (5--7) & Split (4) & Minority (1--3) & None (0) \\
+       & \%        & \%              & \%        & \%              & \%       \\
+\midrule
+D1 & 54.2 & 22.5 &  1.3 & 11.0 & 11.0 \\
+D2 & 46.3 & 27.3 &  2.6 & 15.0 &  8.8 \\
+D3 & 33.5 & 28.2 &  7.0 & 17.6 & 13.7 \\
+D4 & 32.2 & 16.3 &  6.6 & 22.9 & 22.0 \\
+D5 & 30.4 & 25.1 &  7.9 & 16.7 & 19.8 \\
+D6 & 19.4 & 37.4 &  6.2 & 25.1 & 11.9 \\
+D7 &  4.0 & 27.3 & 10.6 & 45.8 & 12.3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Stratifying by ground-truth class (Table~\ref{tab:agreement-class}) reveals a
+clear asymmetry.
+\emph{Low risk} cells are classified correctly by all eight models in 44.4\%
+of cases, and only 4.9\% are consensus failures.
+\emph{Unclear risk} cells are the hardest: 27.0\% are consensus failures---no
+model assigns the correct label---exceeding even \emph{high risk} (21.4\%).
+This result is consistent with the inherent difficulty of the \emph{unclear risk}
+category, which requires inferring the \emph{absence} of adequate reporting rather
+than identifying a positive signal of bias.
+
+\begin{table}[H]
+\centering
+\caption{Per-cell agreement distribution by ground-truth class (row percentages).}
+\label{tab:agreement-class}
+\begin{tabular}{lrrrrrr}
+\toprule
+Class        & $n$   & All (8/8) & Majority (5--7) & Split (4) & Minority (1--3) & None (0) \\
+             &       & \%        & \%              & \%        & \%              & \%       \\
+\midrule
+Low risk     & 850   & 44.4 & 25.9 & 5.1 & 19.8 &  4.9 \\
+High risk    & 276   & 13.8 & 27.5 & 9.8 & 27.5 & 21.4 \\
+Unclear risk & 463   & 18.1 & 26.3 & 5.6 & 22.9 & 27.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 Figure~\ref{fig:intersection} shows the pairwise intersection matrix:
 cell~$(i,j)$ gives $P(A_i \cap A_j)$, the percentage of the 1{,}589 cells
 in which \emph{both} model~$i$ and model~$j$ produced the correct judgement.

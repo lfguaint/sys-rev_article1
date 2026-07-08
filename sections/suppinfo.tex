@@ -504,15 +504,23 @@ The total cost of running the full eight-model benchmark was approximately
 \$244~USD, providing an order-of-magnitude reference for the practical
 feasibility of this type of evaluation.
 
-These figures should not be used to draw cross-model cost-efficiency conclusions.
 The pipeline permitted up to two retries per domain call in the event of API
 errors, timeouts, or invalid responses, and some studies required full
 re-queuing; the number of retry attempts was not recorded per model.
-Because billed costs reflect total API consumption including failed calls,
-models with higher retry rates appear more expensive for reasons unrelated to
-output quality or token generation.
-Cross-model cost comparisons are therefore confounded by differential reliability
-of provider APIs during the evaluation window and are not reported.
+Retry attempts were sufficient to ensure that all 1{,}589 study--domain cells
+received a valid prediction for every model: no cells were excluded from
+analysis due to unresolvable output failures.
+Billed costs therefore reflect total API consumption including failed calls,
+so absolute values should not be used to derive a cost-per-assessment figure
+for any individual model.
+The \emph{ordering} of billed costs across models is nonetheless informative:
+because input tokens were identical across models (same corpus and prompt) and
+output token counts are of similar magnitude, differences in list price per
+token dominate over retry-rate variation.
+The observed cost ordering---DeepSeek~v4-Flash cheapest, GPT-5.4 most
+expensive---is fully consistent with published list prices on OpenRouter
+(Table~S\ref{tab:cost}), confirming that price per token is the primary driver
+of cost differences in this benchmark.
 
 For Gemini~2.5~Flash and DeepSeek~v4-Flash, which were also evaluated in
 single-call mode (Section~\ref{sec:inference}), billed single-call costs
@@ -549,5 +557,120 @@ Total             & 244.32 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection*{S9\quad Expanded Formulas for Cohen's $\kappa$ and Gwet's AC1}
+\label{sec:si-metrics}
+
+Let $\mathbf{N} = (N_{ij})$ be the $K \times K$ confusion matrix ($K = 3$),
+with rows indexed by predicted class $i$ and columns indexed by ground-truth
+class $j$, $N = \sum_{i,j} N_{ij}$ the total number of evaluated cells, and
+\begin{equation*}
+  \hat{p}_{k,\text{model}} = \frac{1}{N}\sum_{j=1}^{K} N_{kj},
+  \qquad
+  \hat{p}_{k,\text{gt}}    = \frac{1}{N}\sum_{i=1}^{K} N_{ik}
+\end{equation*}
+the marginal proportions of class $k$ in the model predictions and ground
+truth (row and column sums of $\mathbf{N}$ divided by $N$), as defined in
+the Methods.
+
+\textbf{Cohen's $\kappa$.}
+The chance-expected agreement is
+\begin{equation*}
+  p_e^\kappa = \sum_{k=1}^{K} \hat{p}_{k,\text{model}} \cdot \hat{p}_{k,\text{gt}},
+\end{equation*}
+where each term $\hat{p}_{k,\text{model}} \cdot \hat{p}_{k,\text{gt}}$ is the
+probability that both the model and ground truth independently assign class $k$
+to a randomly selected cell.
+Substituting into $\kappa = (p_o - p_e^\kappa)/(1 - p_e^\kappa)$ with
+$p_o = \sum_k N_{kk}/N$ gives the equivalent form in raw counts:
+\begin{equation*}
+  \kappa =
+    \frac{N\displaystyle\sum_{k=1}^{K} N_{kk}
+        - \displaystyle\sum_{k=1}^{K}
+            \Bigl(\sum_{j=1}^{K} N_{kj}\Bigr)\!\Bigl(\sum_{i=1}^{K} N_{ik}\Bigr)}
+         {N^2
+        - \displaystyle\sum_{k=1}^{K}
+            \Bigl(\sum_{j=1}^{K} N_{kj}\Bigr)\!\Bigl(\sum_{i=1}^{K} N_{ik}\Bigr)}.
+\end{equation*}
+
+\textbf{Gwet's AC1.}
+The mean marginal proportion for class $k$ is
+\begin{equation*}
+  \pi_k = \frac{\hat{p}_{k,\text{model}} + \hat{p}_{k,\text{gt}}}{2},
+\end{equation*}
+and the chance-agreement term is
+\begin{equation*}
+  p_e = \frac{1}{K-1}\sum_{k=1}^{K} \pi_k(1 - \pi_k).
+\end{equation*}
+AC1 $= (p_o - p_e)/(1 - p_e)$ follows with $p_o$ as above.
+
+The key difference between the two coefficients lies in their chance terms:
+$p_e^\kappa$ depends on the \emph{product} of the two marginals, making it
+sensitive to imbalance in either rater's distribution; $p_e$ for AC1 depends
+on the \emph{mean} marginal $\pi_k$, which is more stable when one rater
+(here, the ground truth) has highly skewed class proportions.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection*{S10\quad Prompt Used for Figure Description (VLM Pipeline)}
+\label{sec:si-vlm-prompt}
+
+During Stage~2 of the document processing pipeline
+(Section~\ref{sec:pipeline}), each figure placeholder was submitted to
+Gemini~2.5~Flash (\texttt{google/gemini-2.5-flash}) with the following
+fixed prompt.
+The system message was:
+
+\small
+\begin{verbatim}
+You are converting a scientific figure into faithful Markdown text.
+Describe only what is visibly present in the figure.
+Do not infer unstated conclusions, do not mention OCR or the model,
+and do not use JSON.
+Return Markdown only.
+\end{verbatim}
+\normalsize
+
+The user message was:
+
+\small
+\begin{verbatim}
+Rewrite this scientific figure as Markdown so the image can be
+removed from the extracted article.
+
+Requirements:
+- Preserve scientific meaning.
+- Identify figure label and caption when visible or provided in context.
+- Describe chart/figure type.
+- Describe axes, units, legend, groups, markers, and error bars when visible.
+- Summarize visible trends and approximate plotted relationships without
+  inventing exact values.
+- Mention unreadable or ambiguous areas explicitly.
+- Keep the output concise but detailed enough to replace the image in
+  the article.
+
+Use this Markdown template:
+### Figure Description
+- source_image: `...`
+- figure_label: ...
+- caption: ...
+- figure_type: ...
+- axes_and_units: ...
+- legend_and_groups: ...
+- visual_summary: ...
+- plotted_patterns: ...
+- unreadable_or_uncertain: ...
+
+Nearby article context:
+{context}
+
+Image path reference: {image_path}
+\end{verbatim}
+\normalsize
+
+where \texttt{\{context\}} is the paragraph immediately surrounding the figure
+in the extracted Markdown, and \texttt{\{image\_path\}} is the relative path
+to the page image extracted by MinerU.
+The prompt was used without modification for all figures across all 227 studies.
 
 \end{document}

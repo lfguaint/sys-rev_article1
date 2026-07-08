@@ -40,10 +40,9 @@ ambiguous domains.
 These cases identify the boundaries of current frontier model capability under
 this evaluation design and may reflect genuine annotation uncertainty as much
 as model failure.
-The remaining 85.8\% of cells had at least one correct model, yet pairwise
-complementarity analysis showed that 7.4\%--17.4\% of cells are correctable
-by substituting any one model for another, confirming that the eight models
-make substantially non-redundant errors.
+Pairwise complementarity analysis showed that 7.4\%--17.4\% of cells are
+correctable by substituting any one model for another, confirming that the
+eight models make substantially non-redundant errors.
 
 The comparison between per-domain and single-call inference modes
 (Section~\ref{sec:inference}) produced small differences that do not
@@ -70,11 +69,15 @@ Under this framing, the best-performing models for High Risk recall detected
 fewer than two thirds of High Risk cells (F1-HR: 0.455--0.480 for the
 top-ranked models), meaning roughly one in three cells that should trigger
 reviewer scrutiny passed undetected.
-Because the cost of a false negative---a biased study classified as acceptable
-and included unquestioned in a meta-analysis---substantially exceeds the cost of
-a false positive, tools intended to assist real-world screening workflows would
-need to prioritise sensitivity over overall accuracy, a trade-off not currently
-optimised by the zero-shot prompt evaluated here.
+Both error directions carry clinical costs: a false negative (lenient---biased
+study classified as acceptable and included unquestioned in a meta-analysis)
+risks inflating pooled effect estimates, while a false positive (cautious---a
+low-risk study flagged as problematic) risks unjustifiably discrediting or
+excluding credible evidence, a concern that grows when the pool of eligible
+studies is small.
+The relative severity depends on review context; however, tools intended to
+assist real-world screening workflows would need to make this trade-off
+explicit rather than leaving it to the zero-shot prompt's implicit defaults.
 
 The cell-level concordance partition offers a practical framework for directing
 qualitative review effort.
@@ -103,32 +106,57 @@ This single rule targets D4---the domain with the most systematic and
 directionally consistent errors in the benchmark---and has direct implications
 for the High Risk recall deficit identified above.
 
-The aggregate performance range observed here is consistent with the recent
-preregistered evaluation by \citet{Nyrhi2026}, who applied four contemporary LLMs
-to 100~RCTs from Cochrane reviews under RoB~1.0 and reported interobserver
-$\kappa$ of 0.27--0.39---concluding, as we do, that current models do not meet the
-reliability threshold for autonomous use.
-Our study extends that comparison in three directions.
-First, evaluating eight models spanning five provider families reveals that aggregate
-performance is approximately stable across frontier models, shifting the central
-question from \emph{which model} to \emph{which domains and intervention types}
-support reliable assistance---a question that aggregate summaries cannot answer.
-Second, domain-stratified analysis shows that D1 and D2, where models achieve
-accuracy and concordance broadly comparable to a second human reviewer, are
-plausible targets for assisted screening today, whereas the systematic leniency
-bias in D4 and the idiosyncratic divergence in D7 identify specific failure modes
-that require targeted prompt improvements before reliable assistance is achievable.
+The recent preregistered evaluation by \citet{Nyrhi2026} demonstrates that
+automated RoB assessment with frontier LLMs is an active area of investigation.
+That study applied four models (ChatGPT~o3, DeepSeek~v3, Gemini~Flash~2.0,
+Grok~3) to 100~RCTs from 10~Cochrane reviews across four clinical specialties,
+using multimodal PDF input, and reported interobserver~$\kappa$ of 0.27--0.39
+for RoB~1.0.
+The present study and Nyrhi et al.\ share no overlapping models and differ
+substantially in corpus composition (127~vs.\ 10 Cochrane reviews;
+24~vs.\ 4 clinical specialties), corpus size (227~vs.\ 100~RCTs), and input
+modality (text-only pipeline vs.\ direct PDF upload).
+Direct numerical comparison of performance figures is therefore not warranted.
+Qualitatively, the $\kappa$ values observed here ($\kappa = 0.325$ for the best
+model; lower for the remaining seven) fall within and below the range
+they reported, which is consistent with expectations given the broader and more
+heterogeneous corpus used here---more diverse corpora generally present harder
+classification problems---and the use of a text-only rather than multimodal
+pipeline.
+Both studies independently reach the same qualitative conclusion: contemporary
+frontier LLMs do not meet the reliability threshold for autonomous RoB
+assessment under a zero-shot, unassisted design.
+
+The present study contributes three elements that go beyond that aggregate
+conclusion.
+First, evaluating eight models spanning five provider families on a corpus of
+227~studies across 24~clinical specialties reveals that aggregate performance
+is approximately stable across frontier models, shifting the central question
+from \emph{which model} to \emph{which domains and intervention types} support
+reliable assistance---a question that aggregate summaries cannot answer.
+Second, domain-stratified analysis identifies structured heterogeneity: D1
+and D2 may represent nearer-term targets for assisted screening, whereas the
+systematic leniency bias in D4 and the idiosyncratic divergence in D7 identify
+specific failure modes that require targeted prompt improvements before reliable
+assistance is achievable.
 Third, explicit degenerate baselines and the juxtaposition of Cohen's~$\kappa$
-with Gwet's~AC1 expose analytical pitfalls specific to this task: the margin above
-trivially achievable strategies is narrowest for the clinically consequential
-classes (High Risk and Unclear Risk), and the two agreement coefficients diverge
-most sharply for the model with the highest accuracy (Claude~Haiku~4.5:
-$\kappa = 0.325$ vs AC1~$= 0.485$), cautioning against treating AC1-based
-summaries as a direct proxy for classification performance when class distributions
-are skewed.
+with Gwet's~AC1 expose analytical pitfalls specific to this task: the margin
+above trivially achievable strategies is narrowest for the clinically
+consequential classes (High Risk and Unclear Risk), and the two agreement
+coefficients diverge most sharply for the model with the highest accuracy
+(Claude~Haiku~4.5: $\kappa = 0.325$ vs.\ AC1~$= 0.485$), cautioning against
+treating either coefficient in isolation when class distributions are skewed.
 
 Several limitations should be noted.
-First, the ground-truth annotations derive from published Cochrane review
+First, this study was not pre-registered; the analysis plan was developed
+alongside the benchmark construction, and the choice of metrics,
+stratification variables, and comparisons was informed by exploratory review
+of the data.
+Findings should therefore be interpreted as exploratory and
+hypothesis-generating throughout, notwithstanding the use of formal confidence
+intervals to characterise estimation uncertainty; they are not the outcome
+of pre-specified confirmatory hypothesis tests.
+Second, the ground-truth annotations derive from published Cochrane review
 reports and were not independently re-annotated for this study.
 The Cochrane annotations represent the consensus output of a structured
 multi-reviewer process (independent assessment by at least two trained
@@ -148,16 +176,15 @@ reviewer pairs applying the same protocol: $\kappa = 0.79$ for D1 but only
 $\kappa = 0.24$--$0.37$ for remaining domains, falling to $\kappa = 0.05$--$0.09$
 between independent consensus pairs; independent Cochrane teams show
 similarly variable agreement \citep{Konsgen2020}.
-These figures establish that the reference standard itself carries substantial
+These figures indicate that the reference standard itself carries substantial
 noise, placing a practical ceiling on any automated system's agreement with
 published annotations that is independent of model quality.
-Converting the domain-level $\kappa$ values for the non-D1 domains
-(0.24--0.37) to expected accuracy using the observed pooled class distribution
-(LR\,53.5\%, HR\,17.4\%, UR\,29.1\%) yields approximately 58--62\%---a range
-that coincides closely with the model accuracy range observed in this study
-(57.6\%--62.5\%), suggesting that the evaluated LLMs perform at a level broadly
-comparable to a second independent human reviewer across most domains.
-Second, each model was queried once per study using provider-default generation
+The observed model accuracy range (57.6\%--62.5\%) therefore reflects
+agreement with a reference standard that is itself imperfect across most
+non-D1 domains: disentangling genuine model failure from annotation noise
+in the ground truth is not possible without independent re-annotation of
+the benchmark corpus.
+Third, each model was queried once per study using provider-default generation
 parameters.
 This reflects the intended evaluation scope: zero-shot performance as models
 are available to practitioners, without artificial parameter tuning.
@@ -167,17 +194,23 @@ draws represent post-hoc optimisation outside the zero-shot benchmark design.
 As a consequence, differences between models separated by fewer than five
 percentage points should not be interpreted as definitive rank orderings in the
 absence of confidence intervals; these are discussed as directional trends.
-Third, all models were accessed in June~2026 via the OpenRouter~API using the
+Fourth, all models were accessed in June~2026 via the OpenRouter~API using the
 identifier strings reported in Table~\ref{tab:models}; providers may silently
 update the weights associated with a fixed identifier, so exact reproduction
 requires accessing the same model strings within the same inference window.
 Results should therefore be interpreted as reflecting the checkpoint state active
 in June~2026, not any future revision of the same identifier.
-Fourth, the single-agent zero-shot design examines one specific slice of the
+Raw model outputs (per-cell predictions and justifications) are not publicly
+deposited: the full-text PDFs used as input are not all open-access and
+re-distribution could infringe publisher copyright; additionally, the underlying
+study corpus is currently under independent expert medical review for a
+forthcoming benchmark publication, and its public release is deferred to
+that work.
+Fifth, the single-agent zero-shot design examines one specific slice of the
 capability space; few-shot prompting, retrieval augmentation, fine-tuning, and
 multi-agent architectures were not evaluated and may yield substantially
 different results.
-Fifth, training-data contamination cannot be excluded, but several structural
+Sixth, training-data contamination cannot be excluded, but several structural
 features of the evaluation design limit its plausibility as a primary driver
 of results.
 Memorisation-based performance would require a model to (i)~have seen the
@@ -200,6 +233,6 @@ Targeted contamination probes (e.g.\ membership inference or verbatim
 reproduction tests) were not conducted, as the opaque training corpora of the
 evaluated models preclude rigorous analysis; this remains a caveat for
 interpretation.
-Sixth, the Cochrane corpus used here comprises better-reported trials than the
+Seventh, the Cochrane corpus used here comprises better-reported trials than the
 broader trial literature, so these performance estimates may be optimistic
 relative to unselected primary research.\end{document}

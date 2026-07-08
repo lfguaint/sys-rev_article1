@@ -114,9 +114,13 @@ group.
 \subsection{Document Preparation Pipeline}
 \label{sec:pipeline}
 
-Full-text study reports (PDF) were processed through a two-stage pipeline designed
-to produce fully text-based study representations consumable by any large
-language model without multimodal (image) input.
+Full-text study reports (PDF) were processed through a two-stage pipeline
+that converts each article into a standardised plain-text representation
+before it is submitted to any model.
+Converting to a common format ensures that all eight models receive identical
+textual input, so that observed differences in performance reflect model
+behaviour rather than differences in how each model internally parses or
+prioritises content from a raw PDF.
 
 \textbf{Stage~1 --- PDF-to-Markdown conversion.}
 Each PDF was converted to structured Markdown using MinerU \citep{Wang2024MinerU},
@@ -124,15 +128,19 @@ which preserves headings, tables, and inline text whilst replacing embedded figu
 with placeholder tokens of the form \texttt{[Figure~$k$]}.
 
 \textbf{Stage~2 --- Figure description.}
-Each figure placeholder was resolved by a vision-language model (VLM) that
-received the corresponding page image and generated a textual description,
-which was then inserted in place of the placeholder.
+Each figure placeholder was resolved by Gemini~2.5~Flash
+(\texttt{google/gemini-2.5-flash}, accessed via OpenRouter in May--June~2026),
+a vision-language model (VLM) that received the corresponding page image
+together with surrounding article context and generated a structured textual
+description following a fixed eight-field schema (figure type, axes and units,
+legend and groups, visual summary, plotted patterns, and unreadable or uncertain
+areas; full prompt reproduced in Supporting Information~S10).
+The description was then inserted in place of the placeholder.
 After Stage~2, the document was a self-contained Markdown file in which all
-information---including the content of charts, CONSORT flow diagrams, Kaplan--Meier
-curves, and forest plots---was represented as plain text.
-This design eliminates the need to pass images alongside the prompt during
-RoB assessment, enabling evaluation of text-only models and ensuring a consistent
-input format across all eight models tested.
+information---including any figures present in the source document---was represented as plain text.
+The result is a self-contained Markdown file in which the full article
+content---text, tables, and figures---is represented uniformly as plain text,
+forming the common input submitted to all eight models.
 
 \subsection{Risk of Bias Assessment}
 \label{sec:rob-assessment}
@@ -157,10 +165,19 @@ the model receives the full Markdown text and is instructed to return a JSON
 array containing judgements and justifications for all seven domains
 simultaneously.
 All eight models were evaluated under the per-domain mode.
+Per-domain mode was adopted as the primary protocol because each RoB~1.0
+domain represents an independent methodological criterion; separating calls
+ensures that each domain is assessed under a dedicated instruction context,
+without the model being required to simultaneously manage seven distinct
+evaluation tasks in a single generation pass.
 Gemini~2.5~Flash and DeepSeek~v4-Flash were additionally evaluated under the
 single-call mode on the same 227 studies, enabling a controlled comparison of
 the two inference strategies whilst holding model, prompt content, and corpus
 constant.
+These two models were selected because their published list prices per token on
+OpenRouter were the lowest among the eight models evaluated, making a second
+full-corpus run economically practical.
+The results of this comparison are reported in Section~\ref{sec:inference}.
 
 \subsection{Language Models}
 \label{sec:models}
@@ -195,27 +212,27 @@ revisions of the same identifier strings.
 \begin{table}[ht]
 \centering
 \caption{Language models evaluated. All models accessed via the OpenRouter API
-in June~2026 using the model identifier strings shown; zero-shot single-agent
-mode throughout.
+in June~2026 using the identifier strings shown; zero-shot single-agent
+mode throughout; all 227 studies evaluated per model.
 Context length: maximum tokens accepted per call as reported by OpenRouter at
 access time.
 Release date: date the model became available on OpenRouter.
 Exact checkpoint versions are opaque at the provider level; the identifiers
-below are the strings passed to the API and represent the model state at the
+shown are the strings passed to the API and represent the model state at the
 time of inference.}
 \label{tab:models}
-\begin{tabular}{llccc}
+\begin{tabular}{llcc}
 \toprule
-Model & OpenRouter identifier & Context & Release & Studies \\
+Model & OpenRouter identifier & Context & Release \\
 \midrule
-Gemini~2.5~Pro    & \texttt{google/gemini-2.5-pro}          & 1M  & Jun 2025 & 227 \\
-Gemini~2.5~Flash  & \texttt{google/gemini-2.5-flash}        & 1M  & Jun 2025 & 227 \\
-GPT-5.4           & \texttt{openai/gpt-5.4}                 & 1M  & Mar 2026 & 227 \\
-Claude~Haiku~4.5  & \texttt{anthropic/claude-haiku-4.5}     & 200K & Oct 2025 & 227 \\
-DeepSeek~v4-Flash & \texttt{deepseek/deepseek-v4-flash}     & 1M  & Apr 2026 & 227 \\
-Grok~4.3          & \texttt{x-ai/grok-4.3}                  & 1M  & Apr 2026 & 227 \\
-Qwen~3.7-Plus     & \texttt{qwen/qwen3.7-plus}              & 1M  & May 2026 & 227 \\
-GLM-5             & \texttt{z-ai/glm-5}                     & 203K & Feb 2026 & 227 \\
+Gemini~2.5~Pro    & \texttt{google/gemini-2.5-pro}          & 1M   & Jun 2025 \\
+Gemini~2.5~Flash  & \texttt{google/gemini-2.5-flash}        & 1M   & Jun 2025 \\
+GPT-5.4           & \texttt{openai/gpt-5.4}                 & 1M   & Mar 2026 \\
+Claude~Haiku~4.5  & \texttt{anthropic/claude-haiku-4.5}     & 200K & Oct 2025 \\
+DeepSeek~v4-Flash & \texttt{deepseek/deepseek-v4-flash}     & 1M   & Apr 2026 \\
+Grok~4.3          & \texttt{x-ai/grok-4.3}                  & 1M   & Apr 2026 \\
+Qwen~3.7-Plus     & \texttt{qwen/qwen3.7-plus}              & 1M   & May 2026 \\
+GLM-5             & \texttt{z-ai/glm-5}                     & 203K & Feb 2026 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -223,23 +240,39 @@ GLM-5             & \texttt{z-ai/glm-5}                     & 203K & Feb 2026 & 
 \subsection{Evaluation Metrics}
 \label{sec:metrics}
 
-\textbf{Overall accuracy.}
-The proportion of cells in which the model's judgement matched the ground-truth
-label, computed across all 1{,}589 study--domain pairs.
+\textbf{Accuracy.}
+The proportion of study--domain cells in which the model's judgement matched
+the ground-truth label, equivalent to the observed agreement $p_o$ used in
+the chance-corrected coefficients below.
+Let $\mathbf{N} = (N_{ij})$ denote the $K \times K$ confusion matrix (here, $K=3$),
+with rows indexed by predicted class $i$ and columns indexed by ground-truth
+class $j$:
+\begin{equation}
+  \text{Accuracy} = p_o = \frac{\sum_{k=1}^{K} N_{kk}}{N}
+  = \frac{\sum_{k=1}^{K} N_{kk}}{\sum_{i=1}^{K}\sum_{j=1}^{K} N_{ij}},
+  \label{eq:accuracy}
+\end{equation}
+where $N_{ij}$ is the number of cells with ground-truth class $j$ predicted as
+class $i$, and
+\(
+N = \sum_{i=1}^{K}\sum_{j=1}^{K} N_{ij}
+\)
+is the total number of evaluated cells ($N = 1{,}589$ overall; $N = 227$ per
+domain; smaller for intervention-type and clinical-domain strata).
 
 \textbf{Per-class F1.}
 RoB assessment is a three-class problem ($K = 3$).
-Per-class metrics are computed under a one-vs-rest scheme: for each class
-$k \in \{\text{Low Risk, High Risk, Unclear Risk}\}$, each study--domain cell is
-treated as a binary classification (``class $k$'' vs.\ ``not class $k$''),
+Per-class metrics are computed under a one-vs-rest scheme: each study--domain cell is
+treated as a binary classification (``class $k$'' vs.\ ``not class $k$'') for each class
+$k \in \{\text{Low Risk, High Risk, Unclear Risk}\}$,
 yielding four counts:
 \begin{itemize}
-  \item $\mathrm{TP}_k$: model and ground truth both assigned class $k$;
-  \item $\mathrm{FN}_k$: ground truth was $k$, model assigned another class
+  \item $\mathrm{TP}_k = N_{kk}$: model and ground truth both assigned class $k$;
+  \item $\mathrm{FN}_k = \sum\limits_{i \neq k} N_{ik}$: ground truth was $k$, model assigned another class
         (positive missed);
-  \item $\mathrm{FP}_k$: model assigned $k$, ground truth was another class
+  \item $\mathrm{FP}_k = \sum\limits_{j \neq k} N_{kj}$: model assigned $k$, ground truth was another class
         (false alarm);
-  \item $\mathrm{TN}_k$: neither model nor ground truth assigned class $k$.
+  \item $\mathrm{TN}_k = \sum\limits_{i \neq k}\sum\limits_{j \neq k} N_{ij}$: neither model nor ground truth assigned class $k$.
 \end{itemize}
 Precision (positive predictive value) and recall (sensitivity) for class $k$ are
 \begin{equation}
@@ -259,10 +292,36 @@ Per-class F1 reveals class-specific failure modes independently of overall perfo
 \textbf{Macro-F1.}
 Per-class F1 is computed over the full pool of 1{,}589 cells; the three class-level
 F1 scores are then averaged with equal weight:
-Macro-F1 $= \frac{1}{K}\sum_{k=1}^{K} \mathrm{F1}_k$ with $K = 3$.
-Macro-F1 assigns equal weight to each category regardless of prevalence, thereby
-penalising models that achieve high accuracy by concentrating predictions on
-majority classes.
+\begin{equation}
+  \text{Macro-F1} = \frac{1}{K}\sum_{k=1}^{K} \mathrm{F1}_k, \qquad K = 3.
+  \label{eq:macro-f1}
+\end{equation}
+Unlike Accuracy, Macro-F1 assigns equal weight to each category regardless of
+prevalence, penalising models that achieve high accuracy by concentrating
+predictions on the majority class.
+
+\textbf{Cohen's $\kappa$.}
+A chance-corrected agreement coefficient that adjusts observed agreement $p_o$
+for the agreement expected by chance under the assumption that annotators label
+independently according to their observed marginal distributions:
+\begin{equation}
+  \kappa = \frac{p_o - p_e^\kappa}{1 - p_e^\kappa},
+  \qquad
+  p_e^\kappa = \sum_{k=1}^{K} \hat{p}_{k,\text{model}} \cdot \hat{p}_{k,\text{gt}},
+  \label{eq:kappa}
+\end{equation}
+where
+\(
+  \hat{p}_{k,\text{model}} = \dfrac{1}{N}\sum_{j=1}^{K} N_{kj}
+\)
+and
+\(
+  \hat{p}_{k,\text{gt}} = \dfrac{1}{N}\sum_{i=1}^{K} N_{ik}
+\)
+are the marginal proportions of class $k$ in the model predictions and ground
+truth, respectively (row and column sums of $\mathbf{N}$ divided by $N$).
+$\kappa$ is reported alongside AC1 to expose their divergence under class
+imbalance, illustrating the prevalence paradox (see Gwet's AC1 below).
 
 \textbf{Gwet's AC1.}
 A chance-corrected agreement coefficient robust to the prevalence paradox
@@ -293,18 +352,34 @@ Importantly, the ground-truth annotations used here reflect published Cochrane
 consensus judgements rather than a second independent annotator; AC1 therefore
 quantifies model-to-published-standard agreement, not inter-rater reliability in
 the classical sense.
-Human inter-rater reliability for RoB~1.0 is moderate at best: even among
-formally trained reviewers applying the same protocol, Hartling et al.\
-\citep{Hartling2013} reported $\kappa = 0.79$ for D1 but only $\kappa = 0.24$--$0.37$
-for the remaining domains, with agreement between independent consensus pairs
-falling further to $\kappa = 0.05$--$0.09$ in several domains.
-Agreement also varies substantially between distinct Cochrane review teams
-evaluating the same trials \citep{Konsgen2020}.
-These findings contextualise model performance against a noisy reference
-standard rather than a true human ceiling, and motivate domain-level rather
-than aggregate interpretation of results.
 
-\textbf{Consensus failures and model complementarity.}
+\textbf{Error direction (LR-anchor framework).}
+Because the three RoB classes are not ordinally exchangeable---Low Risk acts as
+the ``safe'' default that passes a study through without additional scrutiny,
+while High Risk and Unclear Risk both trigger closer examination---we classify
+non-diagonal errors relative to Low Risk.
+A \emph{lenient} error occurs when the model assigns Low Risk and the ground
+truth is High Risk or Unclear Risk (false pass).
+A \emph{cautious} error occurs when the model assigns High Risk or Unclear Risk
+and the ground truth is Low Risk (false flag).
+A \emph{lateral} error occurs when the model confuses High Risk with Unclear Risk
+or vice versa.
+Because both non-Low-Risk categories already trigger reviewer scrutiny,
+lateral errors do not affect the binary pass/no-pass decision; their
+consequence is second-order, affecting the precision of the label
+(definite bias vs.\ insufficient information) rather than whether the
+study receives attention.
+This LR-anchor decomposition distinguishes the two first-order error
+directions: lenient errors risk including potentially biased studies
+without scrutiny (inflating evidence-base credibility), while cautious
+errors risk discrediting studies with genuinely low risk of bias
+(reducing the available evidence base).
+Both carry clinical costs in opposite directions; their relative severity
+depends on review context and the scarcity of eligible studies.
+
+\subsection{Consensus Failures and Model Complementarity}
+\label{sec:methods-complementarity}
+
 For each study--domain cell, we recorded whether at least one of the eight models
 matched the ground truth.
 Cells where \emph{no} model was correct are termed \emph{consensus failures} and
@@ -316,17 +391,27 @@ any-correct rate alongside low individual-model accuracy indicates that differen
 models fail on different cells, yielding non-redundant coverage across the
 ensemble.
 
-\textbf{Stratified analyses.}
+\subsection{Stratified Analyses}
+\label{sec:methods-strata}
+
 All primary metrics were recomputed within subgroups defined by intervention type
 (four categories) and clinical domain (24 Cochrane Review Groups, multi-label).
 For clinical domain, studies were included in every group to which they belonged,
 so group sample sizes sum to more than 227.
 
-\textbf{Statistical inference.}
+\subsection{Statistical Inference}
+\label{sec:methods-inference-stats}
 All analyses are descriptive and exploratory.
 Confidence intervals are reported to characterise estimation uncertainty and
 facilitate comparison across models and conditions; they are not interpreted
 as the outcome of pre-specified confirmatory hypothesis tests.
+All 95\% CIs were computed by study-clustered bootstrap (5{,}000 iterations):
+the 227 studies were resampled with replacement, all seven domain cells of each
+sampled study were retained, and the metric of interest was recomputed on the
+resulting pseudo-sample; the 2.5th and 97.5th percentiles of the bootstrap
+distribution define the interval.
+Resampling at the study level preserves within-study correlation across domains
+(see Supporting Information~S7 for a comparison with Wilson score intervals).
 No familywise error rate correction was applied: the number of comparisons
 across models, domains, classes, and inference modes is large and the outcomes
 are correlated, making conventional multiplicity corrections either too
