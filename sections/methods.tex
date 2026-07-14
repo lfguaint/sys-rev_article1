@@ -7,14 +7,16 @@
 \subsection{Dataset}
 \label{sec:dataset}
 
-The ground-truth dataset was constructed from Cochrane systematic reviews published
-in 2024.
-Of the 149 reviews published that year, 127 were accessible through our
-institutional subscription; from each accessible review, up to three included randomised controlled trials
-(RCTs) were selected on the basis of full-text PDF availability: all included
-RCTs for which a PDF was retrievable were included, up to a maximum of three per
-review, yielding a final corpus of \textbf{227 RCTs} drawn from 127 distinct
-Cochrane reviews.
+The evaluation corpus consists of randomised controlled trials (RCTs) included
+in Cochrane intervention systematic reviews published in 2024.
+Beginning from a source list of 149 reviews, RCTs were selected through a
+stratified, risk-of-bias-aware sampling procedure capped at three RCTs per
+review, and a trial was retained only when a full-text report (PDF) of the
+trial could be obtained.
+This procedure yielded a corpus of \textbf{227 RCTs} drawn from 123 distinct
+Cochrane reviews (trial publication years 1966--2023).
+The full construction pipeline and the resulting labelled dataset are described
+in a companion data paper \citep{Dataset2026}.
 
 Risk of bias annotations were obtained directly from the published Cochrane
 review reports and reflect the consensus judgements produced by the original
@@ -29,7 +31,7 @@ now recommended for new systematic reviews, it reorganises the domain structure
 and changes the rating scale, rendering it incompatible with the existing
 RoB~1.0 corpus.
 RoB~1.0 remains the basis for the large majority of existing systematic review
-annotations --- including all 127 reviews sampled here and most of the large
+annotations --- including all 123 reviews sampled here and most of the large
 labelled datasets used for training and evaluation of automated systems --- so
 this study's focus on RoB~1.0 is both corpus-driven and practically motivated.
 Each study was annotated using the Cochrane Risk of Bias~1.0 (RoB~1.0) tool
@@ -42,74 +44,21 @@ D5~(incomplete outcome data),
 D6~(selective outcome reporting), and
 D7~(other sources of bias).
 Each domain received one of three judgements---\emph{Low Risk}, \emph{High Risk},
-or \emph{Unclear Risk}---yielding 1{,}589 annotated cells ($227 \times 7$).
-
-Class prevalence varied substantially across domains (Table~\ref{tab:class-dist}).
-Low Risk was the largest class in six of seven domains, and the majority class
-($>$50\%) in four of them (D1, D5, D6, D7); only D3~(blinding of participants
-and personnel) had High Risk as its largest class (45\%), reflecting the
-predominance of unblinded pharmacological trials in the corpus.
-At the skewed extreme, D1 had a 69\% Low Risk majority and only 5 High Risk cases
-(2\%); D5 and D7 were similarly imbalanced at 63\% and 61\% Low Risk, respectively.
-D4~(blinding of outcome assessors) was the most balanced domain overall
-(44\% Low Risk, 28\% High Risk, 29\% Unclear Risk), closely followed by D2, in
-which Low Risk and Unclear Risk were nearly equally represented (50\% vs.\ 46\%).
-
-\begin{table}[ht]
-\centering
-\caption{Ground-truth class distribution per RoB domain ($n = 227$ studies per
-domain). LR~=~Low Risk; HR~=~High Risk; UR~=~Unclear Risk.}
-\label{tab:class-dist}
-\begin{tabular}{lccccc}
-\toprule
-Domain & LR & HR & UR & Majority class & Majority (\%) \\
-\midrule
-D1 & 157 &   5 &  65 & Low Risk   & 69.2 \\
-D2 & 113 &  10 & 104 & Low Risk   & 49.8 \\
-D3 &  74 & 103 &  50 & High Risk  & 45.4 \\
-D4 &  99 &  63 &  65 & Low Risk   & 43.6 \\
-D5 & 143 &  39 &  45 & Low Risk   & 63.0 \\
-D6 & 125 &  25 &  77 & Low Risk   & 55.1 \\
-D7 & 139 &  31 &  57 & Low Risk   & 61.2 \\
-\midrule
-\textbf{Total} & \textbf{850} & \textbf{276} & \textbf{463} & Low Risk & 53.5 \\
-               & (53.5\%)     & (17.4\%)     & (29.1\%)     &          &      \\
-\bottomrule
-\end{tabular}
-\end{table}
+or \emph{Unclear Risk}---so every study contributes seven domain-level cells,
+giving 1{,}589 evaluated cells ($227 \times 7$) in total.
+The ground-truth class distribution is markedly imbalanced across domains
+(reported in Section~\ref{sec:corpus} and Table~\ref{tab:class-dist}), a property
+that motivates the agreement metrics adopted in Section~\ref{sec:metrics}.
 
 \textbf{Intervention type.}
 Each study was assigned a single intervention category:
-drug/medication ($n = 104$),
-non-pharmacological intervention ($n = 75$),
-procedure ($n = 30$), or
-medical device ($n = 18$).
+drug/medication, non-pharmacological intervention, procedure, or medical device.
 
 \textbf{Clinical domain.}
-Studies were tagged with one or more of 24 Cochrane Review Group categories
-(multi-label; 120 of 227 studies belonged to more than one group).
-The most frequent categories were Child Health ($n = 72$),
-Heart \& Circulation ($n = 45$), and Kidney Disease ($n = 31$);
-the least frequent were Skin Disorders ($n = 3$),
-Effective Practice \& Health Systems ($n = 4$),
-Rheumatology ($n = 5$), and Wounds ($n = 5$).
-For stratified analyses, each multi-domain study was included in every applicable
-group.
-
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=0.75\linewidth]{ground_truth_227_tipo_intervencao}
-  \caption{Distribution of the 227 RCTs by intervention type.}
-  \label{fig:itype-dist}
-\end{figure}
-
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=0.75\linewidth]{ground_truth_227_dominio_clinico}
-  \caption{Distribution of the 227 RCTs by clinical domain (Cochrane Review
-  Group categories, multi-label; total exceeds 227).}
-  \label{fig:clinical-dist}
-\end{figure}
+Studies were tagged with one or more Cochrane Review Group categories
+(multi-label).
+For stratified analyses (Section~\ref{sec:methods-strata}), each multi-domain
+study was included in every applicable group.
 
 \subsection{Document Preparation Pipeline}
 \label{sec:pipeline}
