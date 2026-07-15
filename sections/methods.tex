@@ -50,6 +50,20 @@ The ground-truth class distribution is markedly imbalanced across domains
 (reported in Section~\ref{sec:corpus} and Table~\ref{tab:class-dist}), a property
 that motivates the agreement metrics adopted in Section~\ref{sec:metrics}.
 
+\textbf{Domain normalisation.}
+Not all source reviews reported risk of bias under the seven canonical RoB~1.0
+labels: some used a single combined blinding entry (performance and detection
+bias) or split individual domains into several sub-domains.
+Prior to evaluation, all annotations were normalised to the seven canonical
+domains---combined or split blinding entries were mapped to D3~(blinding of
+participants and personnel) and D4~(blinding of outcome assessment), and other
+custom sub-domains were consolidated into the corresponding canonical domain.
+Where merged sub-domains carried conflicting judgements, the more conservative
+(higher-risk) judgement was retained.
+Normalisation affected 73 of the 227 studies (32\%), predominantly the blinding
+domains (D3, D4); the complete mapping is documented in the companion data
+paper \citep{Dataset2026}.
+
 \textbf{Intervention type.}
 Each study was assigned a single intervention category:
 drug/medication, non-pharmacological intervention, procedure, or medical device.
