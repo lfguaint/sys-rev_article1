@@ -401,7 +401,7 @@ so group sample sizes sum to more than 227.
 
 \subsection{Statistical Inference}
 \label{sec:methods-inference-stats}
-All analyses are descriptive and exploratory.
+Analyses are primarily descriptive and exploratory; two post-hoc formal tests were additionally conducted to characterise pairwise performance differences and systematic class-distribution bias.
 Confidence intervals are reported to characterise estimation uncertainty and
 facilitate comparison across models and conditions; they are not interpreted
 as the outcome of pre-specified confirmatory hypothesis tests.
@@ -422,5 +422,26 @@ Where 95\% bootstrap CIs exclude zero, this is noted descriptively
 reference threshold and carries no confirmatory implication in this exploratory
 context---it marks an unadjusted signal that may warrant further investigation,
 not a principled significance claim.
+
+\textbf{McNemar test.}
+Pairwise differences in overall accuracy between models were assessed using the
+two-sided continuity-corrected McNemar test~\citep{McNemar1947}, applied to the
+$2{\times}2$ table of discordant cells for each model pair.
+Because all eight models evaluated the same 1{,}589 cells, errors are paired by
+design; the McNemar test exploits this within-cell correlation, yielding greater
+statistical power than comparisons based on marginal confidence intervals.
+
+\textbf{Stuart--Maxwell test.}
+Systematic deviations in the marginal class distribution of each model's
+predictions relative to the ground truth were assessed using the Stuart--Maxwell
+test of marginal homogeneity~\citep{Stuart1955,Maxwell1970}, which extends
+McNemar's test to $k{\times}k$ square contingency tables
+($k = 3$: Low Risk, High Risk, Unclear Risk).
+The test statistic is $Q = \mathbf{d}^\top \mathbf{S}^{-1} \mathbf{d}
+\sim \chi^2(k{-}1)$, where $\mathbf{d}$ is the vector of marginal differences
+and $\mathbf{S}$ is its covariance matrix.
+Eight tests were conducted (one per model); p-values were adjusted using the
+Benjamini--Hochberg false discovery rate procedure~\citep{Benjamini1995}
+at $\alpha = 0.05$.
 
 \end{document}

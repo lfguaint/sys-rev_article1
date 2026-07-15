@@ -13,9 +13,14 @@ study-clustered bootstrap 95\% confidence intervals (5{,}000 iterations,
 resampling the 227 studies---the unit of clustering---with replacement to
 preserve within-study correlation across the seven domains).
 Overall accuracy ranged from 57.6\% (Gemini~2.5~Pro) to 62.5\%
-(Claude~Haiku~4.5), a spread of less than five percentage points; the 95\%~CI
-for each model spans approximately 5--6~pp, so all pairwise accuracy differences
-fall within sampling uncertainty and should be treated as directional.
+(Claude~Haiku~4.5), a spread of less than five percentage points.
+The paired McNemar test reveals that Gemini~2.5~Pro and GPT-5.4 form a
+distinct lower-performing cluster, each significantly outperformed by all six
+remaining models (all $p < 0.05$, continuity-corrected) while remaining
+statistically indistinguishable from each other ($p = 0.956$).
+Marginal bootstrap confidence intervals for accuracy overlap across all eight
+models; the greater power of the paired analysis reflects the within-cell
+correlation present when all models evaluate identical items.
 Macro-F1 confidence intervals similarly overlap across all eight models,
 precluding reliable rank ordering based on this metric alone.
 By contrast, Gemini~2.5~Flash and
@@ -289,6 +294,18 @@ registered protocol even when the ground-truth judgement was Low Risk.
 roughly balanced lenient and cautious fractions and a lateral component of
 12--21\%---confirming the idiosyncratic, criterion-ambiguous character of
 errors in this domain noted in Section~\ref{sec:domain}.
+
+% Figure: error direction by model — stacked proportions
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{error_direction_overall_stacked_pct}
+  \caption{Overall error direction by model under the LR-anchor framework.
+  Each bar shows the proportion of errors classified as lenient (red),
+  lateral (orange), or cautious (blue); bar thickness scales linearly with
+  the total number of errors for that model ($n$ = 596--674).
+  Models are ordered top to bottom as in Figure~\ref{fig:overall-accuracy}.}
+  \label{fig:error-direction-model}
+\end{figure}
 
 \clearpage
 \subsection{Stratification by Intervention Type}

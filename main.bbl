@@ -1,9 +1,20 @@
-\begin{thebibliography}{12}
+\begin{thebibliography}{14}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Hartling et~al.(2013)Hartling, Hamm, Milne, Vandermeer, Santaguida,
+  Ansari, Tsertsvadze, Hempel, Shekelle, and Dryden]{Hartling2013}
+Lisa Hartling, Michele~P Hamm, Andrea Milne, Ben Vandermeer, P~Lina Santaguida,
+  Mohammed Ansari, Alexander Tsertsvadze, Susanne Hempel, Paul Shekelle, and
+  Donna~M Dryden.
+\newblock Testing the risk of bias tool showed low reliability between
+  individual reviewers and across consensus assessments of reviewer pairs.
+\newblock \emph{Journal of Clinical Epidemiology}, 66\penalty0 (9):\penalty0
+  973--981, 2013.
+\newblock \doi{10.1016/j.jclinepi.2012.07.005}.
 
 \bibitem[Higgins et~al.(2019)Higgins, Thomas, Chandler, Cumpston, Li, Page, and
   Welch]{Higgins2019}
@@ -67,6 +78,15 @@ Dmitry Scherbakov, Nina Hubig, Vinita Jansari, Alexander Bakumenko, and
   32\penalty0 (6):\penalty0 1071--1086, 2025.
 \newblock \doi{10.1093/jamia/ocaf063}.
 
+\bibitem[Nyrhi et~al.(2026)Nyrhi, Ponkilainen, Laaksonen, Kuikka, Paljakka,
+  Karjalainen, Mattila, and Kuitunen]{Nyrhi2026}
+Lauri Nyrhi, Ville Ponkilainen, Juho Laaksonen, Lauri Kuikka, Lauri Paljakka,
+  Teemu Karjalainen, Ville~M Mattila, and Ilari Kuitunen.
+\newblock Large language models for risk-of-bias assessment in randomised
+  clinical trials---a comparative validation study.
+\newblock \emph{eBioMedicine}, 126:\penalty0 106238, 2026.
+\newblock \doi{10.1016/j.ebiom.2026.106238}.
+
 \bibitem[Sterne et~al.(2019)Sterne, Sav{\v{o}}vi{\'c}, Page, Roy, Higgins,
   Boutron, Cates, Cheng, Corbett, Eldridge, Emberson, Hernán, Hopewell,
   Hróbjartsson, Junqueira, Jüni, Kirkham, Lasserson, Li, McAleenan, Reeves,
@@ -93,6 +113,15 @@ Bin Wang, Chao Xu, Xiaomeng Zhao, Linke Ouyang, Fan Wu, Zhiyuan Zhao, Rui Xu,
 \newblock \emph{arXiv preprint arXiv:2409.18839}, 2024.
 \newblock \doi{10.48550/arXiv.2409.18839}.
 
+\bibitem[Wang et~al.(2023)Wang, Wei, Schuurmans, Le, Chi, Narang, Chowdhery,
+  and Zhou]{Wang2023}
+Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc~V Le, Ed~H Chi, Sharan Narang,
+  Aakanksha Chowdhery, and Denny Zhou.
+\newblock Self-consistency improves chain of thought reasoning in language
+  models.
+\newblock In \emph{International Conference on Learning Representations}, 2023.
+\newblock URL \url{https://openreview.net/forum?id=1PL1NIMMrw}.
+
 \bibitem[Gwet(2008)]{Gwet2008}
 Kilem~L Gwet.
 \newblock Computing inter-rater reliability and its variance in the presence of
@@ -107,16 +136,5 @@ Alvan~R Feinstein and Domenic~V Cicchetti.
 \newblock \emph{Journal of Clinical Epidemiology}, 43\penalty0 (6):\penalty0
   543--549, 1990.
 \newblock \doi{10.1016/0895-4356(90)90158-L}.
-
-\bibitem[Hartling et~al.(2013)Hartling, Hamm, Milne, Vandermeer, Santaguida,
-  Ansari, Tsertsvadze, Hempel, Shekelle, and Dryden]{Hartling2013}
-Lisa Hartling, Michele~P Hamm, Andrea Milne, Ben Vandermeer, P~Lina Santaguida,
-  Mohammed Ansari, Alexander Tsertsvadze, Susanne Hempel, Paul Shekelle, and
-  Donna~M Dryden.
-\newblock Testing the risk of bias tool showed low reliability between
-  individual reviewers and across consensus assessments of reviewer pairs.
-\newblock \emph{Journal of Clinical Epidemiology}, 66\penalty0 (9):\penalty0
-  973--981, 2013.
-\newblock \doi{10.1016/j.jclinepi.2012.07.005}.
 
 \end{thebibliography}

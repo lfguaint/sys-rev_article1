@@ -673,4 +673,82 @@ in the extracted Markdown, and \texttt{\{image\_path\}} is the relative path
 to the page image extracted by MinerU.
 The prompt was used without modification for all figures across all 227 studies.
 
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection*{S11\quad Stratification by Publication Era}
+\label{sec:si-era}
+
+To investigate whether study characteristics associated with publication period
+affect model performance, the 224 studies with a recorded publication year were
+grouped into four eras: Pre-2000s (1960--1999; $n = 32$), 2000s (2000--2009;
+$n = 44$), 2010s (2010--2019; $n = 105$), and 2020s (2020 onward; $n = 43$).
+Figure~\ref{fig:si-decade-dist} shows the distribution of studies by publication
+decade.
+Figures~\ref{fig:si-era-agg} and~\ref{fig:si-era-models} show overall accuracy
+per era aggregated across all eight models and per model, respectively.
+Figure~\ref{fig:si-era-domain} shows accuracy per RoB domain across eras.
+All confidence intervals are 95\% study-clustered bootstrap (5{,}000 iterations).
+
+Point estimates suggest a modest trend of increasing accuracy from Pre-2000s
+(56.0\%) to the 2020s (63.9\%); however, confidence intervals overlap across
+all pairwise comparisons, including the most extreme (Pre-2000s vs.\ 2020s:
+[50.2, 61.7] vs.\ [58.7, 69.3]), so a monotonic trend cannot be formally
+established.
+The wide interval for the Pre-2000s era reflects the small stratum size
+($n = 32$) rather than greater variability in model performance.
+
+Domain-level stratification reveals heterogeneous patterns.
+D1 (random sequence generation) shows the clearest era effect, rising from
+71\% in the Pre-2000s to 88\% in the 2020s, consistent with the progressive
+adoption of CONSORT-mandated reporting of randomisation methods.
+D3 (blinding of participants and personnel) shows the opposite trend,
+declining from 64\% in the Pre-2000s to 53\% in the 2020s, which may reflect
+the increasing prevalence of non-pharmacological and device trials in recent
+decades, where blinding is structurally more complex to evaluate.
+D7 (other bias) remains the lowest-performing domain across all eras
+(38--45\%), with no discernible temporal trend, consistent with the
+domain reflecting intrinsic criterion vagueness rather than a
+reporting-period effect.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.75\linewidth]{ground_truth_227_decada}
+  \caption{Distribution of 227 RCTs by publication decade.
+  Numbers above each bar indicate study count per decade.}
+  \label{fig:si-decade-dist}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.7\linewidth]{era_accuracy_aggregate}
+  \caption{Overall accuracy by publication era, aggregated across all eight
+  models (95\% CI, study-clustered bootstrap, 5{,}000 iterations).
+  Point estimates are annotated above the upper bound of each confidence band.
+  The Pre-2000s stratum contains only 32 studies, yielding a substantially
+  wider interval than the remaining three eras.}
+  \label{fig:si-era-agg}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{era_accuracy_lines}
+  \caption{Overall accuracy by publication era for each of the eight models
+  individually (95\% CI, study-clustered bootstrap, 5{,}000 iterations).
+  Shaded bands show the confidence interval for each model.
+  The two-tier structure observed in global performance
+  (Gemini~2.5~Pro and GPT-5.4 below the remaining six models) is
+  consistent across all four eras.}
+  \label{fig:si-era-models}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{era_domain_lines}
+  \caption{Accuracy per RoB domain across publication eras, aggregated across
+  all eight models (95\% CI, study-clustered bootstrap, 5{,}000 iterations).
+  D1 (sequence generation) shows a pronounced positive trend; D3 (blinding of
+  participants and personnel) shows a negative trend; D7 (other bias) remains
+  the lowest domain in all eras with no clear temporal pattern.}
+  \label{fig:si-era-domain}
+\end{figure}
+
 \end{document}
