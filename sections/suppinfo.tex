@@ -160,7 +160,9 @@ Best value in each column shown in bold.
 95\% confidence intervals (study-clustered bootstrap, 5{,}000 iterations,
 resampling 227 studies with replacement) are shown in \textit{brackets} below
 each point estimate; all analyses are exploratory (see Methods, Statistical
-Inference).}
+Inference).
+$^\dag$Processed via sidecar pipeline for 75/227 studies (74 output-format failures
++ 1 context-window overflow; see S12); all 227 studies contributed to the metrics shown.}
 \label{tab:overall}
 \begin{tabular}{lccccccc}
 \toprule
@@ -169,16 +171,19 @@ Model & Accuracy (\%) & Macro-F1 & F1-LR & F1-HR & F1-UR & Cohen's $\kappa$ & Gw
 Claude~Haiku~4.5   & \textbf{62.5}   & 0.541           & \textbf{0.743}  & 0.469           & 0.413           & 0.325           & \textbf{0.485}  \\
                    & \footnotesize[59.8, 65.2] & \footnotesize[0.511, 0.569] & \footnotesize[0.718, 0.767] & \footnotesize[0.412, 0.521] & \footnotesize[0.361, 0.463] & \footnotesize[0.286, 0.365] & \footnotesize[0.443, 0.526] \\
 \addlinespace[3pt]
+Llama~3.3$^\dag$ & 61.2          & \textbf{0.570}  & 0.713           & \textbf{0.501}  & 0.495           & 0.346           & 0.449           \\
+                   & \footnotesize[58.7, 63.6] & \footnotesize[0.542, 0.595] & \footnotesize[0.684, 0.740] & \footnotesize[0.444, 0.553] & \footnotesize[0.452, 0.535] & \footnotesize[0.306, 0.383] & \footnotesize[0.411, 0.486] \\
+\addlinespace[3pt]
 GLM-5              & 61.1            & 0.557           & 0.709           & 0.441           & \textbf{0.520}  & 0.341           & 0.449           \\
                    & \footnotesize[58.7, 63.5] & \footnotesize[0.529, 0.582] & \footnotesize[0.682, 0.735] & \footnotesize[0.385, 0.494] & \footnotesize[0.479, 0.561] & \footnotesize[0.301, 0.380] & \footnotesize[0.411, 0.485] \\
 \addlinespace[3pt]
 Qwen~3.7-Plus      & 60.9            & 0.525           & 0.718           & 0.356           & 0.503           & 0.306           & 0.457           \\
                    & \footnotesize[58.3, 63.4] & \footnotesize[0.496, 0.552] & \footnotesize[0.691, 0.743] & \footnotesize[0.293, 0.413] & \footnotesize[0.459, 0.543] & \footnotesize[0.266, 0.345] & \footnotesize[0.417, 0.495] \\
 \addlinespace[3pt]
-Gemini~2.5~Flash   & 60.7            & \textbf{0.558}  & 0.718           & \textbf{0.474}  & 0.484           & \textbf{0.349}  & 0.437           \\
+Gemini~2.5~Flash   & 60.7            & 0.558           & 0.718           & 0.474           & 0.484           & \textbf{0.349}  & 0.437           \\
                    & \footnotesize[58.2, 63.1] & \footnotesize[0.533, 0.582] & \footnotesize[0.690, 0.744] & \footnotesize[0.424, 0.516] & \footnotesize[0.443, 0.526] & \footnotesize[0.312, 0.384] & \footnotesize[0.399, 0.475] \\
 \addlinespace[3pt]
-DeepSeek~v4-Flash  & 60.3            & \textbf{0.558}  & 0.704           & \textbf{0.480}  & 0.489           & 0.337           & 0.433           \\
+DeepSeek~v4-Flash  & 60.3            & 0.558           & 0.704           & 0.480           & 0.489           & 0.337           & 0.433           \\
                    & \footnotesize[57.7, 62.9] & \footnotesize[0.531, 0.585] & \footnotesize[0.676, 0.730] & \footnotesize[0.429, 0.530] & \footnotesize[0.447, 0.530] & \footnotesize[0.296, 0.377] & \footnotesize[0.394, 0.472] \\
 \addlinespace[3pt]
 Grok~4.3           & 60.1            & 0.549           & 0.696           & 0.432           & 0.518           & 0.326           & 0.433           \\
@@ -202,15 +207,17 @@ Macro-F1 for each model in each of the seven RoB domains.
 
 \begin{sidewaystable}
 \centering
-\caption{Per-domain accuracy (\%) for all eight models
-($n = 227$ cells per domain). Best value per domain in bold.}
+\caption{Per-domain accuracy (\%) for all nine models
+($n = 227$ cells per domain). Best value per domain in bold.
+$^\dag$See Table~\ref{tab:overall} footnote.}
 \label{tab:domain-full}
 \begin{tabular}{lC{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}}
 \toprule
 Model & D1 & D2 & D3 & D4 & D5 & D6 & D7 \\
 \midrule
-Claude~Haiku~4.5   & 73.6 & 74.0 & 67.4          & 51.5 & \textbf{64.3} & 57.7 & 48.9 \\
-GLM-5              & 76.7 & 74.0 & 55.9          & 53.7 & 62.1          & 55.9 & 49.3 \\
+Claude~Haiku~4.5       & 73.6 & 74.0 & 67.4          & 51.5 & \textbf{64.3} & 57.7 & 48.9 \\
+Llama~3.3$^\dag$   & 74.0 & 65.6 & 68.7          & 53.7 & 63.0          & 56.4 & 46.7 \\
+GLM-5                  & 76.7 & 74.0 & 55.9          & 53.7 & 62.1          & 55.9 & 49.3 \\
 Qwen~3.7-Plus      & \textbf{77.5} & 74.9 & 49.8 & 52.0 & 59.9 & 56.4 & \textbf{55.5} \\
 Gemini~2.5~Flash   & 72.2 & 74.0 & \textbf{72.2} & 51.5 & 60.4 & \textbf{62.6} & 31.7 \\
 DeepSeek~v4-Flash  & 74.0 & 70.0 & 67.0          & \textbf{57.7} & 54.6 & 55.9 & 42.7 \\
@@ -223,15 +230,17 @@ Gemini~2.5~Pro     & 76.7 & \textbf{74.4} & 62.6  & 55.1 & 55.1 & 55.1 & 24.2 \\
 
 \begin{sidewaystable}
 \centering
-\caption{Per-domain Macro-F1 for all eight models
-($n = 227$ cells per domain). Best value per domain in bold.}
+\caption{Per-domain Macro-F1 for all nine models
+($n = 227$ cells per domain). Best value per domain in bold.
+$^\dag$See Table~\ref{tab:overall} footnote.}
 \label{tab:domain-f1}
 \begin{tabular}{lC{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}C{1.5cm}}
 \toprule
 Model & D1 & D2 & D3 & D4 & D5 & D6 & D7 \\
 \midrule
-Claude~Haiku~4.5   & 0.572 & 0.618 & 0.527          & 0.425 & 0.394 & 0.387 & 0.269 \\
-GLM-5              & 0.632 & 0.657 & 0.462          & 0.479 & \textbf{0.514} & 0.443 & 0.345 \\
+Claude~Haiku~4.5       & 0.572 & 0.618 & 0.527          & 0.425 & 0.394 & 0.387 & 0.269 \\
+Llama~3.3$^\dag$   & 0.582 & 0.552 & 0.617          & 0.490 & 0.435 & 0.397 & 0.329 \\
+GLM-5                  & 0.632 & 0.657 & 0.462          & 0.479 & \textbf{0.514} & 0.443 & 0.345 \\
 Qwen~3.7-Plus      & \textbf{0.638} & 0.672 & 0.428 & 0.447 & 0.439 & 0.388 & 0.288 \\
 Gemini~2.5~Flash   & 0.549 & 0.663 & \textbf{0.626} & 0.411 & 0.412 & 0.438 & 0.280 \\
 DeepSeek~v4-Flash  & 0.602 & 0.610 & 0.583          & \textbf{0.521} & 0.419 & 0.424 & \textbf{0.347} \\
@@ -497,11 +506,11 @@ simplifies interpretation.
 \subsection*{S8\quad Inference Cost}
 \label{sec:si-cost}
 
-Table~\ref{tab:cost} reports total billed inference costs for the eight models
+Table~\ref{tab:cost} reports total billed inference costs for the nine models
 across the 227-study benchmark, retrieved from the OpenRouter account history.
 All costs correspond to per-domain inference mode (seven sequential calls per study).
-The total cost of running the full eight-model benchmark was approximately
-\$244~USD, providing an order-of-magnitude reference for the practical
+The total cost of running the full nine-model benchmark was approximately
+\$269~USD, providing an order-of-magnitude reference for the practical
 feasibility of this type of evaluation.
 
 The pipeline permitted up to two retries per domain call in the event of API
@@ -533,30 +542,58 @@ inference mode.
 
 \begin{table}[ht]
 \centering
-\caption{Total billed inference costs for the eight models (per-domain mode,
+\caption{Total billed inference costs for the nine models (per-domain mode,
 227~studies), retrieved from OpenRouter account history, 7~July~2026.
 Costs include retries due to API errors or invalid responses; the number of
 retries was not recorded per model and cross-model comparisons should not be
 drawn from these figures.
-Total across all eight models: \$244.32.}
+Total across all nine models: \$268.72.}
 \label{tab:cost}
 \begin{tabular}{lr}
 \toprule
 Model & Total billed cost (USD) \\
 \midrule
-DeepSeek~v4-Flash &  3.50 \\
-Gemini~2.5~Flash  &  9.42 \\
-Qwen~3.7-Plus     & 11.40 \\
-GLM-5             & 30.70 \\
-Claude~Haiku~4.5  & 32.40 \\
-Grok~4.3          & 33.50 \\
-Gemini~2.5~Pro    & 54.10 \\
-GPT-5.4           & 69.30 \\
+DeepSeek~v4-Flash    &  3.50 \\
+Gemini~2.5~Flash     &  9.42 \\
+Qwen~3.7-Plus        & 11.40 \\
+Nemotron~3~Ultra     & 24.40 \\
+GLM-5                & 30.70 \\
+Claude~Haiku~4.5     & 32.40 \\
+Grok~4.3             & 33.50 \\
+Gemini~2.5~Pro       & 54.10 \\
+GPT-5.4              & 69.30 \\
 \midrule
-Total             & 244.32 \\
+Total                & 268.72 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+The costs reported here reflect API-based access via OpenRouter and apply
+specifically to proprietary or API-only model endpoints.
+Several models evaluated in this benchmark belong to families that release
+open weights publicly.
+DeepSeek~v4-Flash weights are publicly available under an MIT licence on
+Hugging Face (\texttt{deepseek-ai/DeepSeek-V4-Flash}), and
+Nemotron-3-Ultra-550B weights are similarly available under the OpenMDW-1.1
+licence (\texttt{nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B-BF16}); both models
+could therefore be self-hosted at no per-inference monetary cost by researchers
+with access to sufficient GPU resources.
+The situation for GLM-5 is more nuanced: the specific checkpoint served via the
+\texttt{z-ai/glm-5} OpenRouter endpoint at the time of evaluation was
+API-only, but Zhipu~AI subsequently published weights for GLM-5.1 to the same
+Hugging Face repository (\texttt{zai-org/GLM-5}); the exact correspondence
+between the API-served and the released checkpoint is not confirmed by the
+provider.
+Qwen~3.7-Plus was API-only at the time of evaluation (May--July~2026); Alibaba
+has historically released open weights for smaller Qwen variants but had not
+published weights for the Plus tier as of the evaluation window.
+The remaining five models---Gemini~2.5~Pro, Gemini~2.5~Flash, Claude~Haiku~4.5,
+GPT-5.4, and Grok~4.3---are proprietary and API-only with no publicly released
+weights, and their inference costs are therefore irreducible below the API
+pricing reported in Table~\ref{tab:cost}.
+The choice of API-based access in the present study was motivated by
+reproducibility under identical conditions across all eight models and by the
+absence of hardware capable of serving 550B-parameter models locally.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \subsection*{S9\quad Expanded Formulas for Cohen's $\kappa$ and Gwet's AC1}
@@ -750,5 +787,60 @@ reporting-period effect.
   the lowest domain in all eras with no clear temporal pattern.}
   \label{fig:si-era-domain}
 \end{figure}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection*{S12\quad Llama~3.3~70B: Output-Format Failures and Sidecar Recovery}
+\label{sec:si-llama}
+
+Llama~3.3~70B (\texttt{meta-llama/llama-3.3-70b-instruct}, accessed via OpenRouter)
+has a context window of 131,072~tokens.
+Reserving 1,024~tokens for model output and accounting for the system prompt
+yields an effective input capacity of approximately 128,000~tokens for the
+study evidence text.
+Of the 227~studies, 74~(32.6\%) failed to produce a parseable response in the main
+inference pipeline.
+The dominant failure mode was not the domain judgment itself but the output format:
+the model returned narrative, step-by-step prose rather than the required JSON object,
+preventing automated extraction of the judgement.
+These 74~studies were recovered via a dedicated sidecar pipeline that processed each
+domain in a separate inference call and appended an explicit output-format instruction
+to the original system prompt, requiring a single bare JSON object and forbidding
+narrative or Markdown-formatted answers.
+Up to three inference retries were allowed per domain; all 74~studies resolved to
+valid assessments across all seven RoB domains.
+
+One study, CD013595 (MAIA trial), required additional manual intervention beyond
+the sidecar settings described above.
+The MAIA document is a Cochrane Systematic Review report that consolidates five
+separately published clinical trial reports into a single PDF, yielding an extracted
+Markdown file of approximately 473,000~characters ($\sim$135,000~tokens)---exceeding
+the effective input capacity even after output reservation was capped.
+To bring the document within the context window, the following sections were manually
+removed from the extracted Markdown copy: all five REFERENCES sections (the largest
+contributor), acknowledgements, affiliations, author contributions,
+competing-interests statements, and per-author conflict-of-interest blocks.
+After cleaning, the document was reduced to approximately 384,000~characters
+($\sim$110,000~tokens), placing it comfortably within the available input window.
+The cleaned document was then processed through the same sidecar pipeline described
+above.
+All seven bias domains for MAIA were assessed successfully on the first or second
+attempt, completing the 227-study benchmark for Llama~3.3~70B.
+Two categories of content were removed.
+\emph{Intentional removals} (applied uniformly across all five publications):
+reference lists, acknowledgements, author affiliations, author contribution
+statements, competing-interest disclosures, and other administrative sections.
+\emph{Hard truncation}: after the above removals the document still exceeded the
+context window; the final 384,000~characters were retained and the remainder
+discarded.
+The truncated portion falls entirely within the fifth publication (a secondary
+analysis of patient-reported outcomes, HRQoL), and consists of the tail of a
+supplementary subgroup table (EORTC~QLQ-C30 and EQ-5D-5L scores stratified by
+age, ECOG performance status, and depth of response).
+The Discussion section of the fifth publication---which contains the study
+limitations and notes that participants were aware of their treatment
+assignment---was retained in full.
+No content bearing on the RoB domains (randomisation method, allocation
+concealment, blinding procedures, primary outcome reporting, or trial
+registration) was lost in either removal step.
 
 \end{document}

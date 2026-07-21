@@ -160,6 +160,343 @@ macro-F1 should be interpreted as a measure of balanced class coverage:
 how well a model performs across \emph{all three} nominal categories, independently
 of how often each arises.
 
+\textbf{Note on Llama~3.3-70B ($^\dagger$).}
+In the main processing pipeline, 74 of the 227 studies assigned to Llama~3.3-70B
+returned narrative prose instead of the required JSON object, preventing automated
+extraction of the judgement.
+These studies were reprocessed domain by domain via a sidecar recovery workflow in
+which the original prompt was preserved and an explicit output-format instruction
+was appended.
+One further study (MAIA trial; CD013595) exceeded the model's effective context
+window; for this study the extracted Markdown was manually edited to remove
+administrative sections (reference lists, affiliations, acknowledgements) and
+was then submitted through the same sidecar workflow with the appended
+output-format instruction.
+All 227 studies contributed valid domain judgements to the benchmark.
+Full details are reported in Supporting Information~S\ref{sec:si-llama}.
+
+\subsection{Consensus Failures and Model Complementarity}
+\label{sec:consensus-failures}
+
+Table~\ref{tab:agreement-distribution} summarises the full distribution of
+per-cell model agreement across the 1{,}589 study--domain cells.
+The distribution is markedly bimodal: the two largest individual categories are
+\emph{all models correct} (499 cells, 31.4\%) and \emph{consensus failure}
+(226 cells, 14.2\%), with the intermediate categories together accounting for
+the remaining 54.4\%.
+This bimodality suggests that cell difficulty is largely an intrinsic property
+of the item rather than the model: most cells are either solvable by all frontier
+models evaluated here, or intractable for all of them given the prompt context.
+
+\begin{table}[H]
+\centering
+\caption{Distribution of per-cell model agreement across the 1{,}589
+  study--domain cells (8 models).
+  \emph{Majority} and \emph{minority} thresholds are defined relative to $n = 8$;
+  see Section~\ref{sec:methods-complementarity} for the generalised formula.}
+\label{tab:agreement-distribution}
+\begin{tabular}{lrr}
+\toprule
+Category & $N$ & \% \\
+\midrule
+All correct (8/8)  & 499     & 31.4 \\
+Majority (5--7/8)  & 418     & 26.3 \\
+Split (4/8)        &  96     &  6.0 \\
+Minority (1--3/8)  & 350     & 22.0 \\
+None correct (0/8) & 226     & 14.2 \\
+\midrule
+Total              & 1{,}589 & 100.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:agreement-domain} disaggregates the distribution by domain.
+D1 and D2 are the easiest: 54.2\% and 46.3\% of their cells achieve full
+eight-model consensus, and consensus failure rates are 11.0\% and 8.8\%,
+respectively.
+D7 (other sources of bias) stands apart in a different way: only 4.0\% of its
+cells are answered correctly by all models, and 45.8\% are answered correctly
+only by a minority (1--3 models), reflecting a domain where models
+systematically diverge in their judgements.
+D4 and D5 present a third pattern: their consensus failure rates (22.0\% and
+19.8\%) are the highest in the corpus---higher even than D7 (12.3\%)---indicating
+that when models err in D4/D5 they tend to do so collectively, whereas in D7
+errors are more dispersed across models.
+
+\begin{table}[H]
+\centering
+\caption{Per-cell agreement distribution by domain (row percentages; $n = 227$
+  per domain).}
+\label{tab:agreement-domain}
+\begin{tabular}{lrrrrr}
+\toprule
+Domain & All (8/8) & Majority (5--7) & Split (4) & Minority (1--3) & None (0) \\
+       & \%        & \%              & \%        & \%              & \%       \\
+\midrule
+D1 & 54.2 & 22.5 &  1.3 & 11.0 & 11.0 \\
+D2 & 46.3 & 27.3 &  2.6 & 15.0 &  8.8 \\
+D3 & 33.5 & 28.2 &  7.0 & 17.6 & 13.7 \\
+D4 & 32.2 & 16.3 &  6.6 & 22.9 & 22.0 \\
+D5 & 30.4 & 25.1 &  7.9 & 16.7 & 19.8 \\
+D6 & 19.4 & 37.4 &  6.2 & 25.1 & 11.9 \\
+D7 &  4.0 & 27.3 & 10.6 & 45.8 & 12.3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Stratifying by ground-truth class (Table~\ref{tab:agreement-class}) reveals a
+clear asymmetry.
+\emph{Low risk} cells are classified correctly by all eight models in 44.4\%
+of cases, and only 4.9\% are consensus failures.
+\emph{Unclear risk} cells are the hardest: 27.0\% are consensus failures---no
+model assigns the correct label---exceeding even \emph{high risk} (21.4\%).
+This result is consistent with the inherent difficulty of the \emph{unclear risk}
+category, which requires inferring the \emph{absence} of adequate reporting rather
+than identifying a positive signal of bias.
+
+\begin{table}[H]
+\centering
+\caption{Per-cell agreement distribution by ground-truth class (row percentages).}
+\label{tab:agreement-class}
+\begin{tabular}{lrrrrrr}
+\toprule
+Class        & $n$   & All (8/8) & Majority (5--7) & Split (4) & Minority (1--3) & None (0) \\
+             &       & \%        & \%              & \%        & \%              & \%       \\
+\midrule
+Low risk     & 850   & 44.4 & 25.9 & 5.1 & 19.8 &  4.9 \\
+High risk    & 276   & 13.8 & 27.5 & 9.8 & 27.5 & 21.4 \\
+Unclear risk & 463   & 18.1 & 26.3 & 5.6 & 22.9 & 27.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Figure~\ref{fig:intersection} shows the pairwise intersection matrix:
+cell~$(i,j)$ gives $P(A_i \cap A_j)$, the percentage of the 1{,}589 cells
+in which \emph{both} model~$i$ and model~$j$ produced the correct judgement.
+The diagonal entries report each model's overall accuracy ($P(A_i)$).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\linewidth]{all_reviews_pairwise_intersection_heatmap}
+  \caption{Pairwise intersection matrix.
+  Cell~$(i,j)$ = $P(A_i \cap A_j)$: percentage of the 1{,}589 study--domain
+  cells in which both models were correct.
+  Diagonal entries (bold) = individual model accuracy.
+  Colour scale: 40--65\% (YlOrRd); deeper red = greater overlap in correct cells.
+  Upper triangle omitted by symmetry.}
+  \label{fig:intersection}
+\end{figure}
+
+Off-diagonal intersection values range from 45.1\% (Claude~Haiku~4.5 and GPT-5.4)
+to 53.5\% (Qwen~3.7-Plus and GLM-5), all substantially below the respective
+diagonal entries (57.6\%--62.5\%).
+The gap between diagonal and off-diagonal reflects that no two models
+share all of their correct cells: a non-trivial fraction of each model's
+successes are unique to that model, a pattern made explicit in the
+complementarity matrix (Figure~\ref{fig:complementarity}).
+
+Figure~\ref{fig:complementarity} shows the full pairwise complementarity matrix:
+cell~$(i,j)$ gives the percentage of the 1{,}589 cells in which model~$i$ erred
+and model~$j$ was correct.
+Values range from 7.4\% to 17.4\%, with all off-diagonal entries exceeding 7\%,
+confirming that no two models in the ensemble are redundant.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\linewidth]{all_reviews_pairwise_complementarity_heatmap}
+  \caption{Pairwise complementarity matrix.
+  Cell~$(i,j)$ = percentage of the 1{,}589 study--domain cells in which the
+  row model erred and the column model was correct.
+  Colour scale: 0--20\% (PuOr); purple = high complementarity,
+  orange = low complementarity; grey diagonal = undefined.
+  Full numeric values are reported in Table~S\ref{tab:pairwise}.}
+  \label{fig:complementarity}
+\end{figure}
+
+The most salient feature of Figure~\ref{fig:complementarity} is the Claude~Haiku~4.5
+column: it is the darkest column overall, meaning that when any other model errs,
+Haiku recovers those cells at the highest rate (12.3\%--17.4\%).
+This is the direct complement of its accuracy profile---Haiku leads on
+overall accuracy and AC1 by concentrating predictions on the majority class,
+which makes its correct cells less likely to be errors for other models,
+but also makes its errors structurally distinct from theirs.
+The two highest individual entries in the matrix---GPT-5.4~$\to$~Haiku (17.4\%)
+and Gemini~2.5~Pro~$\to$~Haiku (17.3\%)---correspond to the two models with the
+lowest overall accuracy; their larger error sets overlap least with Haiku's.
+The same structural distinctiveness is visible in the agreement matrix
+(Figure~\ref{fig:agreement-matrix}): Haiku has the lowest mean inter-model
+agreement across the ensemble (67.9\%, versus 71.7\%--74.9\% for all other models),
+driven by consistently low agreement with Gemini~2.5~Pro and GPT-5.4
+(63--64\%)---the same dyads that top the complementarity column.
+High complementarity and low overall agreement are two sides of the same coin:
+because Haiku assigns labels differently from the ensemble cluster, it agrees
+with other models less often irrespective of correctness, but those disagreements
+are disproportionately cases where Haiku is right and the other model is wrong.
+At the opposite extreme, the Qwen~3.7-Plus~$\leftrightarrow$~GLM-5 pair
+shows the lowest bidirectional complementarity (7.4\% and 7.6\%), indicating
+the most overlapping error profiles of any pair in the ensemble.
+Grok~4.3 also shows low complementarity as a \emph{column} model for the
+Qwen and GLM-5 rows (7.6\% and 8.9\%), suggesting that these three models
+share a similar error structure that is not well covered by the others.
+This pattern is reinforced by the agreement matrix (Figure~\ref{fig:agreement-matrix}):
+the three highest pairwise inter-model agreements---Qwen~3.7-Plus / GLM-5 (82.0\%),
+GLM-5 / Grok~4.3 (80.2\%), and Qwen~3.7-Plus / Grok~4.3 (77.6\%)---are all
+concentrated within this trio; the trio's mean agreement (79.9\%) exceeds the
+mean of cross-trio pairs by 7.2~pp.
+Taken together, the matrix indicates that Claude~Haiku~4.5, Gemini~2.5~Pro,
+and GPT-5.4 form the most complementary triad: their pairwise entries are
+uniformly above 10\%, and combining any two of them recovers more than a
+fifth of all cells that either individually misses.
+
+\subsection{Error Direction: Leniency and Caution}
+\label{sec:error-direction}
+
+% Figure: error direction tripartite heatmap
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{all_reviews_error_direction_tripartite}
+  \caption{Error direction by RoB domain and intervention type
+  under the LR-anchor framework (three panels, pooled across all eight models).
+  \textbf{Lenient} (red): model assigns Low Risk when ground truth was High
+  Risk or Unclear Risk---the study passes unscrutinised.
+  \textbf{Cautious} (blue): model assigns High Risk or Unclear Risk when
+  ground truth was Low Risk---a valid study is flagged for unnecessary review.
+  \textbf{Lateral} (orange): model confuses High Risk with Unclear Risk or
+  vice versa---the study remains in the flagged pile but with a mislabelled
+  severity.
+  The three percentages sum to 100\% in each cell; $n$ = total errors for
+  that domain--intervention combination (identical across all three panels).
+  Grey cells indicate no errors in that combination.}
+  \label{fig:error-direction}
+\end{figure}
+
+Among cells where models erred, errors were not directionally neutral.
+Figure~\ref{fig:error-direction} decomposes errors into three categories under
+the LR-anchor framework: \emph{lenient} (Low Risk assigned when High Risk or
+Unclear Risk was correct), \emph{cautious} (High Risk or Unclear Risk assigned
+when Low Risk was correct), and \emph{lateral} (High Risk and Unclear Risk
+confused with each other---the study remains flagged but with a mislabelled severity).
+
+\textbf{D4}~(blinding of outcome assessors) exhibited the most pronounced and
+consistent leniency (50--74\% across intervention types), with
+drug/medication trials showing the highest lenient fraction (74\%) and
+lateral confusion remaining low ($\leq$35\%).
+Models appear to conflate the objectivity of the outcome measure with
+adequate assessor blinding, defaulting to Low Risk when no explicit blinding
+failure is stated.
+
+\textbf{D3}~(blinding of participants and personnel) showed both high leniency
+and the highest lateral fraction in the benchmark.
+While leniency was elevated across all intervention types (48--76\%), the
+lateral fraction was highest for non-pharmacological interventions (42\%) and
+medical devices (24\%), indicating that models often recognised a blinding
+concern without resolving whether it warranted High Risk or Unclear Risk---a
+distinction that turns on reporting quality rather than intervention feasibility.
+
+\textbf{D1}~(sequence generation) and \textbf{D2}~(allocation concealment)
+showed a predominantly \emph{cautious} error profile: when models erred
+on these domains, they over-flagged Low Risk studies as High Risk or Unclear
+Risk (55--87\% cautious in D1; 49--100\% in D2).
+This reversal relative to D3--D4 is consistent with the explicit, formulaic
+language used to describe randomisation procedures---models rarely miss a
+clear statement of adequate randomisation and instead raise false concerns
+when reports are terse.
+
+\textbf{D6}~(selective outcome reporting) was also predominantly cautious
+(48--72\%), reflecting a tendency to flag concerns in the absence of a
+registered protocol even when the ground-truth judgement was Low Risk.
+
+\textbf{D7}~(other sources of bias) showed no dominant direction, with
+roughly balanced lenient and cautious fractions and a lateral component of
+12--21\%---confirming the idiosyncratic, criterion-ambiguous character of
+errors in this domain noted in Section~\ref{sec:domain}.
+
+% Figure: error direction by model --- stacked proportions
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{error_direction_overall_stacked_pct}
+  \caption{Overall error direction by model under the LR-anchor framework.
+  Each bar shows the proportion of errors classified as lenient (red),
+  lateral (orange), or cautious (blue); bar thickness scales linearly with
+  the total number of errors for that model ($n$ = 596--674).
+  Models are ordered top to bottom as in Figure~\ref{fig:overall-accuracy}.}
+  \label{fig:error-direction-model}
+\end{figure}
+
+\clearpage
+\subsection{Ground-Truth Uncertainty and Inter-Annotator Agreement}
+\label{sec:iaa}
+
+The benchmark treats published Cochrane annotations as the reference standard,
+but those annotations carry their own measurement error.
+Even among formally trained reviewers applying the same protocol,
+\citet{Hartling2013} reported substantial agreement only for D1
+($\kappa = 0.79$, 95\%~CI 0.70--0.88); the remaining domains ranged from fair to
+poor: D2~($\kappa = 0.24$, CI 0.05--0.43), D3+D4 combined
+($\kappa = 0.33$, CI 0.17--0.49; blinding of participants/personnel and of
+outcome assessors were not assessed separately in that study), D5
+($\kappa = 0.34$, CI 0.17--0.52), D6 ($\kappa = 0.27$, CI 0.06--0.49), and
+D7 ($\kappa = 0.24$, CI 0.06--0.41), yielding a range of $\kappa = 0.24$--$0.34$
+across D2--D7.
+When consensus assessments from independent review-team pairs were compared,
+agreement fell further to $\kappa = 0.05$--$0.09$ for several domains.
+Agreement also varies substantially between distinct Cochrane review teams
+evaluating the same trials \citep{Konsgen2020}.
+These findings contextualise model performance against a noisy reference
+standard rather than a noise-free human ceiling, and motivate domain-level
+rather than aggregate interpretation of results.
+Figure~\ref{fig:agreement-matrix} places model performance in this context
+by displaying the full $11 \times 11$ label-agreement matrix across Ground Truth
+and all ten models.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{agreement_matrix_11x11}
+  \caption{Label agreement matrix for Ground Truth and all ten models
+  ($n = 1{,}589$ cells).
+  Cell~$(i,j)$ = percentage of cells in which annotator~$i$ and
+  annotator~$j$ assigned the \emph{same} label, irrespective of correctness.
+  The diagonal is 100\% by definition.
+  The white lines isolate the Ground Truth row and column.
+  Colour scale: 55--100\% (Blues).}
+  \label{fig:agreement-matrix}
+\end{figure}
+
+The Ground Truth row (first row) reproduces the known model accuracies
+(57.6\%--62.5\%), representing agreement between each model and the
+Cochrane reference.
+All inter-model cells (the lower-right $10 \times 10$ block) exceed these values,
+ranging from 58.7\% (Gemini~2.5~Pro and Llama~3.3$^\dagger$) to 82.0\%
+(Qwen~3.7-Plus and GLM-5).
+These pairwise statistics are descriptive: no bootstrap confidence intervals
+were computed for them.
+Because cells from the same study share textual context and are correlated
+across domains, the effective sampling unit is the study ($n = 227$), not the
+cell ($n = 1{,}589$); each pairwise proportion therefore carries an approximate
+95\% uncertainty of $\pm$6~pp ($\text{SE}\approx\sqrt{p(1-p)/227}$,
+evaluated at $p\approx0.70$).
+Differences smaller than this margin should not be over-interpreted; the
+patterns noted below reflect the overall structure of the matrix rather than
+fine-grained rankings between adjacent cells.
+This systematic gap---models agree with each other more than they agree with
+the ground truth---indicates that the ten models share systematic prediction
+tendencies that diverge from the Cochrane standard in coordinated ways.
+It does not imply that the models are collectively more reliable than the
+ground truth; rather, it reflects shared training priors that cause
+convergent errors.
+
+The magnitude of the gap is interpretable in light of the known reference
+noise: if Cochrane reviewer pairs themselves agree at $\approx$60--79\%
+(the $\kappa = 0.24$--$0.34$ range for D2--D7, converted to expected agreement
+under the observed class distribution), then the inter-model agreement range of
+59--82\% is broadly comparable to or modestly above human inter-rater
+reliability on this task.
+The ground-truth column therefore represents one reference annotator among
+many possible ones, and the model accuracy figures (57--63\%) should be
+interpreted as lower bounds on the models' latent capability rather than
+definitive measurements of their performance against a noise-free standard.
+
+\clearpage
 \subsection{Performance by RoB Domain}
 \label{sec:domain}
 
@@ -303,82 +640,6 @@ This asymmetry may lower the Unclear Risk threshold in D6 relative to other
 domains, resulting in higher Unclear Risk assignment rates and correspondingly
 lower Low Risk rates.
 
-\subsection{Error Direction: Leniency and Caution}
-\label{sec:error-direction}
-
-% Figure: error direction tripartite heatmap
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=\linewidth]{all_reviews_error_direction_tripartite}
-  \caption{Error direction by RoB domain and intervention type
-  under the LR-anchor framework (three panels, pooled across all eight models).
-  \textbf{Lenient} (red): model assigns Low Risk when ground truth was High
-  Risk or Unclear Risk---the study passes unscrutinised.
-  \textbf{Cautious} (blue): model assigns High Risk or Unclear Risk when
-  ground truth was Low Risk---a valid study is flagged for unnecessary review.
-  \textbf{Lateral} (orange): model confuses High Risk with Unclear Risk or
-  vice versa---the study remains in the flagged pile but with a mislabelled
-  severity.
-  The three percentages sum to 100\% in each cell; $n$ = total errors for
-  that domain--intervention combination (identical across all three panels).
-  Grey cells indicate no errors in that combination.}
-  \label{fig:error-direction}
-\end{figure}
-
-Among cells where models erred, errors were not directionally neutral.
-Figure~\ref{fig:error-direction} decomposes errors into three categories under
-the LR-anchor framework: \emph{lenient} (Low Risk assigned when High Risk or
-Unclear Risk was correct), \emph{cautious} (High Risk or Unclear Risk assigned
-when Low Risk was correct), and \emph{lateral} (High Risk and Unclear Risk
-confused with each other---the study remains flagged but with a mislabelled severity).
-
-\textbf{D4}~(blinding of outcome assessors) exhibited the most pronounced and
-consistent leniency (50--74\% across intervention types), with
-drug/medication trials showing the highest lenient fraction (74\%) and
-lateral confusion remaining low ($\leq$35\%).
-Models appear to conflate the objectivity of the outcome measure with
-adequate assessor blinding, defaulting to Low Risk when no explicit blinding
-failure is stated.
-
-\textbf{D3}~(blinding of participants and personnel) showed both high leniency
-and the highest lateral fraction in the benchmark.
-While leniency was elevated across all intervention types (48--76\%), the
-lateral fraction was highest for non-pharmacological interventions (42\%) and
-medical devices (24\%), indicating that models often recognised a blinding
-concern without resolving whether it warranted High Risk or Unclear Risk---a
-distinction that turns on reporting quality rather than intervention feasibility.
-
-\textbf{D1}~(sequence generation) and \textbf{D2}~(allocation concealment)
-showed a predominantly \emph{cautious} error profile: when models erred
-on these domains, they over-flagged Low Risk studies as High Risk or Unclear
-Risk (55--87\% cautious in D1; 49--100\% in D2).
-This reversal relative to D3--D4 is consistent with the explicit, formulaic
-language used to describe randomisation procedures---models rarely miss a
-clear statement of adequate randomisation and instead raise false concerns
-when reports are terse.
-
-\textbf{D6}~(selective outcome reporting) was also predominantly cautious
-(48--72\%), reflecting a tendency to flag concerns in the absence of a
-registered protocol even when the ground-truth judgement was Low Risk.
-
-\textbf{D7}~(other sources of bias) showed no dominant direction, with
-roughly balanced lenient and cautious fractions and a lateral component of
-12--21\%---confirming the idiosyncratic, criterion-ambiguous character of
-errors in this domain noted in Section~\ref{sec:domain}.
-
-% Figure: error direction by model — stacked proportions
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=\linewidth]{error_direction_overall_stacked_pct}
-  \caption{Overall error direction by model under the LR-anchor framework.
-  Each bar shows the proportion of errors classified as lenient (red),
-  lateral (orange), or cautious (blue); bar thickness scales linearly with
-  the total number of errors for that model ($n$ = 596--674).
-  Models are ordered top to bottom as in Figure~\ref{fig:overall-accuracy}.}
-  \label{fig:error-direction-model}
-\end{figure}
-
-\clearpage
 \subsection{Stratification by Intervention Type}
 \label{sec:itype}
 
@@ -473,256 +734,6 @@ corpora.
   Colour scale: 0--1.}
   \label{fig:clinical-heatmap}
 \end{sidewaysfigure}
-
-\subsection{Ground-Truth Uncertainty and Inter-Annotator Agreement}
-\label{sec:iaa}
-
-The benchmark treats published Cochrane annotations as the reference standard,
-but those annotations carry their own measurement error.
-Even among formally trained reviewers applying the same protocol,
-\citet{Hartling2013} reported $\kappa = 0.79$ for D1 but only
-$\kappa = 0.24$--$0.37$ for the remaining six domains, with agreement between
-independent consensus pairs falling further to $\kappa = 0.05$--$0.09$ in
-several domains.
-Agreement also varies substantially between distinct Cochrane review teams
-evaluating the same trials \citep{Konsgen2020}.
-These findings contextualise model performance against a noisy reference
-standard rather than a noise-free human ceiling, and motivate domain-level
-rather than aggregate interpretation of results.
-Figure~\ref{fig:agreement-matrix} places model performance in this context
-by displaying the full $9 \times 9$ label-agreement matrix across Ground Truth
-and all eight models.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{all_reviews_agreement_matrix}
-  \caption{Label agreement matrix for Ground Truth and all eight models
-  ($n = 1{,}589$ cells).
-  Cell~$(i,j)$ = percentage of cells in which annotator~$i$ and
-  annotator~$j$ assigned the \emph{same} label, irrespective of correctness.
-  The diagonal is 100\% by definition.
-  The white lines isolate the Ground Truth row and column.
-  Colour scale: 55--100\% (Blues).}
-  \label{fig:agreement-matrix}
-\end{figure}
-
-The Ground Truth row (first row) reproduces the known model accuracies
-(57.6\%--62.5\%), representing agreement between each model and the
-Cochrane reference.
-All inter-model cells (the lower-right $8 \times 8$ block) exceed these values,
-ranging from 63.1\% (Claude~Haiku~4.5 and Gemini~2.5~Pro) to 82.0\%
-(Qwen~3.7-Plus and GLM-5).
-These pairwise statistics are descriptive: no bootstrap confidence intervals
-were computed for them.
-Because cells from the same study share textual context and are correlated
-across domains, the effective sampling unit is the study ($n = 227$), not the
-cell ($n = 1{,}589$); each pairwise proportion therefore carries an approximate
-95\% uncertainty of $\pm$6~pp ($\text{SE}\approx\sqrt{p(1-p)/227}$,
-evaluated at $p\approx0.70$).
-Differences smaller than this margin should not be over-interpreted; the
-patterns noted below reflect the overall structure of the matrix rather than
-fine-grained rankings between adjacent cells.
-This systematic gap---models agree with each other more than they agree with
-the ground truth---indicates that the eight models share systematic prediction
-tendencies that diverge from the Cochrane standard in coordinated ways.
-It does not imply that the models are collectively more reliable than the
-ground truth; rather, it reflects shared training priors that cause
-convergent errors.
-
-The magnitude of the gap is interpretable in light of the known reference
-noise: if Cochrane reviewer pairs themselves agree at $\approx$60--79\%
-(the $\kappa = 0.24$--$0.37$ range, converted to expected agreement under
-the observed class distribution), then the inter-model agreement range of
-63--82\% is broadly comparable to or modestly above human inter-rater
-reliability on this task.
-The ground-truth column therefore represents one reference annotator among
-many possible ones, and the model accuracy figures (57--63\%) should be
-interpreted as lower bounds on the models' latent capability rather than
-definitive measurements of their performance against a noise-free standard.
-
-\subsection{Consensus Failures and Model Complementarity}
-\label{sec:consensus-failures}
-
-Table~\ref{tab:agreement-distribution} summarises the full distribution of
-per-cell model agreement across the 1{,}589 study--domain cells.
-The distribution is markedly bimodal: the two largest individual categories are
-\emph{all models correct} (499 cells, 31.4\%) and \emph{consensus failure}
-(226 cells, 14.2\%), with the intermediate categories together accounting for
-the remaining 54.4\%.
-This bimodality suggests that cell difficulty is largely an intrinsic property
-of the item rather than the model: most cells are either solvable by all frontier
-models evaluated here, or intractable for all of them given the prompt context.
-
-\begin{table}[H]
-\centering
-\caption{Distribution of per-cell model agreement across the 1{,}589
-  study--domain cells (8 models).
-  \emph{Majority} and \emph{minority} thresholds are defined relative to $n = 8$;
-  see Section~\ref{sec:methods-complementarity} for the generalised formula.}
-\label{tab:agreement-distribution}
-\begin{tabular}{lrr}
-\toprule
-Category & $N$ & \% \\
-\midrule
-All correct (8/8)  & 499     & 31.4 \\
-Majority (5--7/8)  & 418     & 26.3 \\
-Split (4/8)        &  96     &  6.0 \\
-Minority (1--3/8)  & 350     & 22.0 \\
-None correct (0/8) & 226     & 14.2 \\
-\midrule
-Total              & 1{,}589 & 100.0 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Table~\ref{tab:agreement-domain} disaggregates the distribution by domain.
-D1 and D2 are the easiest: 54.2\% and 46.3\% of their cells achieve full
-eight-model consensus, and consensus failure rates are 11.0\% and 8.8\%,
-respectively.
-D7 (other sources of bias) stands apart in a different way: only 4.0\% of its
-cells are answered correctly by all models, and 45.8\% are answered correctly
-only by a minority (1--3 models), reflecting a domain where models
-systematically diverge in their judgements.
-D4 and D5 present a third pattern: their consensus failure rates (22.0\% and
-19.8\%) are the highest in the corpus---higher even than D7 (12.3\%)---indicating
-that when models err in D4/D5 they tend to do so collectively, whereas in D7
-errors are more dispersed across models.
-
-\begin{table}[H]
-\centering
-\caption{Per-cell agreement distribution by domain (row percentages; $n = 227$
-  per domain).}
-\label{tab:agreement-domain}
-\begin{tabular}{lrrrrr}
-\toprule
-Domain & All (8/8) & Majority (5--7) & Split (4) & Minority (1--3) & None (0) \\
-       & \%        & \%              & \%        & \%              & \%       \\
-\midrule
-D1 & 54.2 & 22.5 &  1.3 & 11.0 & 11.0 \\
-D2 & 46.3 & 27.3 &  2.6 & 15.0 &  8.8 \\
-D3 & 33.5 & 28.2 &  7.0 & 17.6 & 13.7 \\
-D4 & 32.2 & 16.3 &  6.6 & 22.9 & 22.0 \\
-D5 & 30.4 & 25.1 &  7.9 & 16.7 & 19.8 \\
-D6 & 19.4 & 37.4 &  6.2 & 25.1 & 11.9 \\
-D7 &  4.0 & 27.3 & 10.6 & 45.8 & 12.3 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Stratifying by ground-truth class (Table~\ref{tab:agreement-class}) reveals a
-clear asymmetry.
-\emph{Low risk} cells are classified correctly by all eight models in 44.4\%
-of cases, and only 4.9\% are consensus failures.
-\emph{Unclear risk} cells are the hardest: 27.0\% are consensus failures---no
-model assigns the correct label---exceeding even \emph{high risk} (21.4\%).
-This result is consistent with the inherent difficulty of the \emph{unclear risk}
-category, which requires inferring the \emph{absence} of adequate reporting rather
-than identifying a positive signal of bias.
-
-\begin{table}[H]
-\centering
-\caption{Per-cell agreement distribution by ground-truth class (row percentages).}
-\label{tab:agreement-class}
-\begin{tabular}{lrrrrrr}
-\toprule
-Class        & $n$   & All (8/8) & Majority (5--7) & Split (4) & Minority (1--3) & None (0) \\
-             &       & \%        & \%              & \%        & \%              & \%       \\
-\midrule
-Low risk     & 850   & 44.4 & 25.9 & 5.1 & 19.8 &  4.9 \\
-High risk    & 276   & 13.8 & 27.5 & 9.8 & 27.5 & 21.4 \\
-Unclear risk & 463   & 18.1 & 26.3 & 5.6 & 22.9 & 27.0 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Figure~\ref{fig:intersection} shows the pairwise intersection matrix:
-cell~$(i,j)$ gives $P(A_i \cap A_j)$, the percentage of the 1{,}589 cells
-in which \emph{both} model~$i$ and model~$j$ produced the correct judgement.
-The diagonal entries report each model's overall accuracy ($P(A_i)$).
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.85\linewidth]{all_reviews_pairwise_intersection_heatmap}
-  \caption{Pairwise intersection matrix.
-  Cell~$(i,j)$ = $P(A_i \cap A_j)$: percentage of the 1{,}589 study--domain
-  cells in which both models were correct.
-  Diagonal entries (bold) = individual model accuracy.
-  Colour scale: 40--65\% (YlOrRd); deeper red = greater overlap in correct cells.
-  Upper triangle omitted by symmetry.}
-  \label{fig:intersection}
-\end{figure}
-
-Off-diagonal intersection values range from 45.1\% (Claude~Haiku~4.5 and GPT-5.4)
-to 53.5\% (Qwen~3.7-Plus and GLM-5), all substantially below the respective
-diagonal entries (57.6\%--62.5\%).
-The gap between diagonal and off-diagonal reflects that no two models
-share all of their correct cells: a non-trivial fraction of each model's
-successes are unique to that model.
-Expressing overlap as the Jaccard similarity
-$J(A,B) = P(A \cap B)\,/\,P(A \cup B)$---the fraction of cells correct
-for \emph{at least one} model that are correct for \emph{both}---yields
-values between 60.0\% and 78.1\% across the 28 pairs.
-The highest Jaccard, Qwen~3.7-Plus and GLM-5 ($J = 78.1\%$, $P(A\cap B) = 53.5\%$),
-indicates that nearly four in five cells that either model answers correctly
-are answered correctly by both, confirming this as the most redundant pair.
-The lowest Jaccard, Claude~Haiku~4.5 and GPT-5.4 ($J = 60.0\%$,
-$P(A\cap B) = 45.1\%$), indicates that two in five jointly-correct cells
-belong exclusively to one model---the highest non-redundancy in the ensemble
-and a direct predictor of the high complementarity entry
-visible in Figure~\ref{fig:complementarity}.
-
-Figure~\ref{fig:complementarity} shows the full pairwise complementarity matrix:
-cell~$(i,j)$ gives the percentage of the 1{,}589 cells in which model~$i$ erred
-and model~$j$ was correct.
-Values range from 7.4\% to 17.4\%, with all off-diagonal entries exceeding 7\%,
-confirming that no two models in the ensemble are redundant.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.85\linewidth]{all_reviews_pairwise_complementarity_heatmap}
-  \caption{Pairwise complementarity matrix.
-  Cell~$(i,j)$ = percentage of the 1{,}589 study--domain cells in which the
-  row model erred and the column model was correct.
-  Colour scale: 0--20\% (PuOr); purple = high complementarity,
-  orange = low complementarity; grey diagonal = undefined.
-  Full numeric values are reported in Table~S\ref{tab:pairwise}.}
-  \label{fig:complementarity}
-\end{figure}
-
-The most salient feature of Figure~\ref{fig:complementarity} is the Claude~Haiku~4.5
-column: it is the darkest column overall, meaning that when any other model errs,
-Haiku recovers those cells at the highest rate (12.3\%--17.4\%).
-This is the direct complement of its accuracy profile---Haiku leads on
-overall accuracy and AC1 by concentrating predictions on the majority class,
-which makes its correct cells less likely to be errors for other models,
-but also makes its errors structurally distinct from theirs.
-The two highest individual entries in the matrix---GPT-5.4~$\to$~Haiku (17.4\%)
-and Gemini~2.5~Pro~$\to$~Haiku (17.3\%)---correspond to the two models with the
-lowest overall accuracy; their larger error sets overlap least with Haiku's.
-The same structural distinctiveness is visible in the agreement matrix
-(Figure~\ref{fig:agreement-matrix}): Haiku has the lowest mean inter-model
-agreement across the ensemble (67.9\%, versus 71.7\%--74.9\% for all other models),
-driven by consistently low agreement with Gemini~2.5~Pro and GPT-5.4
-(63--64\%)---the same dyads that top the complementarity column.
-High complementarity and low overall agreement are two sides of the same coin:
-because Haiku assigns labels differently from the ensemble cluster, it agrees
-with other models less often irrespective of correctness, but those disagreements
-are disproportionately cases where Haiku is right and the other model is wrong.
-At the opposite extreme, the Qwen~3.7-Plus~$\leftrightarrow$~GLM-5 pair
-shows the lowest bidirectional complementarity (7.4\% and 7.6\%), indicating
-the most overlapping error profiles of any pair in the ensemble.
-Grok~4.3 also shows low complementarity as a \emph{column} model for the
-Qwen and GLM-5 rows (7.6\% and 8.9\%), suggesting that these three models
-share a similar error structure that is not well covered by the others.
-This pattern is reinforced by the agreement matrix (Figure~\ref{fig:agreement-matrix}):
-the three highest pairwise inter-model agreements---Qwen~3.7-Plus / GLM-5 (82.0\%),
-GLM-5 / Grok~4.3 (80.2\%), and Qwen~3.7-Plus / Grok~4.3 (77.6\%)---are all
-concentrated within this trio; the trio's mean agreement (79.9\%) exceeds the
-mean of cross-trio pairs by 7.2~pp.
-Taken together, the matrix indicates that Claude~Haiku~4.5, Gemini~2.5~Pro,
-and GPT-5.4 form the most complementary triad: their pairwise entries are
-uniformly above 10\%, and combining any two of them recovers more than a
-fifth of all cells that either individually misses.
 
 \subsection{Inference Mode Comparison}
 \label{sec:inference}
